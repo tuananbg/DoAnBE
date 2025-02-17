@@ -1,17 +1,19 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.AppConstants;
 import com.company_management.common.Constants;
+import com.company_management.common.enums.Gender;
 import com.company_management.exception.AppException;
-import com.company_management.model.dto.UserDetailDTO;
-import com.company_management.model.entity.Department;
-import com.company_management.model.entity.Position;
-import com.company_management.model.entity.UserCustom;
-import com.company_management.model.entity.UserDetail;
-import com.company_management.model.mapper.EmployeeMapper;
-import com.company_management.model.request.SearchEmployeeRequest;
-import com.company_management.model.response.DataPage;
-import com.company_management.model.response.ExportPdfEmployeeResponse;
-import com.company_management.model.response.UserDetailExcelResponse;
+import com.company_management.dto.UserDetailDTO;
+import com.company_management.entity.Department;
+import com.company_management.entity.Position;
+import com.company_management.entity.UserCustom;
+import com.company_management.entity.UserDetail;
+import com.company_management.dto.mapper.EmployeeMapper;
+import com.company_management.dto.request.SearchEmployeeRequest;
+import com.company_management.dto.response.DataPage;
+import com.company_management.dto.response.ExportPdfEmployeeResponse;
+import com.company_management.dto.response.UserDetailExcelResponse;
 import com.company_management.repository.*;
 import com.company_management.service.EmployeeService;
 import com.company_management.utils.CommonUtils;
@@ -112,7 +114,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 Arrays.asList("id", "employeeCode", "employeeName", "avatar", "phone", "gender",
                         "birthday", "address", "email", "departmentName", "departmentId", "positionName", "positionId"), listObj, UserDetailDTO.class);
         lstDTO.forEach(dto -> {
-            dto.setGenderName(dto.getGender() != 1 ? "Nữ" : "Nam");
+            dto.setGenderName(Gender.fromCode(dto.getGender()).getName());
         });
         DataPage<UserDetailDTO> dataPage = getUserDetailDTODataPage(pageable, lstDTO);
         log.info("------------------------search Finished--------------------------");
@@ -136,19 +138,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional(readOnly = true)
     public UserDetailDTO detailEmployee(Long id) {
-        UserDetail userDetail = employeeRepository.findById(id).orElseThrow(
-                () -> new AppException("ERR01", "Không tìm thấy nhân viên này!"));
+        UserDetail userDetail = employeeRepository.findById(id)
+                .orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
         UserDetailDTO detailDTO = employeeMapper.toDto(userDetail);
         detailDTO.setDepartmentId(userDetail.getDepartmentId());
         detailDTO.setPositionId(userDetail.getPositionId());
         if (userDetail.getDepartmentId() != null) {
-            Department department = departmentRepository.findById(userDetail.getDepartmentId()).orElseThrow(
-                    () -> new AppException("ERR01", "Không tìm thấy phòng ban này!"));
+            Department department = departmentRepository.findById(userDetail.getDepartmentId())
+                    .orElseThrow(() -> new AppException(AppConstants.DEPARTMENT_CODE_001, AppConstants.DEPARTMENT_MESS_001));
             detailDTO.setDepartmentName(department.getDepartmentName());
         }
         if (userDetail.getPositionId() != null) {
-            Position position = positionRepository.findById(userDetail.getPositionId()).orElseThrow(
-                    () -> new AppException("ERR01", "Không tìm thấy chức vụ này!"));
+            Position position = positionRepository.findById(userDetail.getPositionId())
+                    .orElseThrow(() -> new AppException(AppConstants.POSITION_CODE_001,AppConstants.POSITION_MESS_001));
             detailDTO.setPositionName(position.getPositionName());
         }
         Optional<UserCustom> userCustom = userCustomRepository.findByUserDetailId(userDetail.getId());
@@ -162,17 +164,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.debug("// Create Employee");
         UserDetail byEmployeeCode = employeeRepository.findByEmployeeCode(userDetailDTO.getEmployeeCode());
         if (byEmployeeCode != null) {
-            throw new AppException("ERO01", "Mã nhân viên đã tồn tại");
+            throw new AppException(AppConstants.EMPLOYEE_CODE_002, AppConstants.EMPLOYEE_MESS_002);
         }
         Department department = new Department();
         if (userDetailDTO.getDepartmentId() != null) {
             department = departmentRepository.findById(userDetailDTO.getDepartmentId()).orElseThrow(() ->
-                    new AppException("ERO01", "Phòng ban không hoạt động"));
+                    new AppException(AppConstants.DEPARTMENT_CODE_002, AppConstants.DEPARTMENT_MESS_002));
         }
         Position position = new Position();
         if (userDetailDTO.getPositionId() != null) {
             position = positionRepository.findById(userDetailDTO.getPositionId()).orElseThrow(() ->
-                    new AppException("ERO01", "Chức vụ không hoạt động"));
+                    new AppException(AppConstants.POSITION_CODE_002, AppConstants.POSITION_MESS_002));
         }
         UserDetail userDetail = employeeMapper.toEntity(userDetailDTO);
         userDetail.setEmployeeCode(userDetail.getEmployeeCode().toUpperCase());
@@ -184,7 +186,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(avatarFile.getOriginalFilename()));
         if (fileName.contains("..")) {
             log.debug("File upload không tồn tại!");
-            throw new AppException("ERO01", "Tên tệp tin không hợp lệ");
+            throw new AppException(AppConstants.UPLOAD_FILE_IMAGE_CODE_001, AppConstants.UPLOAD_FILE_IMAGE_MESS_001);
         }
         Path filePath = Paths.get(this.fileUpload + fileName);
         Files.copy(avatarFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -198,12 +200,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public void updateEmployee(MultipartFile avatarFile, UserDetailDTO userDetailDTO) throws IOException {
         UserDetail userDetail = employeeRepository.findById(userDetailDTO.getId()).orElseThrow(
-                () -> new AppException("ERR01", "Không tìm thấy nhân viên này!"));
+                () -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
         log.debug("// Update Employee");
         if (userDetailDTO.getEmployeeCode() != null && !userDetailDTO.getEmployeeCode().equals(userDetail.getEmployeeCode())) {
             UserDetail byEmployeeCode = employeeRepository.findByEmployeeCode(userDetailDTO.getEmployeeCode());
             if (byEmployeeCode != null) {
-                throw new AppException("ERO01", "Mã nhân viên đã tồn tại");
+                throw new AppException(AppConstants.EMPLOYEE_CODE_002, AppConstants.EMPLOYEE_MESS_002);
             }
             userDetail.setEmployeeCode(userDetailDTO.getEmployeeCode().toUpperCase());
         }
@@ -211,7 +213,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             Department department = new Department();
             if (userDetailDTO.getDepartmentId() != null) {
                 department = departmentRepository.findById(userDetailDTO.getDepartmentId()).orElseThrow(() ->
-                        new AppException("ERO01", "Phòng ban không tồn tại"));
+                        new AppException(AppConstants.DEPARTMENT_CODE_002,AppConstants.DEPARTMENT_MESS_002));
             }
             userDetail.setDepartmentId(department.getId());
         }
@@ -242,7 +244,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 String fileName = StringUtils.cleanPath(Objects.requireNonNull(avatarFile.getOriginalFilename()));
                 if (fileName.contains("..")) {
                     log.debug("File upload không tồn tại!");
-                    throw new AppException("ERO01", "Tên tệp tin không hợp lệ");
+                    throw new AppException(AppConstants.UPLOAD_FILE_IMAGE_CODE_001, AppConstants.UPLOAD_FILE_IMAGE_MESS_001);
                 }
                 Path filePath = Paths.get(this.fileUpload + fileName);
                 Files.copy(avatarFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -251,10 +253,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                 }
             } catch (NullPointerException e) {
                 log.error("File ảnh là null.", e);
-                throw new AppException("ERO02", "File ảnh là null");
+                throw new AppException(AppConstants.UPLOAD_FILE_IMAGE_CODE_002, AppConstants.UPLOAD_FILE_IMAGE_MESS_002);
             } catch (IOException e) {
                 log.error("Lỗi xảy ra khi xử lý file ảnh", e);
-                throw new AppException("ERO02", "Lỗi xảy ra khi xử lý file ảnh");
+                throw new AppException(AppConstants.UPLOAD_FILE_IMAGE_CODE_003, AppConstants.UPLOAD_FILE_IMAGE_MESS_003);
             }
         }
 //        userDetail.setUpdatedUser(CommonUtils.getUserLoginName());
@@ -267,7 +269,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployee(Long id) {
         log.debug("// Xóa nhân viên: {}", id);
         if (employeeRepository.deleteById(id, CommonUtils.getUserLoginName()) <= 0) {
-            throw new AppException("ERR01", "Không tìm thấy nhân viên!");
+            throw new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001);
         }
     }
 
@@ -288,11 +290,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             AtomicInteger index = new AtomicInteger();
             for (UserDetailExcelResponse item : userDetailDTOS) {
                 item.setIndex(index.incrementAndGet());
-                if (item.getGender() == 1) {
-                    item.setGenderName("Nam");
-                } else {
-                    item.setGenderName("Nữ");
-                }
+                item.setGenderName(Gender.fromCode(item.getGender()).getName());
             }
             Map<String, Object> beans = new HashMap<>();
             beans.put("posLst", userDetailDTOS);
@@ -305,7 +303,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             return new ByteArrayInputStream(exportInputStream);
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
-            throw new AppException("ERR01", "Xuất file excel bị lỗi");
+            throw new AppException(AppConstants.EXPORT_FILE_EXCEL_CODE_001, AppConstants.EXPORT_FILE_EXCEL_MESS_001);
         }
     }
 

@@ -1,9 +1,9 @@
 package com.company_management.service.impl;
 
 import com.company_management.exception.BadRequestException;
-import com.company_management.model.dto.RoleDTO;
-import com.company_management.model.entity.Role;
-import com.company_management.model.mapper.RoleMapper;
+import com.company_management.dto.RoleDTO;
+import com.company_management.entity.Role;
+import com.company_management.dto.mapper.RoleMapper;
 import com.company_management.repository.RoleRepository;
 import com.company_management.service.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public RoleDTO getRoleByRoleName(String roleName) {
         Optional<Role> role = roleRepository.findByRoleName(roleName);
-        if(role.isEmpty()){
+        if (role.isEmpty()) {
             throw new BadRequestException("Không tồn tại role: " + roleName);
         }
         return roleMapper.toDto(role.get());

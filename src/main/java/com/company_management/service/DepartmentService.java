@@ -1,7 +1,7 @@
 package com.company_management.service;
 
-import com.company_management.model.dto.DepartmentDTO;
-import com.company_management.model.request.SearchDepartmentRequest;
+import com.company_management.dto.DepartmentDTO;
+import com.company_management.dto.request.SearchDepartmentRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

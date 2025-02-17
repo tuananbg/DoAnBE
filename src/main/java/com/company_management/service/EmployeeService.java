@@ -1,9 +1,9 @@
 package com.company_management.service;
 
-import com.company_management.model.dto.UserDetailDTO;
-import com.company_management.model.request.SearchEmployeeRequest;
-import com.company_management.model.response.DataPage;
-import com.company_management.model.response.ExportPdfEmployeeResponse;
+import com.company_management.dto.UserDetailDTO;
+import com.company_management.dto.request.SearchEmployeeRequest;
+import com.company_management.dto.response.DataPage;
+import com.company_management.dto.response.ExportPdfEmployeeResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,16 +1,12 @@
 package com.company_management.controller.HRM;
 
-import com.company_management.common.DataUtil;
-import com.company_management.exception.AppException;
-import com.company_management.model.dto.UserCustomDTO;
-import com.company_management.model.dto.UserDetailDTO;
-import com.company_management.model.request.UserDetailRequest;
-import com.company_management.model.response.BasicResponse;
+import com.company_management.dto.request.UserDetailRequest;
+import com.company_management.dto.response.BasicResponse;
 import com.company_management.service.JwtService;
 import com.company_management.service.UserService;
-import com.company_management.model.request.UserSearchRequest;
-import com.company_management.model.response.PageResponse;
-import com.company_management.model.response.UserSearchResponse;
+import com.company_management.dto.request.UserSearchRequest;
+import com.company_management.dto.response.PageResponse;
+import com.company_management.dto.response.UserSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

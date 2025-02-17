@@ -2,7 +2,7 @@ package com.company_management.controller.HRM;
 
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
-import com.company_management.model.dto.SocialInsuranceDTO;
+import com.company_management.dto.SocialInsuranceDTO;
 import com.company_management.service.SocialInsuranceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

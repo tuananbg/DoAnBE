@@ -1,8 +1,8 @@
 package com.company_management.repository.impl;
 
 
-import com.company_management.model.dto.WageDTO;
-import com.company_management.model.response.DataPage;
+import com.company_management.dto.WageDTO;
+import com.company_management.dto.response.DataPage;
 import com.company_management.repository.UserDetailWageRepository;
 import com.company_management.repository.WageRepositoryCustom;
 import com.company_management.utils.DataUtils;

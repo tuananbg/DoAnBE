@@ -1,6 +1,6 @@
 package com.company_management.repository;
 
-import com.company_management.model.entity.Position;
+import com.company_management.entity.Position;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,7 +18,7 @@ public interface PositionRepository extends JpaRepository<Position, Long>, Posit
     Optional<Position> findByIdAndDepartmentId(Long id, Long departmentId);
 
     @Modifying
-    @Query(value = "update Position p set p.isActive = 0, p.updatedDate = now(), p.updatedUser = :user where p.id = :id and p.isActive = 1 or p.isActive = 2 ")
+    @Query(value = "update Position p set p.isActive = 0, p.updatedDate = now(), p.updatedBy = :user where p.id = :id and p.isActive = 1 or p.isActive = 2 ")
     int deleteById(Long id, Long user);
 
 }

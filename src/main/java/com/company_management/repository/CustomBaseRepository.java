@@ -1,14 +1,14 @@
 package com.company_management.repository;
 
-import com.company_management.model.entity.EntBase;
-import com.company_management.model.response.DataPage;
+import com.company_management.entity.BaseEntity;
+import com.company_management.dto.response.DataPage;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Map;
 
 
-public interface CustomBaseRepository<ENT extends EntBase> {
+public interface CustomBaseRepository<ENT extends BaseEntity> {
 
     DataPage<Object[]> queryHasParam(String query, Map<String, Object> params, PageRequest paging);
 

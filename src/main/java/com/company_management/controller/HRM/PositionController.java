@@ -2,8 +2,8 @@ package com.company_management.controller.HRM;
 
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
-import com.company_management.model.dto.PositionDTO;
-import com.company_management.model.request.SearchPositionRequest;
+import com.company_management.dto.PositionDTO;
+import com.company_management.dto.request.SearchPositionRequest;
 import com.company_management.service.PositionService;
 import com.company_management.utils.CommonUtils;
 import jakarta.validation.Valid;

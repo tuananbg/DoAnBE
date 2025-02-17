@@ -2,7 +2,7 @@ package com.company_management.controller.HRM;
 
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
-import com.company_management.model.dto.QualificationDTO;
+import com.company_management.dto.QualificationDTO;
 import com.company_management.service.QualificationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

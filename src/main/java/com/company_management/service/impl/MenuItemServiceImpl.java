@@ -1,12 +1,10 @@
 package com.company_management.service.impl;
 
-import com.company_management.common.Constants;
 import com.company_management.exception.BadRequestException;
-import com.company_management.model.dto.MenuItemDTO;
-import com.company_management.model.entity.MenuItem;
-import com.company_management.model.entity.Permission;
-import com.company_management.model.mapper.MenuItemMapper;
-import com.company_management.model.response.BasicResponse;
+import com.company_management.dto.MenuItemDTO;
+import com.company_management.entity.MenuItem;
+import com.company_management.dto.mapper.MenuItemMapper;
+import com.company_management.dto.response.BasicResponse;
 import com.company_management.repository.MenuItemRepository;
 import com.company_management.repository.PermissionRepository;
 import com.company_management.service.MenuItemService;
@@ -14,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

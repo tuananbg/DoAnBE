@@ -2,18 +2,18 @@ package com.company_management.service.impl;
 
 import com.company_management.common.DataUtil;
 import com.company_management.common.DateUtil;
+import com.company_management.dto.response.*;
+import com.company_management.entity.*;
 import com.company_management.exception.AppException;
 import com.company_management.exception.BadRequestException;
-import com.company_management.model.entity.*;
-import com.company_management.model.mapper.ContractMapper;
-import com.company_management.model.mapper.RoleMapper;
-import com.company_management.model.mapper.SocialInsuranceMapper;
-import com.company_management.model.mapper.WageMapper;
-import com.company_management.model.request.AccountSearchRequest;
-import com.company_management.model.request.UserCustomEmployeeRequest;
-import com.company_management.model.request.UserDetailRequest;
-import com.company_management.model.request.UserSearchRequest;
-import com.company_management.model.response.*;
+import com.company_management.dto.mapper.ContractMapper;
+import com.company_management.dto.mapper.RoleMapper;
+import com.company_management.dto.mapper.SocialInsuranceMapper;
+import com.company_management.dto.mapper.WageMapper;
+import com.company_management.dto.request.AccountSearchRequest;
+import com.company_management.dto.request.UserCustomEmployeeRequest;
+import com.company_management.dto.request.UserDetailRequest;
+import com.company_management.dto.request.UserSearchRequest;
 import com.company_management.repository.*;
 import com.company_management.service.UserService;
 import com.company_management.utils.DataUtils;
@@ -46,16 +46,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserSearchResponse findUserDetailById(Long id) {
-            UserCustom userCustom = userCustomRepository.findById(id).orElseThrow(() -> new BadRequestException(
-                    "Không tìm thấy User theo id" + id));
-            UserDetail userDetail =
-                    userDetailRepository.findById(userCustom.getUserDetailId()).orElseThrow(() -> new AppException(
-                            "API-500", "Có lỗi xảy ra"));
-            UserSearchResponse result = new UserSearchResponse();
-            result.setId(userCustom.getId());
-            result.setFullName(userCustom.getUsername());
-            result.setEmail(userCustom.getEmail());
-            return result;
+        UserCustom userCustom = userCustomRepository.findById(id).orElseThrow(() -> new BadRequestException(
+                "Không tìm thấy User theo id" + id));
+        UserDetail userDetail =
+                userDetailRepository.findById(userCustom.getUserDetailId()).orElseThrow(() -> new AppException(
+                        "API-500", "Có lỗi xảy ra"));
+        UserSearchResponse result = new UserSearchResponse();
+        result.setId(userCustom.getId());
+        result.setFullName(userCustom.getUsername());
+        result.setEmail(userCustom.getEmail());
+        return result;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AccountDetailResponse findAccountDetail(Long id) {
-        if(DataUtil.isNullOrZero(id)){
+        if (DataUtil.isNullOrZero(id)) {
             throw new BadRequestException("Dữ liệu không hợp lệ");
         }
         UserCustom user = userCustomRepository.findById(id).orElseThrow(() -> new BadRequestException("Có lỗi " +
@@ -99,8 +99,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageResponse<AccountSearchResponse> searchAccount(AccountSearchRequest request, Pageable pageable) {
-        return userCustomRepository.searchAccount(request, pageable);
+    public PageResponse<AccountSearchResponse> searchAccount( Pageable pageable) {
+        return userCustomRepository.searchAccount(pageable);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
         UserCustom userCustom = userCustomRepository.findById(userCustomEmployeeRequest.getId()).orElseThrow(
                 () -> new AppException("ERR01", "Tài khoản không tồn tại!")
         );
-        if(!DataUtils.isNullOrEmpty(userCustomEmployeeRequest.getUserDetailId())){
+        if (!DataUtils.isNullOrEmpty(userCustomEmployeeRequest.getUserDetailId())) {
             userCustom.setUserDetailId(userCustomEmployeeRequest.getUserDetailId());
         }
         userCustomRepository.save(userCustom);

@@ -1,10 +1,10 @@
 package com.company_management.service.impl;
 
 import com.company_management.exception.AppException;
-import com.company_management.model.dto.DepartmentDTO;
-import com.company_management.model.entity.Department;
-import com.company_management.model.mapper.DepartmentMapper;
-import com.company_management.model.request.SearchDepartmentRequest;
+import com.company_management.dto.DepartmentDTO;
+import com.company_management.entity.Department;
+import com.company_management.dto.mapper.DepartmentMapper;
+import com.company_management.dto.request.SearchDepartmentRequest;
 import com.company_management.repository.DepartmentRepository;
 import com.company_management.service.DepartmentService;
 import com.company_management.utils.CommonUtils;

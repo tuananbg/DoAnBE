@@ -1,12 +1,12 @@
 package com.company_management.service.impl;
 
 import com.company_management.exception.AppException;
-import com.company_management.model.dto.AttendanceDTO;
-import com.company_management.model.entity.Attendance;
-import com.company_management.model.entity.UserCustom;
-import com.company_management.model.request.SearchAttendanceRequest;
-import com.company_management.model.response.AttendanceResponse;
-import com.company_management.model.response.DataPage;
+import com.company_management.dto.AttendanceDTO;
+import com.company_management.entity.Attendance;
+import com.company_management.entity.UserCustom;
+import com.company_management.dto.request.SearchAttendanceRequest;
+import com.company_management.dto.response.AttendanceResponse;
+import com.company_management.dto.response.DataPage;
 import com.company_management.repository.AttendanceRepository;
 import com.company_management.repository.UserCustomRepository;
 import com.company_management.repository.UserDetailRepository;

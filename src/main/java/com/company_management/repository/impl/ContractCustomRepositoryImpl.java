@@ -1,8 +1,8 @@
 package com.company_management.repository.impl;
 
 import com.company_management.common.DataUtil;
-import com.company_management.model.dto.ContractDTO;
-import com.company_management.model.response.PageResponse;
+import com.company_management.dto.ContractDTO;
+import com.company_management.dto.response.PageResponse;
 import com.company_management.repository.ContractCustomRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;

@@ -1,6 +1,6 @@
 package com.company_management.service;
 
-import com.company_management.model.dto.QualificationDTO;
+import com.company_management.dto.QualificationDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -1,8 +1,8 @@
 package com.company_management.service;
 
-import com.company_management.model.dto.AttendanceOTDTO;
-import com.company_management.model.request.SearchAttendanceOTRequest;
-import com.company_management.model.response.DataPage;
+import com.company_management.dto.AttendanceOTDTO;
+import com.company_management.dto.request.SearchAttendanceOTRequest;
+import com.company_management.dto.response.DataPage;
 import org.springframework.data.domain.Pageable;
 
 import java.io.ByteArrayInputStream;
@@ -14,7 +14,6 @@ public interface AttendanceOTService {
     AttendanceOTDTO detailOT(Long id);
 
     void createOrUpdate(AttendanceOTDTO attendanceOTDTO);
-
 
     void deleteOT(Long id);
 

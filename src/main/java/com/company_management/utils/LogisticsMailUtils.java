@@ -1,7 +1,7 @@
 package com.company_management.utils;
 
-import com.company_management.model.dto.AttendanceLeaveDTO;
-import com.company_management.model.response.ExportPdfEmployeeResponse;
+import com.company_management.dto.AttendanceLeaveDTO;
+import com.company_management.dto.response.ExportPdfEmployeeResponse;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,10 +1,10 @@
 package com.company_management.service;
 
-import com.company_management.model.request.AccountSearchRequest;
-import com.company_management.model.request.UserCustomEmployeeRequest;
-import com.company_management.model.request.UserDetailRequest;
-import com.company_management.model.request.UserSearchRequest;
-import com.company_management.model.response.*;
+import com.company_management.dto.request.AccountSearchRequest;
+import com.company_management.dto.request.UserCustomEmployeeRequest;
+import com.company_management.dto.request.UserDetailRequest;
+import com.company_management.dto.request.UserSearchRequest;
+import com.company_management.dto.response.*;
 import org.springframework.data.domain.Pageable;
 
 public interface UserService {
@@ -16,7 +16,7 @@ public interface UserService {
 
     AccountDetailResponse findAccountDetail(Long id);
 
-    PageResponse<AccountSearchResponse> searchAccount(AccountSearchRequest request, Pageable pageable);
+    PageResponse<AccountSearchResponse> searchAccount( Pageable pageable);
 
     void editUserCustom(UserCustomEmployeeRequest userCustomEmployeeRequest);
 }

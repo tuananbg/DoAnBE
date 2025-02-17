@@ -2,9 +2,9 @@ package com.company_management.service;
 
 import com.company_management.exception.AppException;
 import com.company_management.exception.BadRequestException;
-import com.company_management.model.dto.UserCustomDTO;
-import com.company_management.model.entity.UserCustom;
-import com.company_management.model.entity.UserDetail;
+import com.company_management.dto.UserCustomDTO;
+import com.company_management.entity.UserCustom;
+import com.company_management.entity.UserDetail;
 import com.company_management.repository.UserCustomRepository;
 import com.company_management.repository.UserDetailRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,6 +36,7 @@ public class JwtService {
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+
     public UserCustomDTO extractUser(String token) {
         try {
             Claims claims = extractAllClaims(token);
@@ -50,12 +51,13 @@ public class JwtService {
         }
         return null;
     }
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserCustom user){
+    public String generateToken(UserCustom user) {
         Map<String, Object> claims = new HashMap<>();
         String jsonUserCustom = "";
 
@@ -79,7 +81,8 @@ public class JwtService {
         claims.put("user", jsonUserCustom);
         return generateToken(claims, user);
     }
-    public String generateToken(Map<String, Object> extraClaims, UserCustom user){
+
+    public String generateToken(Map<String, Object> extraClaims, UserCustom user) {
         return Jwts.builder()
                 .addClaims(extraClaims)
                 .setSubject(user.getUsername())
@@ -89,7 +92,7 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails){
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUserName(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
@@ -102,7 +105,7 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private Claims extractAllClaims(String token){
+    private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSignInKey())
@@ -115,6 +118,7 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(SERCRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
     public String convertObjectToJson(Object object) throws JsonProcessingException {
         if (object == null) {
             return null;

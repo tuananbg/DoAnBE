@@ -1,12 +1,12 @@
 package com.company_management.repository.impl;
 
 import com.company_management.common.DataUtil;
-import com.company_management.model.request.AccountSearchRequest;
-import com.company_management.model.request.UserSearchRequest;
-import com.company_management.model.response.AccountDetailResponse;
-import com.company_management.model.response.AccountSearchResponse;
-import com.company_management.model.response.PageResponse;
-import com.company_management.model.response.UserSearchResponse;
+import com.company_management.dto.request.AccountSearchRequest;
+import com.company_management.dto.request.UserSearchRequest;
+import com.company_management.dto.response.AccountDetailResponse;
+import com.company_management.dto.response.AccountSearchResponse;
+import com.company_management.dto.response.PageResponse;
+import com.company_management.dto.response.UserSearchResponse;
 import com.company_management.repository._UserCustomRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -107,42 +107,42 @@ public class _UserCustomRepositoryImpl implements _UserCustomRepository {
     }
 
     @Override
-    public PageResponse<AccountSearchResponse> searchAccount(AccountSearchRequest request, Pageable pageable) {
+    public PageResponse<AccountSearchResponse> searchAccount( Pageable pageable) {
         StringBuilder sqlStr = new StringBuilder();
         StringBuilder sqlCount = new StringBuilder();
         Map<String, Object> params = new HashMap<>();
         sqlStr.append("SELECT\n" +
-                "    u.id,\n" +
-                "    u.user_name,\n" +
-                "    u.email,\n" +
-                "    u.status,\n" +
-                "    u.active,\n" +
-                "    u.created_date,\n" +
-                "    u.updated_date,\n" +
-                "    GROUP_CONCAT(r.role_name SEPARATOR ', ') AS roles\n" +
+                "    u.ID,\n" +
+                "    u.USER_NAME,\n" +
+                "    u.EMAIL,\n" +
+                "    u.STATUS,\n" +
+                "    u.ACTIVE,\n" +
+                "    u.CREATED_DATE,\n" +
+                "    u.MODIFIED_DATE,\n" +
+                "    GROUP_CONCAT(r.ROLE_NAME SEPARATOR ', ') AS roles\n" +
                 "    FROM\n" +
-                "    user_custom u\n" +
-                "        JOIN user_custom_role ucr ON u.id = ucr.user_id\n" +
-                "        JOIN role r ON ucr.role_id = r.id\n" +
+                "    USER_CUSTOM u\n" +
+                "        JOIN USER_CUSTOM_ROLE ucr ON u.ID = ucr.USER_ID\n" +
+                "        JOIN ROLE r ON ucr.ROLE_ID = r.ID\n" +
                 "    WHERE 1 = 1 ");
-        if(!DataUtil.isNullOrEmpty(request.getFullName())){
-            sqlStr.append(" AND u.username LIKE :FULLNAME ");
-            params.put("FULLNAME", DataUtil.convertToLikeConditional(request.getFullName()));
-        }
-        if(!DataUtil.isNullOrEmpty(request.getEmail())){
-            sqlStr.append(" AND u.email LIKE :EMAIL ");
-            params.put("EMAIL", DataUtil.convertToLikeConditional(request.getEmail()));
-        }
-        if(!DataUtil.isNullOrZero(request.getStatus())){
-            sqlStr.append(" AND u.status = :STATUS ");
-            params.put("STATUS", request.getStatus());
-        }
-        if(!DataUtil.isNullOrZero(request.getActive())){
-            sqlStr.append(" AND u.active = :ACTIVE ");
-            params.put("ACTIVE", request.getEmail());
-        }
-        sqlStr.append(" GROUP BY u.id, u.user_name, u.email, u.status, u.active ");
-        sqlStr.append(" ORDER BY u.created_date DESC \n");
+//        if(!DataUtil.isNullOrEmpty(request.getFullName())){
+//            sqlStr.append(" AND u.USER_NAME LIKE :FULLNAME ");
+//            params.put("FULLNAME", DataUtil.convertToLikeConditional(request.getFullName()));
+//        }
+//        if(!DataUtil.isNullOrEmpty(request.getEmail())){
+//            sqlStr.append(" AND u.EMAIL LIKE :EMAIL ");
+//            params.put("EMAIL", DataUtil.convertToLikeConditional(request.getEmail()));
+//        }
+//        if(!DataUtil.isNullOrZero(request.getStatus())){
+//            sqlStr.append(" AND u.STATUS = :STATUS ");
+//            params.put("STATUS", request.getStatus());
+//        }
+//        if(!DataUtil.isNullOrZero(request.getActive())){
+//            sqlStr.append(" AND u.ACTIVE = :ACTIVE ");
+//            params.put("ACTIVE", request.getEmail());
+//        }
+        sqlStr.append(" GROUP BY u.ID, u.USER_NAME, u.EMAIL, u.STATUS, u.ACTIVE ");
+        sqlStr.append(" ORDER BY u.CREATED_DATE DESC \n");
         sqlCount.append("select count(*) from ( " + sqlStr + " ) tmp ");
         Query query = em.createNativeQuery(String.valueOf(sqlStr));
         Query queryCount = em.createNativeQuery(String.valueOf(sqlCount));

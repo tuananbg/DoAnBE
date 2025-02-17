@@ -1,7 +1,7 @@
 package com.company_management.config;
 
 import com.company_management.exception.UserNotFoundException;
-import com.company_management.model.entity.UserCustom;
+import com.company_management.entity.UserCustom;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,6 +1,6 @@
 package com.company_management.service.impl;
 
-import com.company_management.model.request.MailRequest;
+import com.company_management.dto.request.MailRequest;
 import com.company_management.service.EmailService;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

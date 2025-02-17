@@ -1,8 +1,8 @@
 package com.company_management.service.impl;
 
 import com.company_management.exception.AppException;
-import com.company_management.model.dto.QualificationDTO;
-import com.company_management.model.entity.Qualification;
+import com.company_management.dto.QualificationDTO;
+import com.company_management.entity.Qualification;
 import com.company_management.repository.QualificationRepository;
 import com.company_management.service.QualificationService;
 import com.company_management.utils.CommonUtils;
@@ -50,7 +50,7 @@ public class QualificationServiceImpl implements QualificationService {
     @Transactional(readOnly = true)
     public QualificationDTO detail(Long id) {
         Qualification qualification = qualificationRepository.findById(id).orElseThrow(
-                () -> new AppException("ERR01","Bằng cấp không tồn tại"));
+                () -> new AppException("ERR01", "Bằng cấp không tồn tại"));
         return QualificationDTO.builder()
                 .id(qualification.getId())
                 .major(qualification.getMajor())
@@ -66,7 +66,7 @@ public class QualificationServiceImpl implements QualificationService {
     @Transactional
     public void update(QualificationDTO qualificationDTO) {
         Qualification qualification = qualificationRepository.findById(qualificationDTO.getId())
-                .orElseThrow(() -> new AppException("ERR01","Bằng cấp không tồn tại"));
+                .orElseThrow(() -> new AppException("ERR01", "Bằng cấp không tồn tại"));
         qualification.setLevel(qualificationDTO.getLevel());
         qualification.setMajor(qualificationDTO.getMajor());
         qualification.setDescription(qualificationDTO.getDescription());
@@ -84,9 +84,9 @@ public class QualificationServiceImpl implements QualificationService {
         qualification.setName(qualificationDTO.getName());
         qualification.setDescription(qualificationDTO.getDescription());
         qualification.setLicenseDate(qualificationDTO.getLicenseDate());
-        if(qualificationDTO.getUserDetailId()!=null){
+        if (qualificationDTO.getUserDetailId() != null) {
             qualification.setUserDetailId(qualificationDTO.getUserDetailId());
-        }else{
+        } else {
             throw new AppException("ERR01", "Chọn nhân viên thêm bằng cấp chứng chỉ");
         }
         qualificationRepository.save(qualification);
@@ -96,7 +96,7 @@ public class QualificationServiceImpl implements QualificationService {
     @Transactional
     public void deleteByIds(Long id) {
         if (qualificationRepository.updateById(id, CommonUtils.getUserLoginName()) <= 0) {
-            throw new AppException("ERR01" ,"Bằng cấp này không tồn tại hoặc đã bị xóa");
+            throw new AppException("ERR01", "Bằng cấp này không tồn tại hoặc đã bị xóa");
         }
     }
 

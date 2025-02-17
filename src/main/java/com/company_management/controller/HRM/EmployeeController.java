@@ -2,8 +2,8 @@ package com.company_management.controller.HRM;
 
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
-import com.company_management.model.dto.UserDetailDTO;
-import com.company_management.model.request.SearchEmployeeRequest;
+import com.company_management.dto.UserDetailDTO;
+import com.company_management.dto.request.SearchEmployeeRequest;
 import com.company_management.service.EmployeeService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.LogisticsMailUtils;
@@ -53,7 +53,7 @@ public class EmployeeController {
 
     @PostMapping("/search")
     public ResultResp<Object> searchEmployee(@RequestBody SearchEmployeeRequest searchEmployeeRequest,
-                                             Pageable pageable){
+                                             Pageable pageable) {
         return ResultResp.success(employeeService.search(searchEmployeeRequest, pageable));
     }
 

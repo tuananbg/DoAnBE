@@ -1,13 +1,13 @@
 package com.company_management.service.impl;
 
 import com.company_management.exception.AppException;
-import com.company_management.model.dto.UserDetailWageDTO;
-import com.company_management.model.dto.WageDTO;
-import com.company_management.model.entity.UserDetail;
-import com.company_management.model.entity.UserDetailWage;
-import com.company_management.model.entity.Wage;
-import com.company_management.model.response.DataPage;
-import com.company_management.model.response.WageResponse;
+import com.company_management.dto.UserDetailWageDTO;
+import com.company_management.dto.WageDTO;
+import com.company_management.entity.UserDetail;
+import com.company_management.entity.UserDetailWage;
+import com.company_management.entity.Wage;
+import com.company_management.dto.response.DataPage;
+import com.company_management.dto.response.WageResponse;
 import com.company_management.repository.CustomBaseRepository;
 import com.company_management.repository.UserDetailRepository;
 import com.company_management.repository.UserDetailWageRepository;
@@ -160,7 +160,7 @@ public class WageServiceImpl implements WageService {
         UserDetailWage userDetailWage = userDetailWageRepository.findById(userDetailWageDTO.getId()).orElseThrow(
                 () -> new AppException("ERR01", "Không tìm thấy mã phụ cấp cho nhân viên này!"));
         log.debug("// Update wage");
-        if(!DataUtils.isNullOrEmpty(userDetailWageDTO.getWageId())){
+        if (!DataUtils.isNullOrEmpty(userDetailWageDTO.getWageId())) {
             Wage wage = wageRepository.findById(userDetailWageDTO.getWageId()).orElseThrow(
                     () -> new AppException("ERR01", "Không tìm thấy tên phụ cấp cho nhân viên này!"));
             userDetailWage.setWageId(wage.getId());

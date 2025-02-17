@@ -1,6 +1,6 @@
 package com.company_management.repository;
 
-import com.company_management.model.entity.Wage;
+import com.company_management.entity.Wage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,17 +15,17 @@ import java.util.Date;
 public interface WageRepository extends JpaRepository<Wage, Long>, WageRepositoryCustom {
 
     String sqlSearch = "select\n" +
-            "    we.id as wageId,\n" +
-            "    we.wage_name as wageName,\n" +
-            "    we.wage_base as wageBase,\n" +
-            "    we.wage_description as wageDescription,\n" +
-            "    we.attachfile as attachFile,\n" +
-            "    we.created_date as createdDate \n" +
+            "    we.ID as wageId,\n" +
+            "    we.WAGE_NAME as wageName,\n" +
+            "    we.WAGE_BASE as wageBase,\n" +
+            "    we.WAGE_DESCRIPTION as wageDescription,\n" +
+            "    we.ATTACH_FILE as attachFile,\n" +
+            "    we.CREATED_DATE as createdDate \n" +
             "from wage we\n" +
             "where 1 = 1\n" +
             "and we.is_active = 1\n" +
-            "and (:wageName IS NULL OR LOWER(we.wage_name) LIKE LOWER(CONCAT('%', :wageName, '%')))\n" +
-            "and (:createdDate IS NULL OR we.created_date >= :createdDate ) ";
+            "and (:wageName IS NULL OR LOWER(we.WAGE_NAME) LIKE LOWER(CONCAT('%', :wageName, '%')))\n" +
+            "and (:createdDate IS NULL OR we.CREATED_DATE >= :createdDate ) ";
     @Query(nativeQuery = true, value = sqlSearch, countQuery = "select count(*) from ( " + sqlSearch + " ) tmp" )
     Page<Object[]> findAllWithPagination(
             @Param("wageName") String wageName,
@@ -33,6 +33,6 @@ public interface WageRepository extends JpaRepository<Wage, Long>, WageRepositor
             Pageable pageable);
 
     @Modifying
-    @Query(value = "update Wage c set c.isActive = 0, c.updatedDate = now(), c.updatedUser = :user where c.id = :id and c.isActive = 1 or c.isActive = 2 ")
+    @Query(value = "update Wage c set c.isActive = 0, c.updatedDate = now(), c.updatedBy = :user where c.id = :id and c.isActive = 1 or c.isActive = 2 ")
     int updateById(Long id, Long user);
 }

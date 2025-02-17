@@ -1,6 +1,6 @@
 package com.company_management.utils;
 
-import com.company_management.model.entity.UserCustom;
+import com.company_management.entity.UserCustom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
@@ -17,7 +17,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
-
 
 
 @Slf4j
@@ -70,7 +69,7 @@ public class CommonUtils {
      */
     public static Long getUserLoginName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("Mã id tài khoản //"+((UserCustom) authentication.getPrincipal()).getId());
+        log.info("Mã id tài khoản //" + ((UserCustom) authentication.getPrincipal()).getId());
         return ((UserCustom) authentication.getPrincipal()).getId();
     }
 

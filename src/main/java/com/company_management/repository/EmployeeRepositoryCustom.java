@@ -1,6 +1,6 @@
 package com.company_management.repository;
 
-import com.company_management.model.dto.UserDetailDTO;
+import com.company_management.dto.UserDetailDTO;
 
 import java.util.List;
 

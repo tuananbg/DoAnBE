@@ -1,6 +1,6 @@
 package com.company_management.repository;
 
-import com.company_management.model.entity.Qualification;
+import com.company_management.entity.Qualification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +13,6 @@ public interface QualificationRepository extends JpaRepository<Qualification, Lo
 
     Page<Qualification> findByUserDetailId(Long userDetailId, Pageable pageable);
     @Modifying
-    @Query(value = "update Qualification q set q.isActive = 0, q.updatedDate = now(), q.updatedUser = :user where q.id = :id and q.isActive = 1 or q.isActive = 2 ")
+    @Query(value = "update Qualification q set q.isActive = 0, q.updatedDate = now(), q.updatedBy = :user where q.id = :id and q.isActive = 1 or q.isActive = 2 ")
     int updateById(Long id, Long user);
 }

@@ -1,6 +1,6 @@
 package com.company_management.repository;
 
-import com.company_management.model.entity.Department;
+import com.company_management.entity.Department;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,6 +38,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
                                          Pageable pageable);
 
     @Modifying
-    @Query(value = "update Department u set u.isActive = 0, u.updatedDate = now(), u.updatedUser = :user where u.id = :id and u.isActive = 1")
+    @Query(value = "update Department u set u.isActive = 0, u.updatedDate = now(), u.updatedBy = :user where u.id = :id and u.isActive = 1")
     int deleteById(Long id, Long user);
 }

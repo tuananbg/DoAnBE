@@ -1,8 +1,8 @@
 package com.company_management.repository.impl;
 
 
-import com.company_management.model.entity.EntBase;
-import com.company_management.model.response.DataPage;
+import com.company_management.entity.BaseEntity;
+import com.company_management.dto.response.DataPage;
 import com.company_management.repository.CustomBaseRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -20,7 +20,7 @@ import java.util.Map;
 @Setter
 @Getter
 @Component
-public class CustomBaseRepositoryImpl<ENT extends EntBase> implements CustomBaseRepository<ENT> {
+public class CustomBaseRepositoryImpl<ENT extends BaseEntity> implements CustomBaseRepository<ENT> {
     @PersistenceContext
     private EntityManager entityManager;
     private Class<ENT> persistentClass;

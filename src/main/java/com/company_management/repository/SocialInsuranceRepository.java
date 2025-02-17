@@ -1,6 +1,6 @@
 package com.company_management.repository;
 
-import com.company_management.model.entity.SocialInsurance;
+import com.company_management.entity.SocialInsurance;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +13,7 @@ public interface SocialInsuranceRepository extends JpaRepository<SocialInsurance
 
     Page<SocialInsurance> findByUserDetailId(Long userDetailId, Pageable pageable);
     @Modifying
-    @Query(value = "update SocialInsurance s set s.isActive = 0, s.updatedDate = now(), s.updatedUser = :user where s.id = :id and s.isActive = 1 or s.isActive = 2 ")
+    @Query(value = "update SocialInsurance s set s.isActive = 0, s.updatedDate = now(), s.updatedBy = :user where s.id = :id and s.isActive = 1 or s.isActive = 2 ")
     int updateById(Long id, Long user);
 
 }

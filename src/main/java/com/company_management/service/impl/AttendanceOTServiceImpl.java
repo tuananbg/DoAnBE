@@ -1,11 +1,11 @@
 package com.company_management.service.impl;
 
 import com.company_management.exception.AppException;
-import com.company_management.model.dto.AttendanceOTDTO;
-import com.company_management.model.entity.AttendanceOt;
-import com.company_management.model.mapper.AttendanceOTMapper;
-import com.company_management.model.request.SearchAttendanceOTRequest;
-import com.company_management.model.response.DataPage;
+import com.company_management.dto.AttendanceOTDTO;
+import com.company_management.entity.AttendanceOt;
+import com.company_management.dto.mapper.AttendanceOTMapper;
+import com.company_management.dto.request.SearchAttendanceOTRequest;
+import com.company_management.dto.response.DataPage;
 import com.company_management.repository.AttendanceOTRepository;
 import com.company_management.service.AttendanceOTService;
 import com.company_management.utils.CommonUtils;

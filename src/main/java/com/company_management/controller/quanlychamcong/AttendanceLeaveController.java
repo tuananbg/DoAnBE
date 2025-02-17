@@ -2,8 +2,8 @@ package com.company_management.controller.quanlychamcong;
 
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
-import com.company_management.model.dto.AttendanceLeaveDTO;
-import com.company_management.model.request.SearchLeaveRequest;
+import com.company_management.dto.AttendanceLeaveDTO;
+import com.company_management.dto.request.SearchLeaveRequest;
 import com.company_management.service.AttendanceLeaveService;
 import com.company_management.utils.CommonUtils;
 import jakarta.validation.Valid;

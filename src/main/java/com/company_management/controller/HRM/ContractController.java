@@ -3,8 +3,8 @@ package com.company_management.controller.HRM;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ObjectError;
 import com.company_management.common.ResultResp;
-import com.company_management.model.dto.ContractDTO;
-import com.company_management.model.dto.UserDetailContractDTO;
+import com.company_management.dto.ContractDTO;
+import com.company_management.dto.UserDetailContractDTO;
 import com.company_management.service.ContractService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,16 +33,17 @@ public class ContractController {
 
     @Value("${upload.path}")
     private String fileUpload;
+
     @PostMapping(value = "/create")
     public ResultResp<Object> create(@ModelAttribute("file") MultipartFile file,
                                      @ModelAttribute @Valid ContractDTO contractDTO
-                                     ) {
+    ) {
         contractService.add(file, contractDTO);
         return ResultResp.success(ErrorCode.CREATED_OK);
     }
 
     @PostMapping(value = "/createForEmployee")
-    public ResultResp<Object> createForEmployee(@RequestBody  @Valid UserDetailContractDTO userDetailContractDTO
+    public ResultResp<Object> createForEmployee(@RequestBody @Valid UserDetailContractDTO userDetailContractDTO
     ) {
         contractService.addForEmployee(userDetailContractDTO);
         return ResultResp.success(ErrorCode.CREATED_OK);
@@ -52,6 +53,7 @@ public class ContractController {
     public ResultResp<Object> search(@RequestBody ContractDTO contractDTO, Pageable pageable) {
         return ResultResp.success(contractService.search(contractDTO, pageable));
     }
+
     @PostMapping(value = "/searchForEmployee")
     public ResultResp<Object> searchForEmployee(@RequestBody ContractDTO contractDTO, Pageable pageable) {
         return ResultResp.success(contractService.searchForEmployee(contractDTO, pageable));

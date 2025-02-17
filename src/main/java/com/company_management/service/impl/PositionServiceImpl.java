@@ -1,11 +1,11 @@
 package com.company_management.service.impl;
 
 import com.company_management.exception.AppException;
-import com.company_management.model.dto.PositionDTO;
-import com.company_management.model.entity.Position;
-import com.company_management.model.mapper.PositionMapper;
-import com.company_management.model.request.SearchPositionRequest;
-import com.company_management.model.response.DataPage;
+import com.company_management.dto.PositionDTO;
+import com.company_management.entity.Position;
+import com.company_management.dto.mapper.PositionMapper;
+import com.company_management.dto.request.SearchPositionRequest;
+import com.company_management.dto.response.DataPage;
 import com.company_management.repository.PositionRepository;
 import com.company_management.service.PositionService;
 import com.company_management.utils.CommonUtils;
@@ -35,7 +35,6 @@ public class PositionServiceImpl implements PositionService {
     private final PositionRepository positionRepository;
 
     private final PositionMapper positionMapper;
-
 
     @Override
     @Transactional(readOnly = true)
@@ -97,7 +96,7 @@ public class PositionServiceImpl implements PositionService {
             workbook.write(byteArrayOutputStream);
             byte[] exportInputStream = byteArrayOutputStream.toByteArray();
             return new ByteArrayInputStream(exportInputStream);
-        }  catch (Exception ex) {
+        } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             throw new AppException("ERR01", "Xuất file excel bị lỗi");
         }

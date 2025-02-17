@@ -1,14 +1,14 @@
 package com.company_management.service.impl;
 
 import com.company_management.exception.AppException;
-import com.company_management.model.dto.AttendanceLeaveDTO;
-import com.company_management.model.entity.AttendanceLeave;
-import com.company_management.model.entity.UserCustom;
-import com.company_management.model.entity.UserDetail;
-import com.company_management.model.mapper.AttendanceLeaveMapper;
-import com.company_management.model.request.MailRequest;
-import com.company_management.model.request.SearchLeaveRequest;
-import com.company_management.model.response.DataPage;
+import com.company_management.dto.AttendanceLeaveDTO;
+import com.company_management.entity.AttendanceLeave;
+import com.company_management.entity.UserCustom;
+import com.company_management.entity.UserDetail;
+import com.company_management.dto.mapper.AttendanceLeaveMapper;
+import com.company_management.dto.request.MailRequest;
+import com.company_management.dto.request.SearchLeaveRequest;
+import com.company_management.dto.response.DataPage;
 import com.company_management.repository.AttendanceLeaveRepository;
 import com.company_management.repository.UserCustomRepository;
 import com.company_management.repository.UserDetailRepository;

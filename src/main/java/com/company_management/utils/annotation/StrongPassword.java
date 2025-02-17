@@ -6,8 +6,9 @@ import jakarta.validation.Payload;
 
 import java.lang.annotation.*;
 
-@Constraint(validatedBy = StrongPasswordValidator.class) //chỉ định lớp StrongPasswordValidator là lớp cung cấp logic triển khai
-@Target({ ElementType.METHOD, ElementType.FIELD })  //chỉ định annotation nay áp dụng cho mọi trường, mọi phương thức
+@Constraint(validatedBy = StrongPasswordValidator.class)
+//chỉ định lớp StrongPasswordValidator là lớp cung cấp logic triển khai
+@Target({ElementType.METHOD, ElementType.FIELD})  //chỉ định annotation nay áp dụng cho mọi trường, mọi phương thức
 @Retention(RetentionPolicy.RUNTIME)  //giữ lại trong thời gian chạy ứng dụng
 @Documented //khai báo 1 annotation @StrongPassword được ghi vào trong API
 public @interface StrongPassword {

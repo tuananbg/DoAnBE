@@ -1,6 +1,6 @@
 package com.company_management.service;
 
-import com.company_management.model.dto.SocialInsuranceDTO;
+import com.company_management.dto.SocialInsuranceDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

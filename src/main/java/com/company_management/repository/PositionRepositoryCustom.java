@@ -1,8 +1,8 @@
 package com.company_management.repository;
 
-import com.company_management.model.dto.PositionDTO;
-import com.company_management.model.request.SearchPositionRequest;
-import com.company_management.model.response.DataPage;
+import com.company_management.dto.PositionDTO;
+import com.company_management.dto.request.SearchPositionRequest;
+import com.company_management.dto.response.DataPage;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

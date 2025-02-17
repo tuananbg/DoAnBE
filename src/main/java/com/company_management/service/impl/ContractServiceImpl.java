@@ -1,13 +1,13 @@
 package com.company_management.service.impl;
 
 import com.company_management.exception.AppException;
-import com.company_management.model.dto.ContractDTO;
-import com.company_management.model.dto.UserDetailContractDTO;
-import com.company_management.model.entity.Contract;
-import com.company_management.model.entity.UserDetail;
-import com.company_management.model.entity.UserDetailContract;
-import com.company_management.model.response.ContractResponse;
-import com.company_management.model.response.DataPage;
+import com.company_management.dto.ContractDTO;
+import com.company_management.dto.UserDetailContractDTO;
+import com.company_management.entity.Contract;
+import com.company_management.entity.UserDetail;
+import com.company_management.entity.UserDetailContract;
+import com.company_management.dto.response.ContractResponse;
+import com.company_management.dto.response.DataPage;
 import com.company_management.repository.ContractRepository;
 import com.company_management.repository.CustomBaseRepository;
 import com.company_management.repository.UserDetailContractRepository;

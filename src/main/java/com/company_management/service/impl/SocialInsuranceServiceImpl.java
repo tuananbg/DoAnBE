@@ -1,9 +1,9 @@
 package com.company_management.service.impl;
 
 import com.company_management.exception.AppException;
-import com.company_management.model.dto.SocialInsuranceDTO;
-import com.company_management.model.entity.SocialInsurance;
-import com.company_management.model.mapper.SocialInsuranceMapper;
+import com.company_management.dto.SocialInsuranceDTO;
+import com.company_management.entity.SocialInsurance;
+import com.company_management.dto.mapper.SocialInsuranceMapper;
 import com.company_management.repository.SocialInsuranceRepository;
 import com.company_management.service.SocialInsuranceService;
 import com.company_management.utils.CommonUtils;

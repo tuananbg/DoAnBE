@@ -23,7 +23,8 @@ public interface ContractRepository extends JpaRepository<Contract, Long>, Contr
             "and ctr.IS_ACTIVE = 1\n" +
             "and (:contractType IS NULL OR LOWER(ctr.CONTRACT_TYPE) LIKE LOWER(CONCAT('%', :contractType, '%')))\n" +
             "and (:contractCode IS NULL OR LOWER(ctr.CONTRACT_CODE) LIKE LOWER(CONCAT('%', :contractCode, '%'))) ";
-    @Query(nativeQuery = true, value = sqlSearch, countQuery = "select count(*) from ( " + sqlSearch + " ) tmp" )
+
+    @Query(nativeQuery = true, value = sqlSearch, countQuery = "select count(*) from ( " + sqlSearch + " ) tmp")
     Page<Object[]> findAllWithPagination(
             @Param("contractCode") String contractCode,
             @Param("contractType") String contractType,

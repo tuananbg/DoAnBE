@@ -18,11 +18,10 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Query(value = "SELECT d FROM Department d WHERE LOWER(d.departmentCode) = :departmentCode")
     Optional<Department> findByCode(String departmentCode);
 
-    @Query(value = """
-        SELECT d.department_code
-        FROM department d 
-        WHERE 1 = 1
-        """, nativeQuery = true)
+    @Query(value = "SELECT d.department_code\n" +
+            "        FROM department d \n" +
+            "        WHERE 1 = 1"
+            , nativeQuery = true)
     List<String> listCodeDepartment();
 
     @Query(value = """
@@ -34,8 +33,8 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
             """,
             nativeQuery = true)
     Page<Department> findAllWithPagination(@Param("status") List<String> status,
-                                         @Param("name") String name,
-                                         Pageable pageable);
+                                           @Param("name") String name,
+                                           Pageable pageable);
 
     @Modifying
     @Query(value = "update Department u set u.isActive = 0, u.updatedDate = now(), u.updatedBy = :user where u.id = :id and u.isActive = 1")

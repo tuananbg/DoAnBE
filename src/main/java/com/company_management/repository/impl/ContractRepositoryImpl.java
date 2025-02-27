@@ -30,32 +30,32 @@ public class ContractRepositoryImpl implements ContractRepositoryCustom {
     public DataPage<ContractDTO> search(ContractDTO contractDTO, Pageable pageable) {
         StringBuilder sqlSelect = new StringBuilder();
         sqlSelect.append("select\n" +
-                "    udc.id as userDetailContractId,\n" +
-                "    ctr.contract_code as contractCode,\n" +
-                "    ctr.contract_type as contractType,\n" +
-                "    ctr.attachfile as attachfile,\n" +
-                "    udc.contract_id as contractId,\n" +
-                "    udc.user_detail_id as userDetailId,\n" +
-                "    udc.active_date as activeDate,\n" +
-                "    udc.expired_date as expiredDate,\n" +
-                "    udc.sign_date as signDate\n" +
-                "from contract ctr\n" +
-                "left join user_detail_contract udc\n" +
-                "on ctr.id = udc.contract_id\n" +
-                "where 1 = 1 and udc.is_active = 1 and ctr.is_active = 1 ");
+                "    udc.ID as userDetailContractId,\n" +
+                "    ctr.CONTRACT_CODE as contractCode,\n" +
+                "    ctr.CONTRACT_TYPE as contractType,\n" +
+                "    ctr.ATTACH_FILE as attachfile,\n" +
+                "    udc.CONTRACT_ID as contractId,\n" +
+                "    udc.USER_DETAIL_ID as userDetailId,\n" +
+                "    udc.ACTIVE_DATE as activeDate,\n" +
+                "    udc.EXPIRED_DATE as expiredDate,\n" +
+                "    udc.SIGN_DATE as signDate\n" +
+                "from CONTRACT ctr\n" +
+                "left join USER_DETAIL_CONTRACT udc\n" +
+                "on ctr.ID = udc.CONTRACT_ID\n" +
+                "where 1 = 1 and udc.IS_ACTIVE = 1 and ctr.IS_ACTIVE = 1 ");
         Map<String, Object> map = new HashMap<>();
         if (!DataUtils.isNullOrEmpty(contractDTO.getContractType())) {
-            sqlSelect.append(" and ctr.contract_type = :contractType");
+            sqlSelect.append(" and ctr.CONTRACT_TYPE = :contractType");
             map.put("contractType", contractDTO.getContractType());
         }
 
         if (!DataUtils.isNullOrEmpty(contractDTO.getUserDetailId())) {
-            sqlSelect.append(" and udc.user_detail_id = :userDetailId");
+            sqlSelect.append(" and udc.USER_DETAIL_ID = :userDetailId");
             map.put("userDetailId", contractDTO.getUserDetailId());
         }
 
         if (!DataUtils.isNullOrEmpty(contractDTO.getContractCode())) {
-            sqlSelect.append(" and ctr.contract_code like concat('%', :contractCode, '%') ");
+            sqlSelect.append(" and ctr.CONTRACT_CODE like concat('%', :contractCode, '%') ");
             map.put("contractCode", contractDTO.getContractCode());
         }
         Query nativeQuery;
@@ -65,7 +65,7 @@ public class ContractRepositoryImpl implements ContractRepositoryCustom {
             if (pageable.getSort().isSorted()) {
                 sqlSelect.append(" ORDER BY udc.")
                         .append(pageable.getSort().toString().replace(":", " "))
-                        .append(", udc.id desc");
+                        .append(", udc.ID desc");
             }
             nativeQuery = entityManager.createNativeQuery(sqlSelect.toString());
 

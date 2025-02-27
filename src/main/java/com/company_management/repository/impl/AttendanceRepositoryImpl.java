@@ -29,22 +29,20 @@ public class AttendanceRepositoryImpl implements AttendanceRepositoryCustom {
     @Override
     public DataPage<AttendanceResponse> search(SearchAttendanceRequest searchAttendanceRequest, Pageable pageable) {
         StringBuilder sqlSelect = new StringBuilder();
-        sqlSelect.append("select at.id as attendanceId,\n" +
-                "       at.employee_id as employeeId,\n" +
-                "       ud.employee_code as employeeCode,\n" +
-                "       ud.employee_name as employeeName,\n" +
-                "       de.department_name as departmentName,\n" +
-                "       at.working_day as workingDay,\n" +
-                "       at.check_in_time as checkInTime,\n" +
-                "       at.check_out_time as checkOutTime,\n" +
-                "       at.working_time as workingTime,\n" +
-                "       at.working_point as workingPoint,\n" +
-                "       at.total_penalty as totalPenalty\n" +
-                "from attendance at\n" +
-                "left join user_detail ud\n" +
-                "on at.employee_id = ud.id\n" +
-                "left join department de\n" +
-                "on ud.department_id = de.id\n" +
+        sqlSelect.append("select at.ID as attendanceId,\n" +
+                "       at.EMPLOYEE_ID as employeeId,\n" +
+                "       ud.EMPLOYEE_CODE as employeeCode,\n" +
+                "       ud.EMPLOYEE_NAME as employeeName,\n" +
+                "       de.DEPARTMENT_NAME as departmentName,\n" +
+                "       at.WORKING_DAY as workingDay,\n" +
+                "       at.CHECK_IN_TIME as checkInTime,\n" +
+                "       at.CHECK_OUT_TIME as checkOutTime,\n" +
+                "       at.WORKING_TIME as workingTime,\n" +
+                "       at.WORKING_POINT as workingPoint,\n" +
+                "       at.TOTAL_PENALTY as totalPenalty\n" +
+                "from ATTENDANCE at\n" +
+                "left join USER_DETAIL ud on at.EMPLOYEE_ID = ud.ID\n" +
+                "left join DEPARTMENT de on ud.DEPARTMENT_ID = de.ID\n" +
                 "where 1 = 1 \n");
 
         Map<String, Object> map = getStringObjectMap(searchAttendanceRequest, sqlSelect);
@@ -55,7 +53,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepositoryCustom {
             if (pageable.getSort().isSorted()) {
                 sqlSelect.append(" ORDER BY at.")
                         .append(pageable.getSort().toString().replace(":", " "))
-                        .append(", at.id desc");
+                        .append(", at.ID desc");
             }
             nativeQuery = entityManager.createNativeQuery(sqlSelect.toString());
 
@@ -99,19 +97,19 @@ public class AttendanceRepositoryImpl implements AttendanceRepositoryCustom {
     private static Map<String, Object> getStringObjectMap(SearchAttendanceRequest searchAttendanceRequest, StringBuilder sqlSelect) {
         Map<String, Object> map = new HashMap<>();
         if (!DataUtils.isNullOrEmpty(searchAttendanceRequest.getEmployeeId())) {
-            sqlSelect.append("  and (:employeeId IS NULL OR at.employee_id = :employeeId)");
+            sqlSelect.append("  and (:employeeId IS NULL OR at.EMPLOYEE_ID = :employeeId)");
             map.put("employeeId", searchAttendanceRequest.getEmployeeId());
         }
         if (!DataUtils.isNullOrEmpty(searchAttendanceRequest.getEmployeeCode())) {
-            sqlSelect.append("  and (:employeeCode IS NULL OR ud.employee_code = :employeeCode)");
+            sqlSelect.append("  and (:employeeCode IS NULL OR ud.EMPLOYEE_CODE = :employeeCode)");
             map.put("employeeCode", searchAttendanceRequest.getEmployeeCode());
         }
         if (!DataUtils.isNullOrEmpty(searchAttendanceRequest.getWorkingDay())) {
-            sqlSelect.append("  and (:workingDay IS NULL OR DATE(at.working_day) = :workingDay)");
+            sqlSelect.append("  and (:workingDay IS NULL OR DATE(at.WORKING_DAY) = :workingDay)");
             map.put("workingDay", searchAttendanceRequest.getWorkingDay());
         }
         if (!DataUtils.isNullOrEmpty(searchAttendanceRequest.getDepartmentId())) {
-            sqlSelect.append("  and (:departmentId IS NULL OR de.id = :departmentId)");
+            sqlSelect.append("  and (:departmentId IS NULL OR de.ID = :departmentId)");
             map.put("departmentId", searchAttendanceRequest.getDepartmentId());
         }
         return map;

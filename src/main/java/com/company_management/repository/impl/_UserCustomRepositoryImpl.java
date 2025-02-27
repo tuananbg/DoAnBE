@@ -22,6 +22,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class _UserCustomRepositoryImpl implements _UserCustomRepository {
     private final EntityManager em;
+
     @Override
     public PageResponse<UserSearchResponse> searchAllUser(UserSearchRequest request, Pageable pageable) {
         StringBuilder sqlStr = new StringBuilder();
@@ -42,23 +43,23 @@ public class _UserCustomRepositoryImpl implements _UserCustomRepository {
                 "         LEFT JOIN company_management.user_detail_department udd on ud.id = udd.user_detail_id\n " +
                 "         LEFT JOIN company_management.department d on udd.department_id = d.department_id\n " +
                 "         WHERE 1 = 1 AND udd.is_active = 1 ");
-        if(!DataUtil.isNullOrEmpty(request.getFullName())){
+        if (!DataUtil.isNullOrEmpty(request.getFullName())) {
             sqlStr.append(" AND u.username LIKE :FULLNAME ");
             params.put("FULLNAME", DataUtil.convertToLikeConditional(request.getFullName()));
         }
-        if(!DataUtil.isNullOrEmpty(request.getBirthday())){
+        if (!DataUtil.isNullOrEmpty(request.getBirthday())) {
             sqlStr.append(" AND DATE_FORMAT(ud.birthday, '%m/%Y') = :BIRTHDAY ");
             params.put("BIRTHDAY", request.getBirthday());
         }
-        if(!DataUtil.isNullOrZero(request.getGender())){
+        if (!DataUtil.isNullOrZero(request.getGender())) {
             sqlStr.append(" AND ud.gender LIKE :GENDER ");
             params.put("GENDER", request.getGender());
         }
-        if(!DataUtil.isNullOrZero(request.getProvinceId())){
+        if (!DataUtil.isNullOrZero(request.getProvinceId())) {
             sqlStr.append(" AND u.province LIKE :PROVINCE ");
             params.put("PROVINCE", request.getProvinceId());
         }
-        if(!DataUtil.isNullOrZero(request.getProvinceId())){
+        if (!DataUtil.isNullOrZero(request.getProvinceId())) {
             sqlStr.append(" AND ud.department_id LIKE :DEPARTMENT ");
             params.put("PROVINCE", request.getProvinceId());
         }
@@ -75,7 +76,7 @@ public class _UserCustomRepositoryImpl implements _UserCustomRepository {
 
         List<Object[]> objects = query.getResultList();
         List<UserSearchResponse> userSearchResponseList = new ArrayList<>();
-        for (Object[] o : objects){
+        for (Object[] o : objects) {
             UserSearchResponse user = new UserSearchResponse();
             user.setId(DataUtil.safeToLong(o[0]));
             user.setFullName(DataUtil.safeToString(o[1]));
@@ -107,7 +108,7 @@ public class _UserCustomRepositoryImpl implements _UserCustomRepository {
     }
 
     @Override
-    public PageResponse<AccountSearchResponse> searchAccount( Pageable pageable) {
+    public PageResponse<AccountSearchResponse> searchAccount(Pageable pageable) {
         StringBuilder sqlStr = new StringBuilder();
         StringBuilder sqlCount = new StringBuilder();
         Map<String, Object> params = new HashMap<>();
@@ -154,7 +155,7 @@ public class _UserCustomRepositoryImpl implements _UserCustomRepository {
         }
         List<Object[]> objects = query.getResultList();
         List<AccountSearchResponse> accountSearchResponses = new ArrayList<>();
-        for (Object[] o : objects){
+        for (Object[] o : objects) {
             AccountSearchResponse account = new AccountSearchResponse();
             account.setId(DataUtil.safeToLong(o[0]));
             account.setFullName(DataUtil.safeToString(o[1]));

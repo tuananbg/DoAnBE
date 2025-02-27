@@ -89,7 +89,7 @@ public class WageRepositoryImpl implements WageRepositoryCustom {
 
         List<Object[]> resultList = nativeQuery.getResultList();
         List<WageDTO> listObjectsToClass = DataUtils.convertListObjectsToClass(Arrays.asList(
-                "userDetailWageId","wageName", "wageBase", "wageDescription", "attachFile", "wageId", "userDetailId", "empSign", "licenseDate"),
+                        "userDetailWageId", "wageName", "wageBase", "wageDescription", "attachFile", "wageId", "userDetailId", "empSign", "licenseDate"),
                 resultList,
                 WageDTO.class);
         DataPage<WageDTO> dataPage = new DataPage<>();

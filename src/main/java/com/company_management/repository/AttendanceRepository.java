@@ -12,11 +12,11 @@ import java.util.Date;
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, Long>, AttendanceRepositoryCustom {
 
-    String sqlSearch = "select attendance.id\n" +
-            "from attendance\n" +
+    String sqlSearch = "select ATTENDANCE.ID\n" +
+            "from ATTENDANCE\n" +
             "where 1 = 1\n" +
-            "and employee_id = :employeeId\n" +
-            "and DATE(working_day) = DATE(:workingDay) ";
+            "and EMPLOYEE_ID = :employeeId\n" +
+            "and DATE(WORKING_DAY) = DATE(:workingDay) ";
     @Query(nativeQuery = true, value = sqlSearch, countQuery = "select count(*) from ( " + sqlSearch + " ) tmp" )
     Long findIdAllWithEmployeeId(@Param("employeeId") Long employeeId, @Param("workingDay") Date workingDay);
 

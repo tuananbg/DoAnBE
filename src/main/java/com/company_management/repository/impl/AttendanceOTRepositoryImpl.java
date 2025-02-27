@@ -26,23 +26,23 @@ public class AttendanceOTRepositoryImpl implements AttendanceOTRepositoryCustom 
     @Override
     public DataPage<AttendanceOTDTO> search(SearchAttendanceOTRequest searchOTRequest, Pageable pageable) {
         StringBuilder sqlSelect = new StringBuilder();
-        sqlSelect.append("select le.id as attendanceOtID,\n" +
-                "       le.start_day as startDay,\n" +
-                "       le.employee_id as employeeId,\n" +
-                "       ud.employee_code as employeeCode,\n" +
-                "       ud.employee_name as employeeName,\n" +
-                "       le.start_time as startTime,\n" +
-                "       le.end_time as endTime,\n" +
-                "       le.description_ot as descriptionOt,\n" +
-                "       le.total_time as totalTime,\n" +
-                "       le.follow_id as followId,\n" +
-                "       ut.employee_code as followCode,\n" +
-                "       ut.employee_name as followName,\n" +
-                "       le.is_active as isActive\n" +
-                "from attendance_ot le\n" +
-                "left join user_detail ud on le.employee_id = ud.id\n" +
-                "left join user_detail ut on le.follow_id = ut.id\n" +
-                "where 1 = 1 and (le.is_active = 1 or le.is_active = 2 or le.is_active = 3) \n");
+        sqlSelect.append("select le.ID as attendanceOtID,\n" +
+                "       le.START_DAY as startDay,\n" +
+                "       le.EMPLOYEE_ID as employeeId,\n" +
+                "       ud.EMPLOYEE_CODE as employeeCode,\n" +
+                "       ud.EMPLOYEE_NAME as employeeName,\n" +
+                "       le.START_TIME as startTime,\n" +
+                "       le.END_TIME as endTime,\n" +
+                "       le.DESCRIPTION_OT as descriptionOt,\n" +
+                "       le.TOTAL_TIME as totalTime,\n" +
+                "       le.FOLLOW_ID as followId,\n" +
+                "       ut.EMPLOYEE_CODE as followCode,\n" +
+                "       ut.EMPLOYEE_NAME as followName,\n" +
+                "       le.IS_ACTIVE as isActive\n" +
+                "from ATTENDANCE_OT le\n" +
+                "left join USER_DETAIL ud on le.EMPLOYEE_ID = ud.ID\n" +
+                "left join USER_DETAIL ut on le.FOLLOW_ID = ut.ID\n" +
+                "where 1 = 1 and (le.IS_ACTIVE = 1 or le.IS_ACTIVE = 2 or le.IS_ACTIVE = 3) \n");
 
         Map<String, Object> map = getStringObjectMap(searchOTRequest, sqlSelect);
         Query nativeQuery;
@@ -52,7 +52,7 @@ public class AttendanceOTRepositoryImpl implements AttendanceOTRepositoryCustom 
             if (pageable.getSort().isSorted()) {
                 sqlSelect.append(" ORDER BY le.")
                         .append(pageable.getSort().toString().replace(":", " "))
-                        .append(", le.id desc");
+                        .append(", le.ID desc");
             }
             nativeQuery = entityManager.createNativeQuery(sqlSelect.toString());
 
@@ -96,33 +96,33 @@ public class AttendanceOTRepositoryImpl implements AttendanceOTRepositoryCustom 
     @Override
     public List<AttendanceOTDTO> searchExport(SearchAttendanceOTRequest searchOTRequest, Pageable pageable) {
         StringBuilder sqlSelect = new StringBuilder();
-        sqlSelect.append("select le.id as leaveID,\n" +
-                "       le.leave_category as leaveCategory,\n" +
-                "       le.employee_id as employeeId,\n" +
-                "       ud.employee_code as employeeCode,\n" +
-                "       ud.employee_name as employeeName,\n" +
-                "       le.start_day as startDay,\n" +
-                "       le.end_day as endDay,\n" +
-                "       le.description as description,\n" +
-                "       le.total_time as totalTime,\n" +
-                "       le.tracker_id as trackerId,\n" +
-                "       ut.employee_code as trackerCode,\n" +
-                "       ut.employee_name as trackerName,\n" +
-                "       le.reviewer_id as reviewerId,\n" +
-                "       ur.employee_code as reviewerCode,\n" +
-                "       ur.employee_name as reviewerName,\n" +
-                "       le.is_active as isActive\n" +
-                "from attendance_leave le\n" +
-                "left join user_detail ud on le.employee_id = ud.id\n" +
-                "left join user_detail ut on le.tracker_id = ut.id\n" +
-                "left join user_detail ur on le.reviewer_id = ur.id\n" +
+        sqlSelect.append("select le.ID as leaveID,\n" +
+                "       le.LEAVE_CATEGORY as leaveCategory,\n" +
+                "       le.EMPLOYEE_ID as employeeId,\n" +
+                "       ud.EMPLOYEE_CODE as employeeCode,\n" +
+                "       ud.EMPLOYEE_NAME as employeeName,\n" +
+                "       le.START_DAY as startDay,\n" +
+                "       le.END_DAY as endDay,\n" +
+                "       le.DESCRIPTION as description,\n" +
+                "       le.TOTAL_TIME as totalTime,\n" +
+                "       le.TRACKER_ID as trackerId,\n" +
+                "       ut.EMPLOYEE_CODE as trackerCode,\n" +
+                "       ut.EMPLOYEE_NAME as trackerName,\n" +
+                "       le.REVIEWER_ID as reviewerId,\n" +
+                "       ur.EMPLOYEE_CODE as reviewerCode,\n" +
+                "       ur.EMPLOYEE_NAME as reviewerName,\n" +
+                "       le.IS_ACTIVE as isActive\n" +
+                "from ATTENDANCE_LEAVE le\n" +
+                "left join USER_DETAIL ud on le.EMPLOYEE_ID = ud.ID\n" +
+                "left join USER_DETAIL ut on le.TRACKER_ID = ut.ID\n" +
+                "left join USER_DETAIL ur on le.REVIEWER_ID = ur.ID\n" +
                 "where 1 = 1\n");
 
         Map<String, Object> map = getStringObjectMap(searchOTRequest, sqlSelect);
         if (pageable.isPaged() && pageable.getSort().isSorted()) {
             sqlSelect.append(" ORDER BY le.")
                     .append(pageable.getSort().toString().replace(":", " "))
-                    .append(", le.id desc");
+                    .append(", le.ID desc");
         }
         Query nativeQuery = entityManager.createNativeQuery(sqlSelect.toString());
 
@@ -139,15 +139,15 @@ public class AttendanceOTRepositoryImpl implements AttendanceOTRepositoryCustom 
     private static Map<String, Object> getStringObjectMap(SearchAttendanceOTRequest searchOTRequest, StringBuilder sqlSelect) {
         Map<String, Object> map = new HashMap<>();
         if (!DataUtils.isNullOrEmpty(searchOTRequest.getStartDay())) {
-            sqlSelect.append("  and le.start_day >= :startDay");
+            sqlSelect.append("  and le.START_DAY >= :startDay");
             map.put("startDay", searchOTRequest.getStartDay());
         }
         if (!DataUtils.isNullOrEmpty(searchOTRequest.getEmployeeId())) {
-            sqlSelect.append("  and le.employee_id = :employeeId");
+            sqlSelect.append("  and le.EMPLOYEE_ID = :employeeId");
             map.put("employeeId", searchOTRequest.getEmployeeId());
         }
         if (!DataUtils.isNullOrEmpty(searchOTRequest.getIsActive())) {
-            sqlSelect.append("  and le.is_active = :isActive");
+            sqlSelect.append("  and le.IS_ACTIVE = :isActive");
             map.put("isActive", searchOTRequest.getIsActive());
         }
         return map;

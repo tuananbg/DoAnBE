@@ -27,35 +27,35 @@ public class ContractCustomRepositoryImpl implements ContractCustomRepository {
         StringBuilder querySTR = new StringBuilder();
         StringBuilder count = new StringBuilder();
         Map<String, Object> params = new HashMap<>();
-        querySTR.append("SELECT ct.contract_id,\n" +
-                "       ct.contract_code,\n" +
-                "       ct.is_active,\n" +
-                "       ct.contract_type,\n" +
-                "       DATE_FORMAT(ct.sign_date, '%d/%m/%Y') AS sign_date,\n" +
-                "       DATE_FORMAT(ct.active_date, '%d/%m/%Y') AS active_date,\n" +
-                "       DATE_FORMAT(ct.expired_date, '%d/%m/%Y') AS _expired_date,\n" +
-                "       ud.full_name\n" +
-                "FROM contract ct\n" +
+        querySTR.append("SELECT ct.ID,\n" +
+                "       ct.CONTRACT_CODE,\n" +
+                "       ct.IS_ACTIVE,\n" +
+                "       ct.CONTRACT_TYPE,\n" +
+                "       DATE_FORMAT(ct.SIGN_DATE, '%d/%m/%Y') AS sign_date,\n" +
+                "       DATE_FORMAT(ct.ACTIVE_DATE, '%d/%m/%Y') AS active_date,\n" +
+                "       DATE_FORMAT(ct.EXPIRED_DATE, '%d/%m/%Y') AS _expired_date,\n" +
+                "       ud.EMPLOYEE_NAME\n" +
+                "FROM CONTRACT ct\n" +
                 "         LEFT JOIN\n" +
-                "     user_detail ud on ud.id = ct.user_detail_id\n" +
+                "     user_detail ud on ud.ID = ct.USER_DETAIL_ID\n" +
                 "WHERE 1 = 1");
         if (!DataUtil.isNullOrEmpty(contractDTO.getContractCode())) {
-            querySTR.append(" and ct.contract_code = :contract_code");
+            querySTR.append(" and ct.CONTRACT_CODE = :contract_code");
             params.put("contract_code", contractDTO.getContractCode());
         }
         if (contractDTO.getActiveDate() != null) {
-            querySTR.append(" and ct.active_date = :active_date");
+            querySTR.append(" and ct.ACTIVE_DATE = :active_date");
             params.put("active_date", contractDTO.getActiveDate());
         }
         if (contractDTO.getExpiredDate()!=null) {
-            querySTR.append(" and ct.expired_date = :expired_date");
+            querySTR.append(" and ct.EXPIRED_DATE = :expired_date");
             params.put("expired_date", contractDTO.getExpiredDate());
         }
         if (contractDTO.getSignDate()!=null) {
-            querySTR.append(" and ct.sign_date = :sign_date");
+            querySTR.append(" and ct.SIGN_DATE = :sign_date");
             params.put("sign_date", contractDTO.getSignDate());
         }
-        querySTR.append(" ORDER BY ct.contract_code ASC ");
+        querySTR.append(" ORDER BY ct.CONTRACT_CODE ASC ");
         count.append("select count(*) from ( " + querySTR + " ) tmp ");
         Query query = em.createNativeQuery(querySTR.toString());
         Query countQuery = em.createNativeQuery(count.toString());

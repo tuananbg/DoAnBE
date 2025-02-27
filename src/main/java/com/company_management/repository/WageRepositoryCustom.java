@@ -6,5 +6,4 @@ import org.springframework.data.domain.Pageable;
 
 public interface WageRepositoryCustom {
     DataPage<WageDTO> search(WageDTO wageDTO, Pageable pageable);
-
 }

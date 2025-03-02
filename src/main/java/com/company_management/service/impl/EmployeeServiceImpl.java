@@ -2,12 +2,15 @@ package com.company_management.service.impl;
 
 import com.company_management.common.AppConstants;
 import com.company_management.common.Constants;
+import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.common.enums.Gender;
+import com.company_management.dto.mapper.MapperUtils;
+import com.company_management.dto.request.employee.RequestEmployeeDetailDTO;
+import com.company_management.dto.response.employee.ResponseEmployeeDetailDTO;
 import com.company_management.exception.AppException;
 import com.company_management.dto.UserDetailDTO;
 import com.company_management.entity.Department;
 import com.company_management.entity.Position;
-import com.company_management.entity.UserCustom;
 import com.company_management.entity.UserDetail;
 import com.company_management.dto.mapper.EmployeeMapper;
 import com.company_management.dto.request.SearchEmployeeRequest;
@@ -51,8 +54,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final PositionRepository positionRepository;
     private final UserCustomRepository userCustomRepository;
     private final CustomBaseRepository customBaseRepository;
-
-    private final EmployeeMapper employeeMapper;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -137,12 +138,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetailDTO detailEmployee(Long id) {
+    public ResponseEmployeeDetailDTO detailEmployee(Long id) {
         UserDetail userDetail = employeeRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
-        UserDetailDTO detailDTO = employeeMapper.toDto(userDetail);
-        detailDTO.setDepartmentId(userDetail.getDepartmentId());
-        detailDTO.setPositionId(userDetail.getPositionId());
+        ResponseEmployeeDetailDTO detailDTO = new ResponseEmployeeDetailDTO();
+        MapperUtils.map(userDetail, detailDTO);
         if (userDetail.getDepartmentId() != null) {
             Department department = departmentRepository.findById(userDetail.getDepartmentId())
                     .orElseThrow(() -> new AppException(AppConstants.DEPARTMENT_CODE_001, AppConstants.DEPARTMENT_MESS_001));
@@ -153,34 +153,33 @@ public class EmployeeServiceImpl implements EmployeeService {
                     .orElseThrow(() -> new AppException(AppConstants.POSITION_CODE_001,AppConstants.POSITION_MESS_001));
             detailDTO.setPositionName(position.getPositionName());
         }
-        Optional<UserCustom> userCustom = userCustomRepository.findByUserDetailId(userDetail.getId());
-        userCustom.ifPresent(custom -> detailDTO.setEmail(custom.getEmail()));
+        userCustomRepository.findByUserDetailId(userDetail.getId())
+                .ifPresent(custom -> detailDTO.setEmail(custom.getEmail()));
         return detailDTO;
     }
 
     @Override
     @Transactional
-    public void createEmployee(MultipartFile avatarFile, UserDetailDTO userDetailDTO) throws IOException {
+    public void createEmployee(MultipartFile avatarFile, RequestEmployeeDetailDTO request) throws IOException {
         log.debug("// Create Employee");
-        UserDetail byEmployeeCode = employeeRepository.findByEmployeeCode(userDetailDTO.getEmployeeCode());
+        UserDetail byEmployeeCode = employeeRepository.findByEmployeeCode(request.getEmployeeCode()).orElse(null);
+        UserDetail userDetail = new UserDetail();
+
+        MapperUtils.map(request, userDetail);
         if (byEmployeeCode != null) {
             throw new AppException(AppConstants.EMPLOYEE_CODE_002, AppConstants.EMPLOYEE_MESS_002);
         }
-        Department department = new Department();
-        if (userDetailDTO.getDepartmentId() != null) {
-            department = departmentRepository.findById(userDetailDTO.getDepartmentId()).orElseThrow(() ->
+        if (request.getDepartmentId() != null) {
+            Department department = departmentRepository.findById(request.getDepartmentId()).orElseThrow(() ->
                     new AppException(AppConstants.DEPARTMENT_CODE_002, AppConstants.DEPARTMENT_MESS_002));
+            userDetail.setDepartmentId(department.getId());
         }
-        Position position = new Position();
-        if (userDetailDTO.getPositionId() != null) {
-            position = positionRepository.findById(userDetailDTO.getPositionId()).orElseThrow(() ->
+        if (request.getPositionId() != null) {
+            Position position  = positionRepository.findById(request.getPositionId()).orElseThrow(() ->
                     new AppException(AppConstants.POSITION_CODE_002, AppConstants.POSITION_MESS_002));
+            userDetail.setPositionId(position.getId());
         }
-        UserDetail userDetail = employeeMapper.toEntity(userDetailDTO);
-        userDetail.setEmployeeCode(userDetail.getEmployeeCode().toUpperCase());
-        userDetail.setDepartmentId(department.getId());
-        userDetail.setPositionId(position.getId());
-        userDetail.setIsActive(Constants.STATUS_ACTIVE_INT);
+        userDetail.setIsActive(EmploymentStatus.EMPLOYMENT.getCode());
 
         //upload file ảnh
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(avatarFile.getOriginalFilename()));
@@ -203,7 +202,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 () -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
         log.debug("// Update Employee");
         if (userDetailDTO.getEmployeeCode() != null && !userDetailDTO.getEmployeeCode().equals(userDetail.getEmployeeCode())) {
-            UserDetail byEmployeeCode = employeeRepository.findByEmployeeCode(userDetailDTO.getEmployeeCode());
+            UserDetail byEmployeeCode = employeeRepository.findByEmployeeCode(userDetailDTO.getEmployeeCode()).orElse(null);
             if (byEmployeeCode != null) {
                 throw new AppException(AppConstants.EMPLOYEE_CODE_002, AppConstants.EMPLOYEE_MESS_002);
             }
@@ -307,15 +306,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-    @Override
-    @Transactional
-    public void updateEmployeeStatus() {
-        List<UserDetail> employees = employeeRepository.findAll();
-        for (UserDetail employee : employees) {
-            employee.setIsActive(1);
-        }
-        employeeRepository.saveAll(employees);
-    }
+//    @Override
+//    @Transactional
+//    public void updateEmployeeStatus() {
+//        List<UserDetail> employees = employeeRepository.findAll();
+//        for (UserDetail employee : employees) {
+//            employee.setIsActive(1);
+//        }
+//        employeeRepository.saveAll(employees);
+//    }
 
     private Map.Entry<StringBuilder, Map<String, Object>> getSqlExcel(SearchEmployeeRequest searchEmployeeRequest) {
         log.info("------------------------search Started--------------------------");
@@ -360,4 +359,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return null;
     }
 
+    @Override
+    public void lockEmployee(Long id) {
+        UserDetail userDetail = employeeRepository.findById(id).orElse(null);
+        if (userDetail != null) {
+            userDetail.setIsActive(0);
+            employeeRepository.save(userDetail);
+        }
+    }
 }

@@ -1,4 +1,5 @@
-package com.company_management.dto;
+package com.company_management.dto.request.employee;
+
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -7,15 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDetailDTO {
-
-    private Long id;
+public class RequestEmployeeDetailDTO {
 
     @NotBlank(message = "Mã nhân viên không được để trống!")
     private String employeeCode;
@@ -24,8 +22,6 @@ public class UserDetailDTO {
     private String employeeName;
 
     private Integer gender;
-
-    private String genderName;
 
     private Date birthday;
 
@@ -41,15 +37,7 @@ public class UserDetailDTO {
 
     private Long departmentId;
 
-    private String departmentName;
-
     private Long positionId;
 
-    private String positionName;
 
-    private List<ContractDTO> contracts;
-
-    private List<SocialInsuranceDTO> socialInsurances;
-
-    private List<WageDTO> wages;
 }

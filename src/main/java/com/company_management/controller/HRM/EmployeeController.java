@@ -1,9 +1,13 @@
 package com.company_management.controller.HRM;
 
+import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.dto.UserDetailDTO;
+import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.request.SearchEmployeeRequest;
+import com.company_management.dto.request.employee.RequestEmployeeDetailDTO;
+import com.company_management.dto.response.employee.ResponseEmployeeDetailDTO;
 import com.company_management.service.EmployeeService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.LogisticsMailUtils;
@@ -45,10 +49,10 @@ public class EmployeeController {
     private String fileUpload;
 
     @PostMapping("/create")
-    public ResultResp<Object> addEmployee(@ModelAttribute("avatarFile") MultipartFile avatarFile,
-                                          @ModelAttribute @Valid UserDetailDTO userDetailDTO) throws IOException {
+    public BaseResponse<Object> addEmployee(@ModelAttribute("avatarFile") MultipartFile avatarFile,
+                                            @ModelAttribute @Valid RequestEmployeeDetailDTO userDetailDTO) throws IOException {
         employeeService.createEmployee(avatarFile, userDetailDTO);
-        return ResultResp.success(ErrorCode.CREATED_OK, null);
+        return BaseResponse.ok(AppConstants.STATUS_201, AppConstants.EMPLOYEE_201);
     }
 
     @PostMapping("/search")
@@ -58,8 +62,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/detail/{id}")
-    public ResultResp<Object> getByIdEmployee(@PathVariable("id") Long id) {
-        return ResultResp.success(employeeService.detailEmployee(id));
+    public BaseResponse<ResponseEmployeeDetailDTO> getByIdEmployee(@PathVariable("id") Long id) {
+        return BaseResponse.ok(employeeService.detailEmployee(id));
     }
 
     @GetMapping("/{urlAvatar}")

@@ -1,6 +1,8 @@
-package com.company_management.dto;
+package com.company_management.dto.response.employee;
 
-import jakarta.validation.constraints.NotBlank;
+import com.company_management.dto.ContractDTO;
+import com.company_management.dto.SocialInsuranceDTO;
+import com.company_management.dto.WageDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,19 +15,15 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDetailDTO {
+public class ResponseEmployeeDetailDTO {
 
     private Long id;
 
-    @NotBlank(message = "Mã nhân viên không được để trống!")
     private String employeeCode;
 
-    @NotBlank(message = "Tên nhân viên không được để trống!")
     private String employeeName;
 
     private Integer gender;
-
-    private String genderName;
 
     private Date birthday;
 
@@ -39,11 +37,7 @@ public class UserDetailDTO {
 
     private Integer isActive;
 
-    private Long departmentId;
-
     private String departmentName;
-
-    private Long positionId;
 
     private String positionName;
 

@@ -13,17 +13,17 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class ScheduledTasks {
 
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-
-    private final EmployeeService employeeService;
-
-    public ScheduledTasks(EmployeeService employeeService) {
-        this.employeeService = employeeService;
-    }
-
-    @Scheduled(cron = "0 0 11,12,13 * * *")
-    public void updateEmployeeStatusTask() {
-        log.info("Update lại isActive userDetail");
-        employeeService.updateEmployeeStatus();
-    }
+//    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+//
+//    private final EmployeeService employeeService;
+//
+//    public ScheduledTasks(EmployeeService employeeService) {
+//        this.employeeService = employeeService;
+//    }
+//
+//    @Scheduled(cron = "0 0 11,12,13 * * *")
+//    public void updateEmployeeStatusTask() {
+//        log.info("Update lại isActive userDetail");
+//        employeeService.updateEmployeeStatus();
+//    }
 }

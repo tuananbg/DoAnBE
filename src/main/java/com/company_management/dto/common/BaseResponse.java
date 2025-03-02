@@ -1,4 +1,4 @@
-package com.company_management.dto.response;
+package com.company_management.dto.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -27,7 +27,7 @@ public class BaseResponse<T> {
     private String historyContent;
 
     public static BaseResponse<?> success(String historyContent) {
-        return ok("COMMON_OK", "success", null, historyContent);
+        return ok("OK", "OK", null, historyContent);
     }
 
     public static BaseResponse<?> ok() {
@@ -35,11 +35,11 @@ public class BaseResponse<T> {
     }
 
     public static <T> BaseResponse<T> ok(T data) {
-        return ok("COMMON_OK", "success", data);
+        return ok("OK", "OK", data);
     }
 
     public static <T> BaseResponse<T> ok(T data, String historyContent) {
-        return ok("COMMON_OK", "success", data, historyContent);
+        return ok("OK", "OK", data, historyContent);
     }
 
     public static <T> BaseResponse<T> ok(String code, String messsage) {
@@ -86,3 +86,4 @@ public class BaseResponse<T> {
         return new BaseResponse<>("COMMON_ERROR", message, null, null);
     }
 }
+

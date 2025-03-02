@@ -1,10 +1,13 @@
 package com.company_management.controller.HRM;
 
+import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ObjectError;
 import com.company_management.common.ResultResp;
+import com.company_management.dto.ResponseWageEmployeeDetailDTO;
 import com.company_management.dto.UserDetailWageDTO;
 import com.company_management.dto.WageDTO;
+import com.company_management.dto.common.BaseResponse;
 import com.company_management.service.WageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/wage")
@@ -52,6 +56,7 @@ public class WageController {
     public ResultResp<Object> search(@RequestBody WageDTO wageDTO, Pageable pageable) {
         return ResultResp.success(wageService.search(wageDTO, pageable));
     }
+
     @PostMapping(value = "/searchForEmployee")
     public ResultResp<Object> searchForEmployee(@RequestBody WageDTO wageDTO, Pageable pageable) {
         return ResultResp.success(wageService.searchForEmployee(wageDTO, pageable));
@@ -110,5 +115,9 @@ public class WageController {
         }
     }
 
+    @GetMapping("/employee-detail/{id}")
+    private BaseResponse<List<ResponseWageEmployeeDetailDTO>> getEmployeeDetail(@PathVariable Long id) {
+        return BaseResponse.ok(AppConstants.STATUS_200, AppConstants.MESSAGE_200,wageService.getEmployeeWageDetails(id));
+    }
 
 }

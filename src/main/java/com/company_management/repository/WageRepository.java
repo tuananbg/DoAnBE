@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface WageRepository extends JpaRepository<Wage, Long>, WageRepositoryCustom {
@@ -35,4 +36,6 @@ public interface WageRepository extends JpaRepository<Wage, Long>, WageRepositor
     @Modifying
     @Query(value = "update Wage c set c.isActive = 0, c.updatedDate = now(), c.updatedBy = :user where c.id = :id and c.isActive = 1 or c.isActive = 2 ")
     int updateById(Long id, Long user);
+
+    List<Wage> findAllByUserDetailId(Long userId);
 }

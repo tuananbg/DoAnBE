@@ -1,11 +1,14 @@
 package com.company_management.service;
 
+import com.company_management.dto.ResponseWageEmployeeDetailDTO;
 import com.company_management.dto.UserDetailWageDTO;
 import com.company_management.dto.WageDTO;
 import com.company_management.dto.response.DataPage;
 import com.company_management.dto.response.WageResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface WageService {
 
@@ -26,4 +29,6 @@ public interface WageService {
     void deleteByIds(Long id);
 
     void deleteForEmployeeByIds(Long id);
+
+    List<ResponseWageEmployeeDetailDTO> getEmployeeWageDetails(Long id);
 }

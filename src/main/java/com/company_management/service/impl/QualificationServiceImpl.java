@@ -1,5 +1,7 @@
 package com.company_management.service.impl;
 
+import com.company_management.dto.mapper.MapperUtils;
+import com.company_management.dto.response.ResponseQualificationEmployeeDetailDTO;
 import com.company_management.exception.AppException;
 import com.company_management.dto.QualificationDTO;
 import com.company_management.entity.Qualification;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,25 +29,25 @@ public class QualificationServiceImpl implements QualificationService {
     private final QualificationRepository qualificationRepository;
 
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<QualificationDTO> search(Long userDetailId, Pageable pageable) {
-        Page<Qualification> qualificationEntyList = qualificationRepository.findByUserDetailId(userDetailId, pageable);
-        List<QualificationDTO> qualificationDTOList = qualificationEntyList.stream().map(
-                res -> {
-                    QualificationDTO qualificationDTO = new QualificationDTO();
-                    qualificationDTO.setId(res.getId());
-                    qualificationDTO.setLevel(res.getLevel());
-                    qualificationDTO.setName(res.getName());
-                    qualificationDTO.setMajor(res.getMajor());
-                    qualificationDTO.setDescription(res.getDescription());
-                    qualificationDTO.setLicenseDate(res.getLicenseDate());
-                    qualificationDTO.setUserDetailId(res.getUserDetailId());
-                    return qualificationDTO;
-                }
-        ).collect(Collectors.toList());
-        return new PageImpl<>(qualificationDTOList, pageable, qualificationEntyList.getTotalElements());
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public Page<QualificationDTO> search(Long userDetailId, Pageable pageable) {
+//        Page<Qualification> qualificationEntyList = qualificationRepository.findByUserDetailId(userDetailId, pageable);
+//        List<QualificationDTO> qualificationDTOList = qualificationEntyList.stream().map(
+//                res -> {
+//                    QualificationDTO qualificationDTO = new QualificationDTO();
+//                    qualificationDTO.setId(res.getId());
+//                    qualificationDTO.setLevel(res.getLevel());
+//                    qualificationDTO.setName(res.getName());
+//                    qualificationDTO.setMajor(res.getMajor());
+//                    qualificationDTO.setDescription(res.getDescription());
+//                    qualificationDTO.setLicenseDate(res.getLicenseDate());
+//                    qualificationDTO.setUserDetailId(res.getUserDetailId());
+//                    return qualificationDTO;
+//                }
+//        ).collect(Collectors.toList());
+//        return new PageImpl<>(qualificationDTOList, pageable, qualificationEntyList.getTotalElements());
+//    }
 
     @Override
     @Transactional(readOnly = true)
@@ -98,6 +101,17 @@ public class QualificationServiceImpl implements QualificationService {
         if (qualificationRepository.updateById(id, CommonUtils.getUserLoginName()) <= 0) {
             throw new AppException("ERR01", "Bằng cấp này không tồn tại hoặc đã bị xóa");
         }
+    }
+
+    @Override
+    public List<ResponseQualificationEmployeeDetailDTO> getDetailEmployees(Long userDetailId) {
+        int index = 1;
+        return qualificationRepository.findByUserDetailId(userDetailId).stream().map(
+                item -> {
+                    ResponseQualificationEmployeeDetailDTO dto = new ResponseQualificationEmployeeDetailDTO();
+                    MapperUtils.map(item, dto);
+                    return dto;
+                }).toList();
     }
 
 }

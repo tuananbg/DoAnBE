@@ -1,5 +1,7 @@
 package com.company_management.service.impl;
 
+import com.company_management.dto.ResponseWageEmployeeDetailDTO;
+import com.company_management.dto.mapper.MapperUtils;
 import com.company_management.exception.AppException;
 import com.company_management.dto.UserDetailWageDTO;
 import com.company_management.dto.WageDTO;
@@ -232,6 +234,16 @@ public class WageServiceImpl implements WageService {
         if (userDetailWageRepository.updateById(id, CommonUtils.getUserLoginName()) <= 0) {
             throw new AppException("ERR01", "Thông tin phụ cấp này không tồn tại hoặc đã bị xóa");
         }
+    }
+
+    @Override
+    public List<ResponseWageEmployeeDetailDTO> getEmployeeWageDetails(Long id) {
+        return wageRepository.findAllByUserDetailId(id).stream().map(
+                item -> {
+                    ResponseWageEmployeeDetailDTO dto = new ResponseWageEmployeeDetailDTO();
+                    MapperUtils.map(item, dto);
+                    return dto;
+                }).toList();
     }
 
 }

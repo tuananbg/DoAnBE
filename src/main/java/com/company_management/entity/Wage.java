@@ -32,6 +32,7 @@ public class Wage extends BaseEntity {
 
     @Column(name = "EMP_SIGN")
     private String empSign;
+
     @Column(name = "LICENSE_DATE")
     private Date licenseDate;
 

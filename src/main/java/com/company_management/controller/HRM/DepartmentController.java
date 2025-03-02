@@ -3,12 +3,16 @@ package com.company_management.controller.HRM;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.dto.DepartmentDTO;
+import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.request.SearchDepartmentRequest;
+import com.company_management.dto.response.ResponseDepartmentTotalDTO;
 import com.company_management.service.DepartmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,6 +54,11 @@ public class DepartmentController {
         } catch (Exception ex) {
             return ResultResp.badRequest(ErrorCode.DELETED_FAIL);
         }
+    }
+
+    @GetMapping("/total")
+    private BaseResponse<List<ResponseDepartmentTotalDTO>> getDepartmentTotal() {
+        return BaseResponse.ok(departmentService.totalDepartment());
     }
 
 }

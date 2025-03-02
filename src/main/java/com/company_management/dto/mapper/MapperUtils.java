@@ -9,6 +9,11 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MappingContext;
 
 import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class MapperUtils {
@@ -81,5 +86,19 @@ public class MapperUtils {
 
             modelMapper.map(source, destination);
         }
+    }
+
+    public static <T, K> Map<K,T> buildMap(List<T> list, Function<T,K> keyMapper) {
+        return list.stream()
+                .filter(Objects::nonNull)
+                .filter(item -> keyMapper.apply(item) != null)
+                .collect(Collectors.toMap(keyMapper,Function.identity(),(existing, replacement) -> existing));
+    }
+
+    public static <T,K,V> Map<K,V> buildMap(List<T> list, Function<T,K> keyMapper, Function<T, V> valueMapper) {
+        return list.stream()
+                .filter(Objects::nonNull)
+                .filter(item -> keyMapper.apply(item) != null)
+                .collect(Collectors.toMap(keyMapper,valueMapper,(existing, replacement) -> existing));
     }
 }

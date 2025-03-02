@@ -39,4 +39,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Modifying
     @Query(value = "update Department u set u.isActive = 0, u.updatedDate = now(), u.updatedBy = :user where u.id = :id and u.isActive = 1")
     int deleteById(Long id, Long user);
+
+    List<Department> findAllByStatus(Integer status);
 }

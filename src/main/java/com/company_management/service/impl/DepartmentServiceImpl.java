@@ -1,12 +1,17 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.enums.DepartmentStatus;
+import com.company_management.dto.response.ResponseDepartmentTotalDTO;
+import com.company_management.entity.UserDetail;
 import com.company_management.exception.AppException;
 import com.company_management.dto.DepartmentDTO;
 import com.company_management.entity.Department;
 import com.company_management.dto.mapper.DepartmentMapper;
 import com.company_management.dto.request.SearchDepartmentRequest;
 import com.company_management.repository.DepartmentRepository;
+import com.company_management.repository.UserDetailRepository;
 import com.company_management.service.DepartmentService;
+import com.company_management.service.UserService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.DataUtils;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +33,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
 
     private final DepartmentMapper departmentMapper;
+
+    private final UserDetailRepository userDetailRepository;
 
     @Override
     public Page<DepartmentDTO> findAllPage(SearchDepartmentRequest searchDepartmentRequest, Pageable pageable) {
@@ -90,6 +97,23 @@ public class DepartmentServiceImpl implements DepartmentService {
     public DepartmentDTO detailDepartment(Long id) {
         Department department = departmentRepository.findById(id).orElseThrow(() -> new AppException("ERR01", "Không tìm thấy phòng ban!"));
         return departmentMapper.toDto(department);
+    }
+
+    @Override
+    public List<ResponseDepartmentTotalDTO> totalDepartment() {
+        List<ResponseDepartmentTotalDTO> response = new ArrayList<>();
+        List<Department> departments = departmentRepository.findAllByStatus(DepartmentStatus.ACTIVE.getCode());
+        for (Department department : departments) {
+
+            List<UserDetail> userDetails = userDetailRepository.findAllByDepartmentId(department.getId());
+            if (userDetails != null){
+                ResponseDepartmentTotalDTO item = new ResponseDepartmentTotalDTO();
+                item.setName(department.getDepartmentName());
+                item.setValue(userDetails.size());
+                response.add(item);
+            }
+        }
+        return response;
     }
 
 

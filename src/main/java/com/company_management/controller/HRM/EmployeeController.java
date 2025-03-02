@@ -7,6 +7,7 @@ import com.company_management.dto.UserDetailDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.request.SearchEmployeeRequest;
 import com.company_management.dto.request.employee.RequestEmployeeDetailDTO;
+import com.company_management.dto.response.TotalEmployeeDTO;
 import com.company_management.dto.response.employee.ResponseEmployeeDetailDTO;
 import com.company_management.service.EmployeeService;
 import com.company_management.utils.CommonUtils;
@@ -50,8 +51,8 @@ public class EmployeeController {
 
     @PostMapping("/create")
     public BaseResponse<Object> addEmployee(@ModelAttribute("avatarFile") MultipartFile avatarFile,
-                                            @ModelAttribute @Valid RequestEmployeeDetailDTO userDetailDTO) throws IOException {
-        employeeService.createEmployee(avatarFile, userDetailDTO);
+                                            @ModelAttribute @Valid RequestEmployeeDetailDTO request) throws IOException {
+        employeeService.createEmployee(avatarFile, request);
         return BaseResponse.ok(AppConstants.STATUS_201, AppConstants.EMPLOYEE_201);
     }
 
@@ -140,6 +141,11 @@ public class EmployeeController {
         context.setVariables(params);
         return templateEngine.process("export_pdf_employee.html", context);
 //        return templateEngine.process("export_pdf_employee", context);
+    }
+
+    @GetMapping("total/{id}")
+    public BaseResponse<TotalEmployeeDTO> totalEmployee(@PathVariable("id") Long id) {
+        return BaseResponse.ok(employeeService.totalEmployee(id));
     }
 
 }

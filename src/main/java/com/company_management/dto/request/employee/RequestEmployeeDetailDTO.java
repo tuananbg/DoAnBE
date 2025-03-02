@@ -39,5 +39,4 @@ public class RequestEmployeeDetailDTO {
 
     private Long positionId;
 
-
 }

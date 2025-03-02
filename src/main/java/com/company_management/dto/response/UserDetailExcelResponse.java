@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDetailExcelResponse {
-
     private int index;
     private Long id;
     private String employeeCode;
@@ -29,8 +28,4 @@ public class UserDetailExcelResponse {
     private Integer isActive;
     private Long departmentId;
     private String departmentName;
-    private List<Long> positions;
-    private List<ContractDTO> contracts;
-    private List<SocialInsuranceDTO> socialInsurances;
-    private List<WageDTO> wages;
 }

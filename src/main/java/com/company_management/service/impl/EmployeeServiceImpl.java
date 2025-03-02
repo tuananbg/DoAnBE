@@ -6,6 +6,7 @@ import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.common.enums.Gender;
 import com.company_management.dto.mapper.MapperUtils;
 import com.company_management.dto.request.employee.RequestEmployeeDetailDTO;
+import com.company_management.dto.response.TotalEmployeeDTO;
 import com.company_management.dto.response.employee.ResponseEmployeeDetailDTO;
 import com.company_management.exception.AppException;
 import com.company_management.dto.UserDetailDTO;
@@ -54,6 +55,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final PositionRepository positionRepository;
     private final UserCustomRepository userCustomRepository;
     private final CustomBaseRepository customBaseRepository;
+    private final UserDetailRepository userDetailRepository;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -161,7 +163,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void createEmployee(MultipartFile avatarFile, RequestEmployeeDetailDTO request) throws IOException {
-        log.debug("// Create Employee");
         UserDetail byEmployeeCode = employeeRepository.findByEmployeeCode(request.getEmployeeCode()).orElse(null);
         UserDetail userDetail = new UserDetail();
 
@@ -184,7 +185,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         //upload file ảnh
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(avatarFile.getOriginalFilename()));
         if (fileName.contains("..")) {
-            log.debug("File upload không tồn tại!");
             throw new AppException(AppConstants.UPLOAD_FILE_IMAGE_CODE_001, AppConstants.UPLOAD_FILE_IMAGE_MESS_001);
         }
         Path filePath = Paths.get(this.fileUpload + fileName);
@@ -192,7 +192,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         userDetail.setAvatar(fileName);
 
         employeeRepository.save(userDetail);
-        log.info("// Lưu nhân viên thành công!");
     }
 
     @Override
@@ -200,7 +199,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void updateEmployee(MultipartFile avatarFile, UserDetailDTO userDetailDTO) throws IOException {
         UserDetail userDetail = employeeRepository.findById(userDetailDTO.getId()).orElseThrow(
                 () -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
-        log.debug("// Update Employee");
         if (userDetailDTO.getEmployeeCode() != null && !userDetailDTO.getEmployeeCode().equals(userDetail.getEmployeeCode())) {
             UserDetail byEmployeeCode = employeeRepository.findByEmployeeCode(userDetailDTO.getEmployeeCode()).orElse(null);
             if (byEmployeeCode != null) {
@@ -277,24 +275,27 @@ public class EmployeeServiceImpl implements EmployeeService {
     public ByteArrayInputStream exportExcel(SearchEmployeeRequest searchEmployeeRequest, Pageable pageable) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try (InputStream in = CommonUtils.getInputStreamByFileName("export-employee-template.xlsx")) {
-            Map.Entry<StringBuilder, Map<String, Object>> entry = getSqlExcel(searchEmployeeRequest);
-            StringBuilder sql = entry.getKey();
-            Map<String, Object> params = entry.getValue();
-            List<Object[]> listObj = customBaseRepository.queryHasParam(sql.toString(), params);
-            List<UserDetailExcelResponse> userDetailDTOS = DataUtils.convertListObjectsToClass(
-                    Arrays.asList("id", "employeeCode", "employeeName", "avatar", "gender",
-                            "birthday", "address", "email", "departmentName", "departmentId"),
-                    listObj,
-                    UserDetailExcelResponse.class);
+
+            List<UserDetail> userDetails = userDetailRepository.findAllByIsActive(EmploymentStatus.EMPLOYMENT.getCode());
+            Map<Long,String> departmentMap = MapperUtils.buildMap(departmentRepository.findAll(),Department::getId,Department::getDepartmentName);
+            Map<Long, String> positionMap = MapperUtils.buildMap(positionRepository.findAll(),Position::getId,Position::getPositionName);
+
             AtomicInteger index = new AtomicInteger();
-            for (UserDetailExcelResponse item : userDetailDTOS) {
+            List<UserDetailExcelResponse> report = new ArrayList<>();
+            for (UserDetail userDetail : userDetails) {
+                UserDetailExcelResponse item = new UserDetailExcelResponse();
+                MapperUtils.map(userDetail,item);
+                if (userDetail.getDepartmentId() != null) {
+                    item.setDepartmentName(departmentMap.get(userDetail.getDepartmentId()));
+                }
                 item.setIndex(index.incrementAndGet());
                 item.setGenderName(Gender.fromCode(item.getGender()).getName());
+                report.add(item);
             }
             Map<String, Object> beans = new HashMap<>();
-            beans.put("posLst", userDetailDTOS);
+            beans.put("posLst", report);
             beans.put("date", DateTimeUtils.convertDateToStringByPattern(new Date(), "dd/MM/yyyy HH:mm:ss"));
-            beans.put("total", userDetailDTOS.size());
+            beans.put("total", report.size());
             XLSTransformer transformer = new XLSTransformer();
             Workbook workbook = transformer.transformXLS(in, beans);
             workbook.write(byteArrayOutputStream);
@@ -316,43 +317,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 //        employeeRepository.saveAll(employees);
 //    }
 
-    private Map.Entry<StringBuilder, Map<String, Object>> getSqlExcel(SearchEmployeeRequest searchEmployeeRequest) {
-        log.info("------------------------search Started--------------------------");
-        Map<String, Object> params = new HashMap<>();
-        StringBuilder sql = new StringBuilder("SELECT\n" +
-                "    ud.id as employeeId,\n" +
-                "    ud.employee_code as employeeCode,\n" +
-                "    ud.employee_name as employeeName,\n" +
-                "    ud.avatar as avatar,\n" +
-                "    ud.gender as gender,\n" +
-                "    ud.birthday as birthday,\n" +
-                "    ud.address as address,\n" +
-                "    ucu.email as email,\n" +
-                "    de.department_name as departmentName,\n" +
-                "    de.id as departmentId \n" +
-                "FROM user_detail ud\n" +
-                "         LEFT JOIN user_custom ucu ON ud.id = ucu.user_detail_id\n" +
-                "         LEFT JOIN department de ON ud.department_id = de.id\n" +
-                "WHERE 1 = 1\n" +
-                "AND ud.is_active = 1 ");
-        if (!DataUtils.isNullOrEmpty(searchEmployeeRequest.getEmployeeCode())) {
-            sql.append(" AND ud.employee_code LIKE CONCAT('%', :employeeCode, '%') ");
-            params.put("employeeCode", CommonUtils.getLikeCondition(searchEmployeeRequest.getEmployeeCode()));
-        }
-        if (!DataUtils.isNullOrEmpty(searchEmployeeRequest.getEmployeeName())) {
-            sql.append(" AND ud.employeeName LIKE CONCAT('%', :employeeName, '%') ");
-            params.put("employeeName", CommonUtils.getLikeCondition(searchEmployeeRequest.getEmployeeName()));
-        }
-        if (!DataUtils.isNullOrEmpty(searchEmployeeRequest.getEmployeeGender())) {
-            sql.append(" AND ud.employeeGender = :employeeGender ");
-            params.put("employeeGender", searchEmployeeRequest.getEmployeeGender());
-        }
-        if (!DataUtils.isNullOrEmpty(searchEmployeeRequest.getDepartmentId())) {
-            sql.append(" AND de.id = :departmentId ");
-            params.put("departmentId", searchEmployeeRequest.getDepartmentId());
-        }
-        return new AbstractMap.SimpleEntry<>(sql, params);
-    }
 
     @Override
     public ExportPdfEmployeeResponse exportPdf(Long userDetailId) {
@@ -366,5 +330,27 @@ public class EmployeeServiceImpl implements EmployeeService {
             userDetail.setIsActive(0);
             employeeRepository.save(userDetail);
         }
+    }
+
+    @Override
+    public TotalEmployeeDTO totalEmployee(Long id) {
+        TotalEmployeeDTO totalEmployeeDTO = new TotalEmployeeDTO();
+        List<UserDetail> userDetails = userDetailRepository.findAllByIsActive(EmploymentStatus.EMPLOYMENT.getCode());
+        if (userDetails != null) {
+            totalEmployeeDTO.setTotalEmployee(userDetails.size());
+        }
+        else {
+            totalEmployeeDTO.setTotalEmployee(0);
+        }
+        List<UserDetail> userDetailsBirthDays = userDetailRepository.findEmployeesWithBirthdayThisMonthActive(EmploymentStatus.EMPLOYMENT.getCode());
+        if (userDetailsBirthDays != null) {
+            totalEmployeeDTO.setTotalBirthDayMonth(userDetailsBirthDays.size());
+        }
+        else {
+            totalEmployeeDTO.setTotalBirthDayMonth(0);
+        }
+        totalEmployeeDTO.setTotalLateWork(2);
+        totalEmployeeDTO.setTotalLeaveWork(3);
+        return totalEmployeeDTO;
     }
 }

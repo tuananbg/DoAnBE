@@ -28,41 +28,12 @@ public class QualificationServiceImpl implements QualificationService {
 
     private final QualificationRepository qualificationRepository;
 
-
-//    @Override
-//    @Transactional(readOnly = true)
-//    public Page<QualificationDTO> search(Long userDetailId, Pageable pageable) {
-//        Page<Qualification> qualificationEntyList = qualificationRepository.findByUserDetailId(userDetailId, pageable);
-//        List<QualificationDTO> qualificationDTOList = qualificationEntyList.stream().map(
-//                res -> {
-//                    QualificationDTO qualificationDTO = new QualificationDTO();
-//                    qualificationDTO.setId(res.getId());
-//                    qualificationDTO.setLevel(res.getLevel());
-//                    qualificationDTO.setName(res.getName());
-//                    qualificationDTO.setMajor(res.getMajor());
-//                    qualificationDTO.setDescription(res.getDescription());
-//                    qualificationDTO.setLicenseDate(res.getLicenseDate());
-//                    qualificationDTO.setUserDetailId(res.getUserDetailId());
-//                    return qualificationDTO;
-//                }
-//        ).collect(Collectors.toList());
-//        return new PageImpl<>(qualificationDTOList, pageable, qualificationEntyList.getTotalElements());
-//    }
-
     @Override
     @Transactional(readOnly = true)
     public QualificationDTO detail(Long id) {
         Qualification qualification = qualificationRepository.findById(id).orElseThrow(
                 () -> new AppException("ERR01", "Bằng cấp không tồn tại"));
-        return QualificationDTO.builder()
-                .id(qualification.getId())
-                .major(qualification.getMajor())
-                .name(qualification.getName())
-                .description(qualification.getDescription())
-                .level(qualification.getLevel())
-                .licenseDate(qualification.getLicenseDate())
-                .userDetailId(qualification.getUserDetailId())
-                .build();
+        return MapperUtils.map(qualification, QualificationDTO.class);
     }
 
     @Override
@@ -88,7 +59,7 @@ public class QualificationServiceImpl implements QualificationService {
         qualification.setDescription(qualificationDTO.getDescription());
         qualification.setLicenseDate(qualificationDTO.getLicenseDate());
         if (qualificationDTO.getUserDetailId() != null) {
-            qualification.setUserDetailId(qualificationDTO.getUserDetailId());
+//            qualification.setUserDetailId(qualificationDTO.getUserDetailId());
         } else {
             throw new AppException("ERR01", "Chọn nhân viên thêm bằng cấp chứng chỉ");
         }

@@ -22,11 +22,4 @@ public class MenuItem extends BaseEntity {
     @Column(name = "MENU_ITEM_NAME")
     private String menuItemName;
 
-    @Column(name = "STATUS")
-    private Integer status;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.DETACH})
-    @JoinTable(name = "MENU_ITEM_PERMISSION", joinColumns = @JoinColumn(name = "MENU_ITEM_ID"), inverseJoinColumns =
-    @JoinColumn(name = "PERMISSION_ID"))
-    private Set<Permission> permissions;
 }

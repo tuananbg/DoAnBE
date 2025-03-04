@@ -1,9 +1,7 @@
 package com.company_management.entity;
 
-import jakarta.persistence.Basic;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,39 +17,31 @@ import java.util.Date;
 @Table(name = "TASK")  // bang cong viec
 public class Task extends BaseEntity {
 
-    @Basic
     @Column(name = "TASK_NAME")
     private String taskName;  // ten cong viec
 
-    @Basic
     @Column(name = "TASK_CODE")
     private String taskCode;  // ma cong viec
 
-    @Basic
     @Column(name = "TASK_DESCRIPTION")
     private String taskDescription; // mô ta cong viec
 
-    @Basic
-    @Column(name = "TASK_STATUS")
-    private int taskStatus; // trang thai cong viec
-
-    @Basic
     @Column(name = "START_DAY")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date startDay; // ngay bat dau
 
-    @Basic
     @Column(name = "END_DAY")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date endDay;  // han ket thuc
 
-    @Basic
-    @Column(name = "PROJECT_ID")
-    private Long projectId; // ma du an
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "PROJECT_ID", referencedColumnName = "id")
+    private Project project;
 
-    @Basic
-    @Column(name = "FOLLOW_ID")
-    private Long followId;  // nguoi theo doi
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "FOLLOW_ID", referencedColumnName = "id")
+    private Employee employee;
 
-    @Basic
     @Column(name = "PRIORITY")
     private int priority;  //do uu tien
 

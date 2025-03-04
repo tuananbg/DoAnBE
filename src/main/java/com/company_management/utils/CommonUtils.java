@@ -1,6 +1,6 @@
 package com.company_management.utils;
 
-import com.company_management.entity.UserCustom;
+import com.company_management.entity.UserAccount;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
@@ -69,13 +69,13 @@ public class CommonUtils {
      */
     public static Long getUserLoginName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("Mã id tài khoản //" + ((UserCustom) authentication.getPrincipal()).getId());
-        return ((UserCustom) authentication.getPrincipal()).getId();
+        log.info("Mã id tài khoản //" + ((UserAccount) authentication.getPrincipal()).getId());
+        return ((UserAccount) authentication.getPrincipal()).getId();
     }
 
     public static String getFullName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return ((UserCustom) authentication.getPrincipal()).getUsername();
+        return ((UserAccount) authentication.getPrincipal()).getUsername();
     }
 
     private static boolean isCollectionEmpty(Collection<?> collection) {

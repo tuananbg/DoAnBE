@@ -1,8 +1,6 @@
 package com.company_management.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +31,6 @@ public class Qualification extends BaseEntity {
     @Column(name = "LICENSE_DATE")
     private Date licenseDate; //ngày cấp bằng
 
-    @Column(name = "USER_DETAIL_ID")
-    private Long userDetailId;  //ma nhan vien
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Employee employee;
 }

@@ -1,5 +1,6 @@
 package com.company_management.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,11 +33,14 @@ public class SocialInsurance extends BaseEntity {
     private String placement; // noi kham chua benh
 
     @Column(name = "LICENSE_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date licenseDate; // ngay hieu luc
 
     @Column(name = "EXPIRED_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date expiredDate; // ngay het han
 
-    @Column(name = "USER_DETAIL_ID")
-    private Long userDetailId;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "id")
+    private Employee employee;
 }

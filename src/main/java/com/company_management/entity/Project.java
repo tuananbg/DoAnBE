@@ -39,8 +39,8 @@ public class Project extends BaseEntity {
     private Date endDay;  // han ket thuc
 
     @Basic
-    @Column(name = "ETIMATE")
-    private Double etimate;  // so gio du kien
+    @Column(name = "ESTIMATE")
+    private Double estimate;  // so gio du kien
 
     @Basic
     @Column(name = "TIMESHEET")

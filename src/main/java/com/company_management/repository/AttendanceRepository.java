@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Date;
 
 @Repository
-public interface AttendanceRepository extends JpaRepository<Attendance, Long>, AttendanceRepositoryCustom {
+public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     String sqlSearch = "select ATTENDANCE.ID\n" +
             "from ATTENDANCE\n" +

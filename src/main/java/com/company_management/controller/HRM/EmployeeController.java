@@ -5,10 +5,13 @@ import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.dto.UserDetailDTO;
 import com.company_management.dto.common.BaseResponse;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.SearchEmployeeRequest;
 import com.company_management.dto.request.employee.RequestEmployeeDetailDTO;
 import com.company_management.dto.response.TotalEmployeeDTO;
 import com.company_management.dto.response.employee.ResponseEmployeeDetailDTO;
+import com.company_management.dto.response.employee.ResponseListEmployeeDTO;
 import com.company_management.service.EmployeeService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.LogisticsMailUtils;
@@ -57,9 +60,9 @@ public class EmployeeController {
     }
 
     @PostMapping("/search")
-    public ResultResp<Object> searchEmployee(@RequestBody SearchEmployeeRequest searchEmployeeRequest,
-                                             Pageable pageable) {
-        return ResultResp.success(employeeService.search(searchEmployeeRequest, pageable));
+    public BaseResponse<ResponsePage<ResponseListEmployeeDTO>> searchEmployee(@RequestParam(name = "keyword", required = false) String keyword,
+                                                                             @ModelAttribute @Valid RequestPage page) {
+        return BaseResponse.ok(employeeService.findAllByKeywordAndStatus(keyword, page));
     }
 
     @GetMapping("/detail/{id}")

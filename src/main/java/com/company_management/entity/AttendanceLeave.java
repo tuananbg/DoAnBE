@@ -1,9 +1,7 @@
 package com.company_management.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,13 +34,11 @@ public class AttendanceLeave extends BaseEntity {
     @Column(name = "DESCRIPTION")
     private String description; //Nội dung
 
-    @Column(name = "EMPLOYEE_ID")
-    private Long employeeId;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "id")
+    private Employee employee;
 
     @Column(name = "REVIEWER_ID")
     private Long reviewerId;  //người phe duyệt
-
-    @Column(name = "TRACKER_ID")
-    private Long trackerId; //người theo dõi
 
 }

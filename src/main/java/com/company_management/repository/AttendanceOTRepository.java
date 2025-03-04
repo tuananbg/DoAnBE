@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AttendanceOTRepository extends JpaRepository<AttendanceOt, Long>, AttendanceOTRepositoryCustom {
+public interface AttendanceOTRepository extends JpaRepository<AttendanceOt, Long> {
 
     @Modifying
     @Query(value = "update AttendanceOt p set p.isActive = 0, p.updatedDate = now(), p.updatedBy = :user where p.id = :id ")

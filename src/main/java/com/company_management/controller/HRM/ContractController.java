@@ -5,7 +5,10 @@ import com.company_management.common.ObjectError;
 import com.company_management.common.ResultResp;
 import com.company_management.dto.ContractDTO;
 import com.company_management.dto.UserDetailContractDTO;
-import com.company_management.service.ContractService;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
+import com.company_management.dto.response.BasicResponse;
+import com.company_management.service.EmployeeContractService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +32,7 @@ import java.nio.file.Paths;
 @RequiredArgsConstructor
 public class ContractController {
 
-    final ContractService contractService;
+    final EmployeeContractService contractService;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -79,13 +82,13 @@ public class ContractController {
 
     @DeleteMapping("delete/{id}")
     public ResultResp<Object> delete(@PathVariable Long id) {
-        contractService.deleteByIds(id);
+//        contractService.deleteByIds(id);
         return ResultResp.success(null);
     }
 
     @DeleteMapping("deleteForEmployee/{id}")
     public ResultResp<Object> deleteForEmployee(@PathVariable Long id) {
-        contractService.deleteForEmployeeByIds(id);
+//        contractService.deleteForEmployeeByIds(id);
         return ResultResp.success(null);
     }
 

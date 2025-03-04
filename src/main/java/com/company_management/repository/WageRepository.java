@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface WageRepository extends JpaRepository<Wage, Long>, WageRepositoryCustom {
+public interface WageRepository extends JpaRepository<Wage, Long> {
 
     String sqlSearch = "select\n" +
             "    we.ID as wageId,\n" +
@@ -37,5 +37,8 @@ public interface WageRepository extends JpaRepository<Wage, Long>, WageRepositor
     @Query(value = "update Wage c set c.isActive = 0, c.updatedDate = now(), c.updatedBy = :user where c.id = :id and c.isActive = 1 or c.isActive = 2 ")
     int updateById(Long id, Long user);
 
-    List<Wage> findAllByUserDetailId(Long userId);
+    @Query(value = "SELECT  w from Wage w " +
+            "JOIN Employee e on e.id = w.employee.id " +
+            "WHERE e.id = :employeeId")
+    List<Wage> findAllByUserDetailId(@Param("employeeId") Long userId);
 }

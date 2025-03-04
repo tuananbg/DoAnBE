@@ -5,7 +5,9 @@ import com.company_management.common.ResultResp;
 import com.company_management.dto.DepartmentDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.request.SearchDepartmentRequest;
+import com.company_management.dto.response.ResponseDepartmentDTO;
 import com.company_management.dto.response.ResponseDepartmentTotalDTO;
+import com.company_management.entity.BaseEntity;
 import com.company_management.service.DepartmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +36,8 @@ public class DepartmentController {
     }
 
     @GetMapping("/detail/{id}")
-    public ResultResp<Object> getByIdDepartment(@PathVariable("id") Long id) {
-        return ResultResp.success(ErrorCode.CREATED_OK, departmentService.detailDepartment(id));
+    public BaseResponse<ResponseDepartmentDTO> getByIdDepartment(@PathVariable("id") Long id) {
+        return BaseResponse.ok(departmentService.detailDepartment(id));
     }
 
     @PostMapping("/update/{id}")

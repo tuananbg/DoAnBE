@@ -1,8 +1,6 @@
 package com.company_management.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +23,8 @@ public class Position extends BaseEntity {
     @Column(name = "POSITION_DESCRIPTION")
     private String positionDescription;
 
-    @Column(name = "DEPARTMENT_ID")
-    private Long departmentId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "DEPARTMENT_ID")
+    private Department departmentId;
 
 }

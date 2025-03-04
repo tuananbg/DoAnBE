@@ -1,6 +1,6 @@
 package com.company_management.config;
 
-import com.company_management.repository.UserCustomRepository;
+import com.company_management.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,11 +16,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-    private final UserCustomRepository userCustomRepository;
+    private final UserAccountRepository userAccountRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userCustomRepository.findByEmail(username)
+        return username -> userAccountRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!!!"));
     }
 

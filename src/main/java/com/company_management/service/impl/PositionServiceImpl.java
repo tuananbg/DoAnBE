@@ -1,9 +1,13 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.enums.Status;
+import com.company_management.dto.mapper.MapperUtils;
+import com.company_management.dto.request.RequestPositionDTO;
+import com.company_management.dto.response.ResponsePositionDTO;
+import com.company_management.dto.response.employee.ResponseListEmployeeDTO;
 import com.company_management.exception.AppException;
 import com.company_management.dto.PositionDTO;
 import com.company_management.entity.Position;
-import com.company_management.dto.mapper.PositionMapper;
 import com.company_management.dto.request.SearchPositionRequest;
 import com.company_management.dto.response.DataPage;
 import com.company_management.repository.PositionRepository;
@@ -34,37 +38,32 @@ public class PositionServiceImpl implements PositionService {
 
     private final PositionRepository positionRepository;
 
-    private final PositionMapper positionMapper;
-
     @Override
     @Transactional(readOnly = true)
-    public DataPage<PositionDTO> search(SearchPositionRequest searchPositionRequest, Pageable pageable) {
-        return positionRepository.search(searchPositionRequest, pageable);
+    public List<ResponsePositionDTO> getAllPositionSelection() {
+        List<Position> positions = positionRepository.findAll();
+        return positions.stream()
+                .map(item -> MapperUtils.map(item, ResponsePositionDTO.class))
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PositionDTO detailPosition(Long id) {
+    public ResponsePositionDTO detailPosition(Long id) {
         Position position = positionRepository.findById(id).orElseThrow(() -> new AppException("ERR01", "Không tìm thấy chức vụ này!"));
-        return positionMapper.toDto(position);
+        return MapperUtils.map(position, ResponsePositionDTO.class);
     }
 
     @Override
     @Transactional
-    public void createOrUpdate(PositionDTO positionDTO) {
-        Position position;
-        if (positionDTO.getId() == null) {
-            log.debug("// Them moi chức vụ");
-            position = new Position();
-            position = positionMapper.toEntity(positionDTO);
-        } else {
-            position = positionRepository.findById(positionDTO.getId())
-                    .orElseThrow(() -> new AppException("ERO01", "Chức vụ không tồn tại"));
-            log.debug("// Cap nhat chức vụ");
-            position.setPositionName(positionDTO.getPositionName());
-            position.setPositionDescription(positionDTO.getPositionDescription());
-            position.setDepartmentId(positionDTO.getDepartmentId());
-            position.setIsActive(positionDTO.getIsActive());
+    public void create(RequestPositionDTO positionDTO) {
+        Position position = positionRepository.findByPositionCode(positionDTO.getPositionCode()).orElse(null);
+        if (position != null) {
+          throw new AppException("ERR01", "Không tìm thấy chức vụ này!");
+        }
+        else {
+            ResponsePositionDTO responsePositionDTO = MapperUtils.map(positionDTO, ResponsePositionDTO.class);
+            position.setIsActive(Status.ACTIVE.getCode());
         }
         positionRepository.save(position);
     }
@@ -77,30 +76,30 @@ public class PositionServiceImpl implements PositionService {
         }
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public ByteArrayInputStream exportExcel(SearchPositionRequest searchPositionRequest, Pageable pageable) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try (InputStream in = CommonUtils.getInputStreamByFileName("export-position-template.xlsx")) {
-            List<PositionDTO> positionDTOList = positionRepository.searchExport(searchPositionRequest, pageable);
-            AtomicInteger index = new AtomicInteger();
-            for (PositionDTO item : positionDTOList) {
-                item.setIndex(index.incrementAndGet());
-            }
-            Map<String, Object> beans = new HashMap<>();
-            beans.put("posLst", positionDTOList);
-            beans.put("date", DateTimeUtils.convertDateToStringByPattern(new Date(), "dd/MM/yyyy HH:mm:ss"));
-            beans.put("total", positionDTOList.size());
-            XLSTransformer transformer = new XLSTransformer();
-            Workbook workbook = transformer.transformXLS(in, beans);
-            workbook.write(byteArrayOutputStream);
-            byte[] exportInputStream = byteArrayOutputStream.toByteArray();
-            return new ByteArrayInputStream(exportInputStream);
-        } catch (Exception ex) {
-            log.error(ex.getMessage(), ex);
-            throw new AppException("ERR01", "Xuất file excel bị lỗi");
-        }
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public ByteArrayInputStream exportExcel(SearchPositionRequest searchPositionRequest, Pageable pageable) {
+//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//        try (InputStream in = CommonUtils.getInputStreamByFileName("export-position-template.xlsx")) {
+//            List<PositionDTO> positionDTOList = positionRepository.searchExport(searchPositionRequest, pageable);
+//            AtomicInteger index = new AtomicInteger();
+//            for (PositionDTO item : positionDTOList) {
+//                item.setIndex(index.incrementAndGet());
+//            }
+//            Map<String, Object> beans = new HashMap<>();
+//            beans.put("posLst", positionDTOList);
+//            beans.put("date", DateTimeUtils.convertDateToStringByPattern(new Date(), "dd/MM/yyyy HH:mm:ss"));
+//            beans.put("total", positionDTOList.size());
+//            XLSTransformer transformer = new XLSTransformer();
+//            Workbook workbook = transformer.transformXLS(in, beans);
+//            workbook.write(byteArrayOutputStream);
+//            byte[] exportInputStream = byteArrayOutputStream.toByteArray();
+//            return new ByteArrayInputStream(exportInputStream);
+//        } catch (Exception ex) {
+//            log.error(ex.getMessage(), ex);
+//            throw new AppException("ERR01", "Xuất file excel bị lỗi");
+//        }
+//    }
 
 
 }

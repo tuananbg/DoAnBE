@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 public class DepartmentDTO {
     private Long departmentId;
     private String departmentCode;
-    @NotBlank(message = "Tên không hợp lệ! (Không được để trống)")
     private String departmentName;
     private Integer status;
 }

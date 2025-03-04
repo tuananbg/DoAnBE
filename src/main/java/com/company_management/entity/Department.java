@@ -22,7 +22,4 @@ public class Department extends BaseEntity {
     @Column(name = "DEPARTMENT_NAME")
     private String departmentName; // ten phong ban
 
-    @Column(name = "STATUS")
-    private Integer status;
-
 }

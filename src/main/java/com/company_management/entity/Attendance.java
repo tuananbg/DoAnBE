@@ -52,4 +52,6 @@ public class Attendance extends BaseEntity {
     @Column(name = "TOTAL_PENALTY")
     private Long totalPenalty;
 
+    @Column(name = "STATUS")
+    private Integer status;
 }

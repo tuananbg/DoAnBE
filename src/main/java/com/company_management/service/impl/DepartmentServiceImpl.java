@@ -1,17 +1,18 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.enums.DepartmentStatus;
+import com.company_management.dto.mapper.MapperUtils;
+import com.company_management.dto.response.ResponseDepartmentDTO;
 import com.company_management.dto.response.ResponseDepartmentTotalDTO;
-import com.company_management.entity.UserDetail;
+import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;
 import com.company_management.dto.DepartmentDTO;
 import com.company_management.entity.Department;
-import com.company_management.dto.mapper.DepartmentMapper;
 import com.company_management.dto.request.SearchDepartmentRequest;
 import com.company_management.repository.DepartmentRepository;
-import com.company_management.repository.UserDetailRepository;
+import com.company_management.repository.EmployeeInfoRepository;
+import com.company_management.repository.EmployeeRepository;
 import com.company_management.service.DepartmentService;
-import com.company_management.service.UserService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.DataUtils;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +33,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
 
-    private final DepartmentMapper departmentMapper;
-
-    private final UserDetailRepository userDetailRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Override
     public Page<DepartmentDTO> findAllPage(SearchDepartmentRequest searchDepartmentRequest, Pageable pageable) {
@@ -52,7 +51,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             dto.setDepartmentId(department.getId());
             dto.setDepartmentCode(department.getDepartmentCode());
             dto.setDepartmentName(department.getDepartmentName());
-            dto.setStatus(department.getStatus());
+            dto.setStatus(department.getIsActive());
             return dto;
         });
     }
@@ -64,8 +63,9 @@ public class DepartmentServiceImpl implements DepartmentService {
         if (existingDepartment.isPresent()) {
             throw new AppException("ERO01", "Trùng mã phòng ban");
         }
-        Department entity = departmentMapper.toEntity(departmentDTO);
-        departmentRepository.save(entity);
+        Department department = new Department();
+        MapperUtils.map(departmentDTO, department);
+        departmentRepository.save(department);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             department.setDepartmentName(departmentDTO.getDepartmentName());
         }
         if (!DataUtils.isNullOrEmpty(departmentDTO.getStatus())) {
-            department.setStatus(departmentDTO.getStatus());
+            department.setIsActive(departmentDTO.getStatus());
         }
         departmentRepository.save(department);
     }
@@ -94,22 +94,23 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public DepartmentDTO detailDepartment(Long id) {
+    public ResponseDepartmentDTO detailDepartment(Long id) {
         Department department = departmentRepository.findById(id).orElseThrow(() -> new AppException("ERR01", "Không tìm thấy phòng ban!"));
-        return departmentMapper.toDto(department);
+        ResponseDepartmentDTO dto = new ResponseDepartmentDTO();
+        MapperUtils.map(department, dto);
+        return dto;
     }
 
     @Override
     public List<ResponseDepartmentTotalDTO> totalDepartment() {
         List<ResponseDepartmentTotalDTO> response = new ArrayList<>();
-        List<Department> departments = departmentRepository.findAllByStatus(DepartmentStatus.ACTIVE.getCode());
+        List<Department> departments = departmentRepository.findAllByIsActive(DepartmentStatus.ACTIVE.getCode());
         for (Department department : departments) {
-
-            List<UserDetail> userDetails = userDetailRepository.findAllByDepartmentId(department.getId());
-            if (userDetails != null){
+            List<Employee> employees = employeeRepository.findAllByDepartment(department.getId());
+            if (employees != null){
                 ResponseDepartmentTotalDTO item = new ResponseDepartmentTotalDTO();
                 item.setName(department.getDepartmentName());
-                item.setValue(userDetails.size());
+                item.setValue(employees.size());
                 response.add(item);
             }
         }

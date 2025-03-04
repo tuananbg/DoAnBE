@@ -1,8 +1,6 @@
 package com.company_management.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +16,9 @@ import java.util.Date;
 @Table(name = "WAGE") //Lương phụ cấp
 public class Wage extends BaseEntity {
 
-    @Column(name = "USER_DETAIL_ID")
-    private Long userDetailId;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "id")
+    private Employee employee;
 
     @Column(name = "WAGE_NAME")
     private String wageName;

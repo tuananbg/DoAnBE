@@ -1,9 +1,7 @@
 package com.company_management.entity;
 
-import jakarta.persistence.Basic;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,16 +17,16 @@ import java.util.Date;
 @Table(name = "TASK_ASSIGNMENT")  //bảng phân công công việc
 public class TaskAssignment extends BaseEntity {
 
-    @Basic
-    @Column(name = "TASK_ID")
-    private Long taskId;  //mã công việc
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "TASK_ID", referencedColumnName = "id")
+    private Task task;
 
-    @Basic
-    @Column(name = "EMPLOYEE_ID")
-    private Long employeeId;  //mã nhân viên
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "id")
+    private Employee employee;
 
-    @Basic
     @Column(name = "START_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date startDate;  // ngay khoi tao
 
 }

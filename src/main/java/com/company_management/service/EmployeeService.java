@@ -1,12 +1,16 @@
 package com.company_management.service;
 
+import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.dto.UserDetailDTO;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.SearchEmployeeRequest;
 import com.company_management.dto.request.employee.RequestEmployeeDetailDTO;
 import com.company_management.dto.response.DataPage;
 import com.company_management.dto.response.ExportPdfEmployeeResponse;
 import com.company_management.dto.response.TotalEmployeeDTO;
 import com.company_management.dto.response.employee.ResponseEmployeeDetailDTO;
+import com.company_management.dto.response.employee.ResponseListEmployeeDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +19,7 @@ import java.io.IOException;
 
 public interface EmployeeService {
 
-    DataPage<UserDetailDTO> search(SearchEmployeeRequest searchEmployeeRequest, Pageable pageable);
+    ResponsePage<ResponseListEmployeeDTO> findAllByKeywordAndStatus(String keyword, RequestPage page);
 
     ResponseEmployeeDetailDTO detailEmployee(Long id);
 

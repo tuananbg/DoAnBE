@@ -27,7 +27,7 @@ public abstract class BaseEntity implements Serializable {
 
     @CreatedBy
     @Column(name = "CREATED_BY", updatable = false)
-    private Long createdBy;
+    private String createdBy;
 
     @CreatedDate
     @Column(name = "CREATED_DATE", updatable = false)
@@ -36,7 +36,7 @@ public abstract class BaseEntity implements Serializable {
 
     @LastModifiedBy
     @Column(name = "MODIFIED_BY")
-    private Long updatedBy;
+    private String updatedBy;
 
     @LastModifiedDate
     @Column(name = "MODIFIED_DATE")
@@ -44,7 +44,7 @@ public abstract class BaseEntity implements Serializable {
     private Date updatedDate;
 
     @Column(name = "IS_ACTIVE")
-    private Integer isActive = 1;
+    private Integer isActive ;
 
     @Override
     public String toString() {

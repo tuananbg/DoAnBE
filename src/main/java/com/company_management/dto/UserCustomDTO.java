@@ -30,5 +30,4 @@ public class UserCustomDTO {
     private String userDetailName;
     private Long companyId;
     private String companyName;
-    private Set<RoleDTO> roles;
 }

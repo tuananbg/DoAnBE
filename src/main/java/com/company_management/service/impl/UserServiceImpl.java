@@ -6,10 +6,6 @@ import com.company_management.dto.response.*;
 import com.company_management.entity.*;
 import com.company_management.exception.AppException;
 import com.company_management.exception.BadRequestException;
-import com.company_management.dto.mapper.ContractMapper;
-import com.company_management.dto.mapper.RoleMapper;
-import com.company_management.dto.mapper.SocialInsuranceMapper;
-import com.company_management.dto.mapper.WageMapper;
 import com.company_management.dto.request.AccountSearchRequest;
 import com.company_management.dto.request.UserCustomEmployeeRequest;
 import com.company_management.dto.request.UserDetailRequest;
@@ -26,30 +22,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserCustomRepository userCustomRepository;
-    private final UserDetailRepository userDetailRepository;
-    private final ContractRepository contractRepository;
     private final SocialInsuranceRepository socialInsuranceRepository;
     private final DepartmentRepository departmentRepository;
     private final PositionRepository positionRepository;
     private final WageRepository wageRepository;
-    private final RoleRepository roleRepository;
-    private final RoleMapper roleMapper;
-    private final ContractMapper contractMapper;
-    private final SocialInsuranceMapper socialInsuranceMapper;
-    private final WageMapper wageMapper;
+    private final UserAccountRepository userAccountRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Override
     public PageResponse<UserSearchResponse> searchUser(UserSearchRequest request, Pageable pageable) {
-        return userCustomRepository.searchAllUser(request, pageable);
+//        return userCustomRepository.searchAllUser(request, pageable);
+        return null;
     }
 
     @Override
     public UserSearchResponse findUserDetailById(Long id) {
-        UserCustom userCustom = userCustomRepository.findById(id).orElseThrow(() -> new BadRequestException(
+        UserAccount userCustom = userAccountRepository.findById(id).orElseThrow(() -> new BadRequestException(
                 "Không tìm thấy User theo id" + id));
-        UserDetail userDetail =
-                userDetailRepository.findById(userCustom.getUserDetailId()).orElseThrow(() -> new AppException(
+        Employee employee =
+                employeeRepository.findById(userCustom.getEmployee().getId()).orElseThrow(() -> new AppException(
                         "API-500", "Có lỗi xảy ra"));
         UserSearchResponse result = new UserSearchResponse();
         result.setId(userCustom.getId());
@@ -60,11 +51,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BasicResponse createUserDetail(UserDetailRequest request) {
-        UserCustom user =
-                userCustomRepository.findById(request.getUserId()).orElseThrow(() -> new BadRequestException("Có lỗi " +
+        UserAccount user =
+                userAccountRepository.findById(request.getUserId()).orElseThrow(() -> new BadRequestException("Có lỗi " +
                         "xảy ra: Không tìm thấy User theo id: " + request.getUserId()));
-        UserDetail userDetail =
-                userDetailRepository.findById(user.getUserDetailId()).orElseThrow(() -> new AppException("API-500",
+        Employee employee =
+                employeeRepository.findById(user.getEmployee().getId()).orElseThrow(() -> new AppException("API-500",
                         "Có lỗi xảy ra"));
         Department department =
                 departmentRepository.findById(request.getDepartmentId()).orElseThrow(() -> new BadRequestException(
@@ -72,19 +63,19 @@ public class UserServiceImpl implements UserService {
         Position position =
                 positionRepository.findById(request.getPositionId()).orElseThrow(() -> new BadRequestException(
                         "Có lỗi xảy ra: Chức danh không tồn tại!"));
-        userDetail.setGender(request.getGender());
-        userDetail.setBirthday(DateUtil.string2Date(request.getBirthday()));
-        userDetail.setAddress(request.getAddress());
-
-        Contract contract = contractMapper.toEntity(request.getContract());
-        contractRepository.save(contract);
-        SocialInsurance socialInsurance = socialInsuranceMapper.toEntity(request.getSocialInsurance());
-        socialInsurance.setUserDetailId(userDetail.getId());
-        socialInsuranceRepository.save(socialInsurance);
-        Wage wage = wageMapper.toEntity(request.getWage());
-        wageRepository.save(wage);
-
-        userDetailRepository.save(userDetail);
+//        employee.setGender(request.getGender());
+//        employee.setBirthday(DateUtil.string2Date(request.getBirthday()));
+//        employee.setAddress(request.getAddress());
+//
+//        Contract contract = contractMapper.toEntity(request.getContract());
+//        contractRepository.save(contract);
+//        SocialInsurance socialInsurance = socialInsuranceMapper.toEntity(request.getSocialInsurance());
+//        socialInsurance.setUserDetailId(userDetail.getId());
+//        socialInsuranceRepository.save(socialInsurance);
+//        Wage wage = wageMapper.toEntity(request.getWage());
+//        wageRepository.save(wage);
+//
+//        userDetailRepository.save(userDetail);
         return new BasicResponse(200, "Thành công");
     }
 
@@ -93,26 +84,27 @@ public class UserServiceImpl implements UserService {
         if (DataUtil.isNullOrZero(id)) {
             throw new BadRequestException("Dữ liệu không hợp lệ");
         }
-        UserCustom user = userCustomRepository.findById(id).orElseThrow(() -> new BadRequestException("Có lỗi " +
-                "xảy ra: Không tìm thấy User theo id: " + id));
+//        UserCustom user = userCustomRepository.findById(id).orElseThrow(() -> new BadRequestException("Có lỗi " +
+//                "xảy ra: Không tìm thấy User theo id: " + id));
         return null;
     }
 
     @Override
     public PageResponse<AccountSearchResponse> searchAccount( Pageable pageable) {
-        return userCustomRepository.searchAccount(pageable);
+//        return userCustomRepository.searchAccount(pageable);
+        return null;
     }
 
     @Override
     @Transactional
     public void editUserCustom(UserCustomEmployeeRequest userCustomEmployeeRequest) {
-        UserCustom userCustom = userCustomRepository.findById(userCustomEmployeeRequest.getId()).orElseThrow(
-                () -> new AppException("ERR01", "Tài khoản không tồn tại!")
-        );
-        if (!DataUtils.isNullOrEmpty(userCustomEmployeeRequest.getUserDetailId())) {
-            userCustom.setUserDetailId(userCustomEmployeeRequest.getUserDetailId());
-        }
-        userCustomRepository.save(userCustom);
+//        UserCustom userCustom = userCustomRepository.findById(userCustomEmployeeRequest.getId()).orElseThrow(
+//                () -> new AppException("ERR01", "Tài khoản không tồn tại!")
+//        );
+//        if (!DataUtils.isNullOrEmpty(userCustomEmployeeRequest.getUserDetailId())) {
+//            userCustom.setUserDetailId(userCustomEmployeeRequest.getUserDetailId());
+//        }
+//        userCustomRepository.save(userCustom);
     }
 
 }

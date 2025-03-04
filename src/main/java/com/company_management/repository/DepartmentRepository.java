@@ -28,7 +28,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
             SELECT *
             FROM department d
             where (:name is null or lower(d.department_name) LIKE lower(concat('%', :name, '%')))
-            and d.status in :status
+            and d.IS_ACTIVE in :status
             ORDER BY d.created_date DESC
             """,
             nativeQuery = true)
@@ -40,5 +40,5 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Query(value = "update Department u set u.isActive = 0, u.updatedDate = now(), u.updatedBy = :user where u.id = :id and u.isActive = 1")
     int deleteById(Long id, Long user);
 
-    List<Department> findAllByStatus(Integer status);
+    List<Department> findAllByIsActive(Integer status);
 }

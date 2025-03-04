@@ -1,12 +1,13 @@
 package com.company_management.service;
 
+import com.company_management.entity.Employee;
+import com.company_management.entity.UserAccount;
 import com.company_management.exception.AppException;
 import com.company_management.exception.BadRequestException;
 import com.company_management.dto.UserCustomDTO;
-import com.company_management.entity.UserCustom;
-import com.company_management.entity.UserDetail;
-import com.company_management.repository.UserCustomRepository;
-import com.company_management.repository.UserDetailRepository;
+import com.company_management.repository.EmployeeRepository;
+import com.company_management.repository.UserAccountRepository;
+import com.company_management.repository.EmployeeInfoRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
@@ -29,8 +30,8 @@ import java.util.function.Function;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtService {
-    private final UserCustomRepository userCustomRepository;
-    private final UserDetailRepository userDetailRepository;
+    private final UserAccountRepository userCustomRepository;
+    private final EmployeeRepository employeeRepository;
     private static final String SERCRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
 
     public String extractUserName(String token) {
@@ -57,20 +58,20 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserCustom user) {
+    public String generateToken(UserAccount user) {
         Map<String, Object> claims = new HashMap<>();
         String jsonUserCustom = "";
 
         try {
-            UserCustom userCustom =
-                    userCustomRepository.findByEmail(user.getUsername()).orElseThrow(() -> new BadRequestException("Không tìm thấy User"));
-            UserDetail userDetail = userDetailRepository.findById(userCustom.getUserDetailId()).orElseThrow(
+            UserAccount userCustom =
+                    userCustomRepository.findByEmail(user.getEmail()).orElseThrow(() -> new BadRequestException("Không tìm thấy User"));
+            Employee employee = employeeRepository.findById(userCustom.getEmployee().getId()).orElseThrow(
                     () -> new AppException("ERR01", "Không tìm thấy nhân viên!")
             );
             UserCustomDTO userCustomDTO = new UserCustomDTO();
             userCustomDTO.setId(userCustom.getId());
-            userCustomDTO.setUserDetailId(userCustom.getUserDetailId());
-            userCustomDTO.setUserDetailName(userDetail.getEmployeeName());
+            userCustomDTO.setUserDetailId(userCustom.getId());
+            userCustomDTO.setUserDetailName(employee.getFullName());
             userCustomDTO.setUserName(userCustom.getUsername());
             userCustomDTO.setEmail(userCustom.getEmail());
             jsonUserCustom = convertObjectToJson(userCustomDTO);
@@ -82,10 +83,10 @@ public class JwtService {
         return generateToken(claims, user);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserCustom user) {
+    public String generateToken(Map<String, Object> extraClaims, UserAccount user) {
         return Jwts.builder()
                 .addClaims(extraClaims)
-                .setSubject(user.getUsername())
+                .setSubject(user.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)

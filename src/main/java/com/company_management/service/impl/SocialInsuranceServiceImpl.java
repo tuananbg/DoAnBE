@@ -3,7 +3,6 @@ package com.company_management.service.impl;
 import com.company_management.exception.AppException;
 import com.company_management.dto.SocialInsuranceDTO;
 import com.company_management.entity.SocialInsurance;
-import com.company_management.dto.mapper.SocialInsuranceMapper;
 import com.company_management.repository.SocialInsuranceRepository;
 import com.company_management.service.SocialInsuranceService;
 import com.company_management.utils.CommonUtils;
@@ -26,8 +25,6 @@ public class SocialInsuranceServiceImpl implements SocialInsuranceService {
 
     private final SocialInsuranceRepository socialInsuranceRepository;
 
-    private final SocialInsuranceMapper socialInsuranceMapper;
-
     @Override
     @Transactional(readOnly = true)
     public Page<SocialInsuranceDTO> search(Long userDetailId, Pageable pageable) {
@@ -42,7 +39,6 @@ public class SocialInsuranceServiceImpl implements SocialInsuranceService {
                     socialInsuranceDTO.setActualPayment(res.getActualPayment());
                     socialInsuranceDTO.setLicenseDate(res.getLicenseDate());
                     socialInsuranceDTO.setExpiredDate(res.getExpiredDate());
-                    socialInsuranceDTO.setUserDetailId(res.getUserDetailId());
                     return socialInsuranceDTO;
                 }
         ).collect(Collectors.toList());
@@ -62,7 +58,6 @@ public class SocialInsuranceServiceImpl implements SocialInsuranceService {
                 .actualPayment(socialInsurance.getActualPayment())
                 .expiredDate(socialInsurance.getExpiredDate())
                 .licenseDate(socialInsurance.getLicenseDate())
-                .userDetailId(socialInsurance.getUserDetailId())
                 .build();
     }
 
@@ -83,18 +78,18 @@ public class SocialInsuranceServiceImpl implements SocialInsuranceService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(SocialInsuranceDTO socialInsuranceDTO) {
-        SocialInsurance socialInsurance = socialInsuranceMapper.toEntity(socialInsuranceDTO);
-        socialInsurance.setInitialPayment(Double.parseDouble(socialInsuranceDTO.getInitialPayment().toString()));
-        socialInsurance.setPercent(Double.parseDouble(socialInsuranceDTO.getPercent().toString()));
-        socialInsurance.setActualPayment(Double.parseDouble(socialInsuranceDTO.getActualPayment().toString()));
-        socialInsurance.setLicenseDate(socialInsuranceDTO.getLicenseDate());
-        socialInsurance.setExpiredDate(socialInsuranceDTO.getExpiredDate());
-        if (socialInsuranceDTO.getUserDetailId() != null) {
-            socialInsurance.setUserDetailId(socialInsuranceDTO.getUserDetailId());
-        } else {
-            throw new AppException("ERR01", "Chọn nhân viên để thêm mã bảo hiểm xã hội");
-        }
-        socialInsuranceRepository.save(socialInsurance);
+//        SocialInsurance socialInsurance = socialInsuranceMapper.toEntity(socialInsuranceDTO);
+//        socialInsurance.setInitialPayment(Double.parseDouble(socialInsuranceDTO.getInitialPayment().toString()));
+//        socialInsurance.setPercent(Double.parseDouble(socialInsuranceDTO.getPercent().toString()));
+//        socialInsurance.setActualPayment(Double.parseDouble(socialInsuranceDTO.getActualPayment().toString()));
+//        socialInsurance.setLicenseDate(socialInsuranceDTO.getLicenseDate());
+//        socialInsurance.setExpiredDate(socialInsuranceDTO.getExpiredDate());
+//        if (socialInsuranceDTO.getUserDetailId() != null) {
+////            socialInsurance.setUserDetailId(socialInsuranceDTO.getUserDetailId());
+//        } else {
+//            throw new AppException("ERR01", "Chọn nhân viên để thêm mã bảo hiểm xã hội");
+//        }
+//        socialInsuranceRepository.save(socialInsurance);
     }
 
     @Override

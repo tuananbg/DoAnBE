@@ -31,11 +31,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Query(value = "SELECT e FROM Employee e LEFT JOIN e.employeeInfo ei WHERE " +
             "(:keyword IS NULL OR " +
-            "UPPER(e.code) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
-            "UPPER(e.fullName) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
-            "UPPER(e.positionCode) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
-            "UPPER(COALESCE(ei.identityNumber, '')) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
-            "COALESCE(TO_CHAR(ei.dateOfBirth, 'DD'), '') = :keyword) " +
+            "UPPER(e.code) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
+            "UPPER(e.fullName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
+            "UPPER(e.positionCode) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
+            "UPPER(COALESCE(ei.identityNumber, '')) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
+            "(:keyword IS NULL OR COALESCE(DATE_FORMAT(ei.dateOfBirth, '%d'), '') = :keyword)) " +
             "AND e.isActive = :status " +
             "ORDER BY e.code ASC")
     Page<Employee> findAllByKeywordAndStatus(@Param("keyword") String keyword, @Param("status") Integer status, Pageable pageable);

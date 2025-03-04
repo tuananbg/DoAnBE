@@ -12,6 +12,7 @@ import com.company_management.dto.response.TotalEmployeeDTO;
 import com.company_management.dto.response.employee.ResponseEmployeeDetailDTO;
 import com.company_management.dto.response.employee.ResponseListEmployeeDTO;
 import com.company_management.entity.Employee;
+import com.company_management.entity.EmployeeInfo;
 import com.company_management.exception.AppException;
 import com.company_management.dto.UserDetailDTO;
 import com.company_management.entity.Department;
@@ -57,6 +58,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
     private final PositionRepository positionRepository;
+    private final EmployeeInfoRepository employeeInfoRepository;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -66,8 +68,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         Page<Employee> employees = employeeRepository.findAllByKeywordAndStatus(keyword, Status.ACTIVE.getCode(), page.toPageable());
         List<ResponseListEmployeeDTO> responseEmployeeDTOList = employees.getContent()
                 .stream()
-                .map(item -> MapperUtils.map(item, ResponseListEmployeeDTO.class))
-                .toList();
+                .map(item ->{
+                    ResponseListEmployeeDTO reponse = new ResponseListEmployeeDTO();
+                    reponse.setId(item.getId());
+                    reponse.setEmployeeCode(item.getCode());
+                    reponse.setEmployeeName(item.getFullName());
+                    reponse.setDepartmentName(item.getDepartmentName());
+                    reponse.setPositionName(item.getPositionName());
+                    if (item.getEmployeeInfo() != null) {
+                        EmployeeInfo employeeInfo = employeeInfoRepository.findById(item.getEmployeeInfo().getId()).orElse(null);
+                        if (employeeInfo != null) {
+                            reponse.setGender(employeeInfo.getGender());
+                            reponse.setPhone(employeeInfo.getMobile());
+                            reponse.setAddress(employeeInfo.getPermanentAddress());
+                        }
+                    }
+                    return reponse;
+                }).toList();
         return new ResponsePage<>(responseEmployeeDTOList, page, employees.getTotalElements());
 
     }

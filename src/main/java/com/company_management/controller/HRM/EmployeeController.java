@@ -59,9 +59,9 @@ public class EmployeeController {
         return BaseResponse.ok(AppConstants.STATUS_201, AppConstants.EMPLOYEE_201);
     }
 
-    @PostMapping("/search")
-    public BaseResponse<ResponsePage<ResponseListEmployeeDTO>> searchEmployee(@RequestParam(name = "keyword", required = false) String keyword,
-                                                                             @ModelAttribute @Valid RequestPage page) {
+    @GetMapping("/list")
+    public BaseResponse<ResponsePage<ResponseListEmployeeDTO>> findAllByKeywordAndStatus(@RequestParam(name = "keyword", required = false) String keyword,
+                                                                                         @ModelAttribute @Valid RequestPage page) {
         return BaseResponse.ok(employeeService.findAllByKeywordAndStatus(keyword, page));
     }
 

@@ -96,6 +96,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseAccountRole findAccountRole(Long id) {
+        UserAccount userAccount = userAccountRepository.findByEmployeeId(id).orElseThrow(() -> new BadRequestException(""));
+        ResponseAccountRole responseAccountRole = new ResponseAccountRole();
+        responseAccountRole.setId(userAccount.getId());
+        responseAccountRole.setRoles(userAccount.getRole().getCode());
+        responseAccountRole.setFullName(userAccount.getUsername());
+        return responseAccountRole;
+
+    }
+
+    @Override
     @Transactional
     public void editUserCustom(UserCustomEmployeeRequest userCustomEmployeeRequest) {
 //        UserCustom userCustom = userCustomRepository.findById(userCustomEmployeeRequest.getId()).orElseThrow(

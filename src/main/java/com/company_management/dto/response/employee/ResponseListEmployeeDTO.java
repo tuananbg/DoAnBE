@@ -11,6 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseListEmployeeDTO {
+    private Long id;
 
     private String employeeCode;
 

@@ -18,5 +18,7 @@ public interface UserService {
 
     PageResponse<AccountSearchResponse> searchAccount( Pageable pageable);
 
+    ResponseAccountRole findAccountRole(Long id);
+
     void editUserCustom(UserCustomEmployeeRequest userCustomEmployeeRequest);
 }

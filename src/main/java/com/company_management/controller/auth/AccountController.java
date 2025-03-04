@@ -6,10 +6,12 @@ import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.request.UserCustomEmployeeRequest;
 import com.company_management.dto.response.AccountSearchResponse;
 import com.company_management.dto.response.PageResponse;
+import com.company_management.dto.response.ResponseAccountRole;
 import com.company_management.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,11 @@ public class AccountController {
     @GetMapping("/getAll")
     public BaseResponse<PageResponse<AccountSearchResponse>> findAll(@PageableDefault Pageable pageable) {
         return BaseResponse.ok(userService.searchAccount(pageable));
+    }
+
+    @GetMapping("/getDetail/{id}")
+    public BaseResponse<ResponseAccountRole> findAccountRole(@PathVariable("id") Long id) {
+        return BaseResponse.ok(userService.findAccountRole(id));
     }
 
 //    @GetMapping("/roles")

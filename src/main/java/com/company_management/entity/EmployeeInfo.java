@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "EMPLOYEE_INFO")
+@Table(name = "EMPLOYEE_INFO") //Chi tiết CBNV
 public class EmployeeInfo extends BaseEntity {
 
     @Column(name = "DATE_OF_BIRTH")

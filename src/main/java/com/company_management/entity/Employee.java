@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -14,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "EMPLOYEE")
+@Table(name = "EMPLOYEE") // Bảng CBNV
 public class Employee extends BaseEntity {
 
     @Column(name = "CODE")
@@ -46,9 +45,15 @@ public class Employee extends BaseEntity {
     @Column(name = "POSITION_NAME")
     private String positionName;
 
+    @Column(name = "SEAT_CODE")
+    private String seatCode;
+
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<EmployeeContracts> employeeContractsList;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Qualification> qualifications;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Seat> seats;
 }

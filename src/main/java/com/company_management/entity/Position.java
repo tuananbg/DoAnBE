@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "POSITION")
+@Table(name = "POSITION") // Chức danh
 public class Position extends BaseEntity {
 
     @Column(name = "POSITION_CODE")
@@ -26,5 +26,14 @@ public class Position extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "DEPARTMENT_ID")
     private Department departmentId;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "position_category_id")
+    private PositionCategory positionCategory;
+
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "job_group_id")
+    private JobGroup jobGroup;
 
 }

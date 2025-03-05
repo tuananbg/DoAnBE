@@ -114,6 +114,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public ResponseEmployeeDetailDTO detailEmployeeCode(String code) {
+        Employee employee = employeeRepository.findByCode(code)
+                .orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
+        ResponseEmployeeDetailDTO detailDTO = new ResponseEmployeeDetailDTO();
+        MapperUtils.map(employee, detailDTO);
+        return detailDTO;
+    }
+
+    @Override
     @Transactional
     public void createEmployee(MultipartFile avatarFile, RequestEmployeeDetailDTO request) throws IOException {
         Employee byEmployeeCode = employeeRepository.findByCode(request.getEmployeeCode()).orElse(null);

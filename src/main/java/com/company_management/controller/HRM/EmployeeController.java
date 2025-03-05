@@ -69,6 +69,10 @@ public class EmployeeController {
     public BaseResponse<ResponseEmployeeDetailDTO> getByIdEmployee(@PathVariable("id") Long id) {
         return BaseResponse.ok(employeeService.detailEmployee(id));
     }
+    @GetMapping("/detail/{code}")
+    public BaseResponse<ResponseEmployeeDetailDTO> getDetailByCode(@PathVariable("code") String code) {
+        return BaseResponse.ok(employeeService.detailEmployeeCode(code));
+    }
 
     @GetMapping("/{urlAvatar}")
     public ResponseEntity<byte[]> getImageByUrl(@PathVariable("urlAvatar") String urlAvatar) throws IOException {

@@ -22,6 +22,7 @@ public interface EmployeeService {
     ResponsePage<ResponseListEmployeeDTO> findAllByKeywordAndStatus(String keyword, RequestPage page);
 
     ResponseEmployeeDetailDTO detailEmployee(Long id);
+    ResponseEmployeeDetailDTO detailEmployeeCode(String code);
 
     void createEmployee(MultipartFile avatarFile, RequestEmployeeDetailDTO request) throws IOException;
 

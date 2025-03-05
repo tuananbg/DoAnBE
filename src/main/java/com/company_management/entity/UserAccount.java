@@ -39,7 +39,7 @@ public class UserAccount extends BaseEntity implements UserDetails {
     private String activeCode;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "id")
+    @JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "ID")
     private Employee employee;
 
     @Column(name = "ROLE")

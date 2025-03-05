@@ -44,7 +44,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void register(RegisterRequest request) {
         UserAccount user = new UserAccount();
-        if(userAccountRepository.findByEmail(request.getEmail()).isPresent()){
+        if (userAccountRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new AppException("ERR01", "Email đã tồn tại!");
         }
         user.setEmail(request.getEmail());
@@ -73,25 +73,32 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationResponse authenticate(AuthenticationRequest request){
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
         UserAccount user =
                 userAccountRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException(
                         "Không tìm thấy User có địa chỉ email" + request.getEmail()));
-        if (!user.getIsActive().equals(Constants.STATUS_ACTIVE_INT)){
+        if (!user.getIsActive().equals(Constants.STATUS_ACTIVE_INT)) {
             throw new RuntimeException("User chưa được kích hoạt");
         }
-        try{
+        try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new AppException("ERR02", "Email hoặc mật khẩu không đúng!");
         }
         String jwtToken = jwtService.generateToken(user);
         AuthenticationResponse response = new AuthenticationResponse();
-        response.setUsername(user.getUsername());
+        response.setFullName(user.getUsername());
         response.setToken(jwtToken);
         response.setRoles(user.getRole().getCode());
+        response.setEmail(user.getEmail());
+        if (user.getEmployee() != null) {
+            response.setEmployeeCode(user.getEmployee().getCode());
+        } else {
+            response.setEmployeeCode("");
+        }
+
         return response;
     }
 
@@ -124,8 +131,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         "not found!!!"));
         String jwtToken = jwtService.generateToken(user);
         AuthenticationResponse response = new AuthenticationResponse();
-        response.setUsername(user.getUsername());
+        response.setFullName(user.getUsername());
         response.setToken(jwtToken);
+        response.setRoles(user.getRole().getCode());
+        response.setEmail(user.getEmail());
+        if (user.getEmployee() != null) {
+            response.setEmployeeCode(user.getEmployee().getCode());
+        } else {
+            response.setEmployeeCode(" ");
+        }
+
         return response;
     }
 
@@ -134,7 +149,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserAccount user =
                 userAccountRepository.findByEmail(principal.getName()).orElseThrow(() -> new RuntimeException("Email " +
                         "not found!!!"));
-        if(!request.getPassword().equals(request.getConfirmPassword())){
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new RuntimeException("Confirm Password not same!!!");
         }
         user.setPassword(passwordEncoder.encode(request.getPassword()));

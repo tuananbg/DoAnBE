@@ -2,14 +2,13 @@ package com.company_management.controller.auth;
 
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
+import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.request.AuthenticationRequest;
 import com.company_management.dto.request.ChangePasswordRequest;
 import com.company_management.dto.request.RegisterRequest;
 import com.company_management.dto.response.AuthenticationResponse;
 import com.company_management.service.AuthenticationService;
 import com.company_management.dto.response.BasicResponse;
-import com.company_management.service.impl.AuthenticationServiceImpl;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +34,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
-        return new ResponseEntity<>(authenticationService.authenticate(request), HttpStatus.OK);
+    public BaseResponse<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
+        return BaseResponse.ok(authenticationService.authenticate(request));
     }
 
     @GetMapping("/{activeCode}")

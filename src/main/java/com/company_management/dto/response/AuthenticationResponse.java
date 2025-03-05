@@ -10,7 +10,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthenticationResponse {
-    private String username;
     private String token;
+
+    private String fullName;
+
+    private String employeeCode;
+
     private String roles;
+
+    private String email;
 }

@@ -1,0 +1,11 @@
+app:
+  config:
+    jwt:
+      secret-key: 9a4f2c8d3b7a1e6f45c8a0b3f267d8b1d4e6f3c8a9d2b5f8e3a9c8b5f6v8a3d9
+      expire-time: 300 # Thời gian hết hạn token, theo phút
+    max-number-password-wrong: 5 # số lần cho phép nhập sai mật khẩu
+    password-expired-time: 30 # thời gian mật khẩu hết hạn, theo ngày
+    cache:
+      expire-time: 30 # Thời gian cache expire, theo phút
+      initial-size: 50 # minimum total size for the internal data structures
+      maximun-size: 500 # maximun total size for the internal data structures

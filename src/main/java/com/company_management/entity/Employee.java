@@ -26,7 +26,7 @@ public class Employee extends BaseEntity {
     private String avatar;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "EMPLOYEE_INFO_ID", referencedColumnName = "id")
+    @JoinColumn(name = "EMPLOYEE_INFO_ID", referencedColumnName = "ID")
     private EmployeeInfo employeeInfo;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

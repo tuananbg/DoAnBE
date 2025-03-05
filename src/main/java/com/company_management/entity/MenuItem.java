@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,4 +20,6 @@ public class MenuItem extends BaseEntity {
     @Column(name = "MENU_ITEM_NAME")
     private String menuItemName;
 
+    @Column(name = "PATHURL")
+    private String pathUrl;
 }

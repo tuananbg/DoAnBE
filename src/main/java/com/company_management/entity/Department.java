@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "DEPARTMENT")
+@Table(name = "DEPARTMENT") // Bảng phòng ban
 public class Department extends BaseEntity {
 
     @Column(name = "DEPARTMENT_CODE")

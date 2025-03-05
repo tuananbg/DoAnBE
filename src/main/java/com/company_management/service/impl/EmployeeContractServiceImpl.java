@@ -1,9 +1,12 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.enums.ContractType;
+import com.company_management.common.enums.Status;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.mapper.MapperUtils;
 import com.company_management.dto.response.PageResponse;
+import com.company_management.dto.response.ResponseTotalDTO;
 import com.company_management.entity.EmployeeContracts;
 import com.company_management.exception.AppException;
 import com.company_management.dto.ContractDTO;
@@ -164,6 +167,21 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
 //        userDetailContractRepository.save(userDetailContract);
     }
 
+    @Override
+    public List<ResponseTotalDTO> getStatistical() {
+        List<ResponseTotalDTO> responseTotalDTOList = new ArrayList<>();
+//        List<EmployeeContracts> employeeContracts = employeeContractRepository.findAllByIsActive(Status.ACTIVE.getCode());
+//        for (EmployeeContracts employeeContract: employeeContracts) {
+//
+//        }
+        for (int i=0;i<3;i ++){
+            ResponseTotalDTO response = new ResponseTotalDTO();
+            response.setValue(5);
+            response.setName(ContractType.from(i+1).getName());
+            responseTotalDTOList.add(response);
+        }
+        return responseTotalDTOList;
+    }
 
 
 }

@@ -27,7 +27,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(value = "SELECT e FROM Employee e " +
             "join Department d on e.department.id = d.id " +
             "where e.department.id = :departmentId")
-    List<Employee> findAllByDepartment(@Param("department") Long departmentId);
+    List<Employee> findAllByDepartment(@Param("departmentId") Long departmentId);
 
     @Query(value = "SELECT e FROM Employee e LEFT JOIN e.employeeInfo ei WHERE " +
             "(:keyword IS NULL OR " +
@@ -39,5 +39,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "AND e.isActive = :status " +
             "ORDER BY e.code ASC")
     Page<Employee> findAllByKeywordAndStatus(@Param("keyword") String keyword, @Param("status") Integer status, Pageable pageable);
+
+    @Query("SELECT COUNT(e) FROM EmployeeInfo ei JOIN Employee e on e.employeeInfo.id = ei.id " +
+            "WHERE FUNCTION('MONTH', ei.dateOfBirth) = FUNCTION('MONTH', CURRENT_DATE) " +
+            "AND e.isActive = :status")
+    Long countActiveEmployeesWithBirthdayInCurrentMonth(Integer status);
+
 
 }

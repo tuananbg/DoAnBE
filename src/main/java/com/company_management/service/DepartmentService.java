@@ -3,7 +3,7 @@ package com.company_management.service;
 import com.company_management.dto.DepartmentDTO;
 import com.company_management.dto.request.SearchDepartmentRequest;
 import com.company_management.dto.response.ResponseDepartmentDTO;
-import com.company_management.dto.response.ResponseDepartmentTotalDTO;
+import com.company_management.dto.response.ResponseTotalDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,5 +21,5 @@ public interface DepartmentService {
 
     ResponseDepartmentDTO detailDepartment(Long id);
 
-    List<ResponseDepartmentTotalDTO> totalDepartment();
+    List<ResponseTotalDTO> totalDepartment();
 }

@@ -265,7 +265,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public TotalEmployeeDTO totalEmployee(Long id) {
+    public TotalEmployeeDTO totalEmployee(String code) {
         TotalEmployeeDTO totalEmployeeDTO = new TotalEmployeeDTO();
         List<Employee> employees = employeeRepository.findAllByIsActive(EmploymentStatus.EMPLOYMENT.getCode());
         if (employees != null) {
@@ -274,12 +274,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         else {
             totalEmployeeDTO.setTotalEmployee(0);
         }
-        List<Employee> userDetailsBirthDays = employeeRepository.findAllByIsActive(EmploymentStatus.EMPLOYMENT.getCode());
-        if (userDetailsBirthDays != null) {
-            totalEmployeeDTO.setTotalBirthDayMonth(userDetailsBirthDays.size());
+        Long totalEmployeeBirths = employeeRepository.countActiveEmployeesWithBirthdayInCurrentMonth(EmploymentStatus.EMPLOYMENT.getCode());
+        if (totalEmployeeBirths != null) {
+            totalEmployeeDTO.setTotalBirthDayMonth(totalEmployeeBirths);
         }
         else {
-            totalEmployeeDTO.setTotalBirthDayMonth(0);
+            totalEmployeeDTO.setTotalBirthDayMonth(0L);
         }
         totalEmployeeDTO.setTotalLateWork(2);
         totalEmployeeDTO.setTotalLeaveWork(3);

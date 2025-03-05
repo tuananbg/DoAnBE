@@ -3,14 +3,13 @@ package com.company_management.service.impl;
 import com.company_management.common.enums.DepartmentStatus;
 import com.company_management.dto.mapper.MapperUtils;
 import com.company_management.dto.response.ResponseDepartmentDTO;
-import com.company_management.dto.response.ResponseDepartmentTotalDTO;
+import com.company_management.dto.response.ResponseTotalDTO;
 import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;
 import com.company_management.dto.DepartmentDTO;
 import com.company_management.entity.Department;
 import com.company_management.dto.request.SearchDepartmentRequest;
 import com.company_management.repository.DepartmentRepository;
-import com.company_management.repository.EmployeeInfoRepository;
 import com.company_management.repository.EmployeeRepository;
 import com.company_management.service.DepartmentService;
 import com.company_management.utils.CommonUtils;
@@ -102,13 +101,13 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public List<ResponseDepartmentTotalDTO> totalDepartment() {
-        List<ResponseDepartmentTotalDTO> response = new ArrayList<>();
+    public List<ResponseTotalDTO> totalDepartment() {
+        List<ResponseTotalDTO> response = new ArrayList<>();
         List<Department> departments = departmentRepository.findAllByIsActive(DepartmentStatus.ACTIVE.getCode());
         for (Department department : departments) {
             List<Employee> employees = employeeRepository.findAllByDepartment(department.getId());
             if (employees != null){
-                ResponseDepartmentTotalDTO item = new ResponseDepartmentTotalDTO();
+                ResponseTotalDTO item = new ResponseTotalDTO();
                 item.setName(department.getDepartmentName());
                 item.setValue(employees.size());
                 response.add(item);

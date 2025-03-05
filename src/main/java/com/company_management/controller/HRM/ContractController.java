@@ -5,9 +5,11 @@ import com.company_management.common.ObjectError;
 import com.company_management.common.ResultResp;
 import com.company_management.dto.ContractDTO;
 import com.company_management.dto.UserDetailContractDTO;
+import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.response.BasicResponse;
+import com.company_management.dto.response.ResponseTotalDTO;
 import com.company_management.service.EmployeeContractService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +27,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/contract")
+@RequestMapping("/api/v1/employee-contract")
 @Slf4j
 @RequiredArgsConstructor
 public class ContractController {
@@ -115,5 +118,9 @@ public class ContractController {
         }
     }
 
+    @GetMapping("/statistical")
+    private BaseResponse<List<ResponseTotalDTO>> getDepartmentTotal() {
+        return BaseResponse.ok(contractService.getStatistical());
+    }
 
 }

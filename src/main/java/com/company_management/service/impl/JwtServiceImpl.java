@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 @Log4j2
@@ -53,9 +54,12 @@ public class JwtServiceImpl implements JwtService {
     }
 
     public String generateToken(UserAccount user) {
-        return Jwts.builder().setSubject(user.getEmail()).setIssuedAt(DateUtils.getNow())
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                .setIssuedAt(DateUtils.getNow())
                 .setExpiration(new Date(System.currentTimeMillis() + appConfig.getJWTExpireTime() * 60 * 1000))
-                .signWith(getKey(appConfig.getJWTSecretKey())).compact();
+                .signWith(getKey(appConfig.getJWTSecretKey()), SignatureAlgorithm.HS384) // Chỉ định thuật toán
+                .compact();
     }
 
     private Key getKey(String secret) {
@@ -77,8 +81,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
                 .build()
                 .parseClaimsJws(token)

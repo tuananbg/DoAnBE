@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TotalEmployeeDTO {
     private int totalEmployee;
-    private int totalBirthDayMonth;
+    private Long totalBirthDayMonth;
     private int totalLateWork;
     private int totalLeaveWork;
 }

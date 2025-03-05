@@ -37,5 +37,5 @@ public interface EmployeeService {
 
     void lockEmployee(Long id);
 
-    TotalEmployeeDTO totalEmployee(Long id);
+    TotalEmployeeDTO totalEmployee(String code);
 }

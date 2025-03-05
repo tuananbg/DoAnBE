@@ -6,8 +6,12 @@ import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.response.ResponseEmployeeContractsDetail;
 import com.company_management.dto.response.DataPage;
+import com.company_management.dto.response.ResponseTotalDTO;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface EmployeeContractService {
     DataPage<ContractDTO> searchForEmployee(ContractDTO contractDTO, Pageable page);
@@ -23,5 +27,7 @@ public interface EmployeeContractService {
     void add(MultipartFile file, ContractDTO contractDTO);
 
     void addForEmployee(UserDetailContractDTO userDetailContractDTO);
+
+    List<ResponseTotalDTO> getStatistical();
 
 }

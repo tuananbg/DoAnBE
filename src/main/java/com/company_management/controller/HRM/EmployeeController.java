@@ -146,9 +146,9 @@ public class EmployeeController {
 //        return templateEngine.process("export_pdf_employee", context);
     }
 
-    @GetMapping("total/{id}")
-    public BaseResponse<TotalEmployeeDTO> totalEmployee(@PathVariable("id") Long id) {
-        return BaseResponse.ok(employeeService.totalEmployee(id));
+    @GetMapping("total/{code}")
+    public BaseResponse<TotalEmployeeDTO> totalEmployee(@PathVariable("code") String code) {
+        return BaseResponse.ok(employeeService.totalEmployee(code));
     }
 
 }

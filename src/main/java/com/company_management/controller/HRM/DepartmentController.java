@@ -6,8 +6,7 @@ import com.company_management.dto.DepartmentDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.request.SearchDepartmentRequest;
 import com.company_management.dto.response.ResponseDepartmentDTO;
-import com.company_management.dto.response.ResponseDepartmentTotalDTO;
-import com.company_management.entity.BaseEntity;
+import com.company_management.dto.response.ResponseTotalDTO;
 import com.company_management.service.DepartmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +58,7 @@ public class DepartmentController {
     }
 
     @GetMapping("/total")
-    private BaseResponse<List<ResponseDepartmentTotalDTO>> getDepartmentTotal() {
+    private BaseResponse<List<ResponseTotalDTO>> getDepartmentTotal() {
         return BaseResponse.ok(departmentService.totalDepartment());
     }
 

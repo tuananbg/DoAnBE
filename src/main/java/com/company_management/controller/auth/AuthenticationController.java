@@ -1,5 +1,6 @@
 package com.company_management.controller.auth;
 
+import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.dto.common.BaseResponse;
@@ -30,7 +31,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public BaseResponse<Object> register(@RequestBody RegisterRequest request) {
         authenticationService.register(request);
-        return BaseResponse.ok(ErrorCode.CREATED_OK);
+        return BaseResponse.ok(AppConstants.STATUS_201, AppConstants.EMPLOYEE_201);
     }
 
     @PostMapping("/login")

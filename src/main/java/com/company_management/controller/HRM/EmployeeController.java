@@ -65,7 +65,7 @@ public class EmployeeController {
         return BaseResponse.ok(employeeService.findAllByKeywordAndStatus(keyword, page));
     }
 
-    @GetMapping("/detail/{id}")
+    @GetMapping("/detail-id/{id}")
     public BaseResponse<ResponseEmployeeDetailDTO> getByIdEmployee(@PathVariable("id") Long id) {
         return BaseResponse.ok(employeeService.detailEmployee(id));
     }

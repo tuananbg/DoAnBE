@@ -52,6 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setRole(Role.findByCode(request.getRole()));
         user.setIsActive(Constants.STATUS_ACTIVE_INT);
         user.setActiveCode(generateCode());
+        user.setCreatedBy("admin");
         user.setCreatedDate(new Date());
         userAccountRepository.save(user);
         Map<String, Object> params = LogisticsMailUtils.sendMailToCode(user.getActiveCode());
@@ -60,7 +61,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         MailRequest mailRequest = MailRequest.builder()
                 .toMail(user.getEmail())
                 .html(true)
-                .title("Công ty cổ phần truyền thông và dịch vụ Nodo")
+                .title("Công ty cổ phần truyền thông và dịch vụ DTDI")
                 .content(templateEngine.process(MailRequest.CODE_REGISTER_PROVIDER_TEMPLATE, context))
                 .build();
         emailService.send(mailRequest);
@@ -170,15 +171,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     public String generateCode() {
-        int leftLimit = 48; // numeral '0'
-        int rightLimit = 122; // letter 'z'
-        int targetStringLength = 10;
+        int targetStringLength = 6;
         Random random = new Random();
 
-        return random.ints(leftLimit, rightLimit + 1)
-                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+        return random.ints(48, 58) // Chỉ lấy số từ '0' (48) đến '9' (57)
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
     }
+
 }

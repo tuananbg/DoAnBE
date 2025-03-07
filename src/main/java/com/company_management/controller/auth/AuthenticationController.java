@@ -28,9 +28,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResultResp<Object> register(@RequestBody RegisterRequest request) {
+    public BaseResponse<Object> register(@RequestBody RegisterRequest request) {
         authenticationService.register(request);
-        return ResultResp.success(ErrorCode.CREATED_OK);
+        return BaseResponse.ok(ErrorCode.CREATED_OK);
     }
 
     @PostMapping("/login")
@@ -38,7 +38,7 @@ public class AuthenticationController {
         return BaseResponse.ok(authenticationService.authenticate(request));
     }
 
-    @GetMapping("/{activeCode}")
+    @GetMapping("register/{activeCode}")
     public ResponseEntity<BasicResponse> activeAccount(@PathVariable String activeCode) {
         if (authenticationService.activeAccount(activeCode)) {
             return new ResponseEntity<>(new BasicResponse(200, "Kích hoạt tài khoản thành công"), HttpStatus.OK);

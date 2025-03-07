@@ -25,20 +25,20 @@ public abstract class BaseEntity implements Serializable {
     @Column(name = "ID")
     private Long id;
 
-    @CreatedBy
+//    @CreatedBy
     @Column(name = "CREATED_BY", updatable = false)
     private String createdBy;
 
-    @CreatedDate
+//    @CreatedDate
     @Column(name = "CREATED_DATE", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date createdDate;
 
-    @LastModifiedBy
+//    @LastModifiedBy
     @Column(name = "MODIFIED_BY")
     private String updatedBy;
 
-    @LastModifiedDate
+//    @LastModifiedDate
     @Column(name = "MODIFIED_DATE")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date updatedDate;

@@ -28,7 +28,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/wage")
+@RequestMapping("${apiPrefix}/wage")
 @Slf4j
 @RequiredArgsConstructor
 public class WageController {

@@ -9,3 +9,5 @@ app:
       expire-time: 30 # Thời gian cache expire, theo phút
       initial-size: 50 # minimum total size for the internal data structures
       maximun-size: 500 # maximun total size for the internal data structures
+
+apiPrefix: /api/v1

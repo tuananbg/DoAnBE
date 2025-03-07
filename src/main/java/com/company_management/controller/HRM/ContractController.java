@@ -30,7 +30,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/employee-contract")
+@RequestMapping("${apiPrefix}/employee-contract")
 @Slf4j
 @RequiredArgsConstructor
 public class ContractController {

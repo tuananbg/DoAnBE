@@ -20,7 +20,7 @@ import java.io.ByteArrayInputStream;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/attendanceOt")
+@RequestMapping("${apiPrefix}/attendanceOt")
 public class AttendanceOTController {
 
     private final AttendanceOTService attendanceOTService;

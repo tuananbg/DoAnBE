@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("${apiPrefix}/user")
 @RequiredArgsConstructor
 public class UserController {
     private final JwtService jwtService;

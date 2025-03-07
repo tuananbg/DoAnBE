@@ -42,7 +42,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/employee")
+@RequestMapping("${apiPrefix}/employee")
 public class EmployeeController {
 
     private final EmployeeService employeeService;

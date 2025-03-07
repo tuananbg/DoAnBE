@@ -25,7 +25,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/position")
+@RequestMapping("${apiPrefix}/position")
 public class PositionController {
 
     private final PositionService positionService;

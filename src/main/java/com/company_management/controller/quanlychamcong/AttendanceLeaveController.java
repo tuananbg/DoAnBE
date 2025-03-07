@@ -20,7 +20,7 @@ import java.io.ByteArrayInputStream;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/leave")
+@RequestMapping("${apiPrefix}/leave")
 public class AttendanceLeaveController {
 
     private final AttendanceLeaveService attendanceLeaveService;

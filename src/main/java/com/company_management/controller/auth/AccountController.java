@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/account")
+@RequestMapping("${apiPrefix}/account")
 @RequiredArgsConstructor
 public class AccountController {
     private final UserService userService;

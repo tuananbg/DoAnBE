@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/qualification")
+@RequestMapping("${apiPrefix}/qualification")
 @Slf4j
 @RequiredArgsConstructor
 public class QualificationController {

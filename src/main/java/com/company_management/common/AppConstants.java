@@ -17,7 +17,7 @@ public class AppConstants {
     public static final String STATUS_400 = "400";
     public static final String STATUS_500 = "500";
 
-    public static final String EMPLOYEE_201 = "Employee created successfully";
+    public static final String EMPLOYEE_CREATE_SUCCESS = "Thêm mới nhân viên thành công !";
     ///  CBNV
     public static final String EMPLOYEE_CODE_001 = "EMP001";
     public static final String EMPLOYEE_MESS_001 = "Không tìm thấy nhân viên này!";

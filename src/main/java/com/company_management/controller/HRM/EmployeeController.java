@@ -56,7 +56,7 @@ public class EmployeeController {
     public BaseResponse<Object> addEmployee(@ModelAttribute("avatarFile") MultipartFile avatarFile,
                                             @ModelAttribute @Valid RequestEmployeeDetailDTO request) throws IOException {
         employeeService.createEmployee(avatarFile, request);
-        return BaseResponse.ok(AppConstants.STATUS_201, AppConstants.EMPLOYEE_201);
+        return BaseResponse.ok(AppConstants.STATUS_200, AppConstants.EMPLOYEE_CREATE_SUCCESS);
     }
 
     @GetMapping("/list")
@@ -65,10 +65,10 @@ public class EmployeeController {
         return BaseResponse.ok(employeeService.findAllByKeywordAndStatus(keyword, page));
     }
 
-    @GetMapping("/detail-id/{id}")
-    public BaseResponse<ResponseEmployeeDetailDTO> getByIdEmployee(@PathVariable("id") Long id) {
-        return BaseResponse.ok(employeeService.detailEmployee(id));
-    }
+//    @GetMapping("/detail-id/{id}")
+//    public BaseResponse<ResponseEmployeeDetailDTO> getByIdEmployee(@PathVariable("id") Long id) {
+//        return BaseResponse.ok(employeeService.detailEmployee(id));
+//    }
     @GetMapping("/detail/{code}")
     public BaseResponse<ResponseEmployeeDetailDTO> getDetailByCode(@PathVariable("code") String code) {
         return BaseResponse.ok(employeeService.detailEmployeeCode(code));

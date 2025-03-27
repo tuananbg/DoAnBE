@@ -1,11 +1,12 @@
 package com.company_management.repository;
 
-import com.company_management.entity.EmployeeInfo;
+import com.company_management.entity.Seat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface EmployeeInfoRepository extends JpaRepository<EmployeeInfo, Long> {
+public interface SeatRepository extends JpaRepository<Seat, Long> {
+    Optional<Seat> findByCode(String code);
 }

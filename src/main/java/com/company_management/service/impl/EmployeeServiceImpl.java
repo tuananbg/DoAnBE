@@ -8,20 +8,16 @@ import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.mapper.MapperUtils;
 import com.company_management.dto.request.employee.RequestEmployeeDetailDTO;
-import com.company_management.dto.response.TotalEmployeeDTO;
+import com.company_management.dto.response.*;
+import com.company_management.dto.response.employee.ResponseEmployeeDetailContractsDTO;
 import com.company_management.dto.response.employee.ResponseEmployeeDetailDTO;
+import com.company_management.dto.response.employee.ResponseEmployeeInfoDTO;
 import com.company_management.dto.response.employee.ResponseListEmployeeDTO;
-import com.company_management.entity.Employee;
-import com.company_management.entity.EmployeeInfo;
+import com.company_management.entity.*;
 import com.company_management.exception.AppException;
 import com.company_management.dto.UserDetailDTO;
-import com.company_management.entity.Department;
-import com.company_management.entity.Position;
 
 import com.company_management.dto.request.SearchEmployeeRequest;
-import com.company_management.dto.response.DataPage;
-import com.company_management.dto.response.ExportPdfEmployeeResponse;
-import com.company_management.dto.response.UserDetailExcelResponse;
 import com.company_management.repository.*;
 import com.company_management.service.EmployeeService;
 import com.company_management.utils.CommonUtils;
@@ -59,6 +55,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final DepartmentRepository departmentRepository;
     private final PositionRepository positionRepository;
     private final EmployeeInfoRepository employeeInfoRepository;
+    private final EmployeeContractsRepository employeeContractsRepository;
+    private final SeatRepository seatRepository;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -68,7 +66,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Page<Employee> employees = employeeRepository.findAllByKeywordAndStatus(keyword, Status.ACTIVE.getCode(), page.toPageable());
         List<ResponseListEmployeeDTO> responseEmployeeDTOList = employees.getContent()
                 .stream()
-                .map(item ->{
+                .map(item -> {
                     ResponseListEmployeeDTO reponse = new ResponseListEmployeeDTO();
                     reponse.setId(item.getId());
                     reponse.setEmployeeCode(item.getCode());
@@ -119,30 +117,57 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
         ResponseEmployeeDetailDTO detailDTO = new ResponseEmployeeDetailDTO();
         MapperUtils.map(employee, detailDTO);
+
+        if (employee.getEmployeeInfo() != null) {
+            ResponseEmployeeInfoDTO employeeInfoDTO = new ResponseEmployeeInfoDTO();
+            EmployeeInfo employeeInfo = employeeInfoRepository.findById(employee.getEmployeeInfo().getId()).orElse(null);
+            MapperUtils.map(employeeInfo, employeeInfoDTO);
+            detailDTO.setEmployeeInfo(employeeInfoDTO);
+        }
+
+        List<EmployeeContracts> employeeContractsList = employeeContractsRepository.findAllByEmployeeId(employee.getId());
+        List<ResponseEmployeeDetailContractsDTO> employeeContractsDTOList = new ArrayList<>();
+        for (EmployeeContracts employeeContracts : employeeContractsList) {
+            ResponseEmployeeDetailContractsDTO employeeContractsDTO = new ResponseEmployeeDetailContractsDTO();
+            MapperUtils.map(employeeContracts, employeeContractsDTO);
+            employeeContractsDTOList.add(employeeContractsDTO);
+        }
+        detailDTO.setContracts(employeeContractsDTOList);
+
         return detailDTO;
     }
 
     @Override
     @Transactional
     public void createEmployee(MultipartFile avatarFile, RequestEmployeeDetailDTO request) throws IOException {
-        Employee byEmployeeCode = employeeRepository.findByCode(request.getEmployeeCode()).orElse(null);
-        Employee userDetail = new Employee();
+        validateCode(request.getCode());
 
-        MapperUtils.map(request, userDetail);
-        if (byEmployeeCode != null) {
-            throw new AppException(AppConstants.EMPLOYEE_CODE_002, AppConstants.EMPLOYEE_MESS_002);
-        }
-        if (request.getDepartmentId() != null) {
-            Department department = departmentRepository.findById(request.getDepartmentId()).orElseThrow(() ->
-                    new AppException(AppConstants.DEPARTMENT_CODE_002, AppConstants.DEPARTMENT_MESS_002));
-            userDetail.setDepartment(department);
-        }
-        if (request.getPositionId() != null) {
-            Position position  = positionRepository.findById(request.getPositionId()).orElseThrow(() ->
-                    new AppException(AppConstants.POSITION_CODE_002, AppConstants.POSITION_MESS_002));
-            userDetail.setPositionCode(position.getPositionCode());
-        }
-        userDetail.setIsActive(EmploymentStatus.EMPLOYMENT.getCode());
+        Employee employee = new Employee();
+        MapperUtils.mapOnlyNotNullProperty(request, employee);
+        employee.setIsActive(Status.ACTIVE.getCode());
+//        if (request.getSeatCode() != null) {
+//            Seat seat = seatRepository.findByCode(request.getSeatCode()).orElse(null);
+//            if (seat == null) {
+//                throw new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001);
+//            }
+//            Position position = seat.getPosition();
+//            employee.setSeatCode(seat.getCode());
+//
+//            if (position != null) {
+//                employee.setPositionName(position.getPositionName());
+//                employee.setPositionCode(position.getPositionCode());
+//                Department department = position.getDepartment();
+//                if (department != null) {
+//                    employee.setDepartmentName(department.getDepartmentName());
+//                    employee.setDepartmentCode(department.getDepartmentCode());
+//                    employee.setDepartment(department);
+//                }
+//            }
+//        }
+
+        EmployeeInfo employeeInfo = new EmployeeInfo();
+
+        MapperUtils.mapOnlyNotNullProperty(request, employeeInfo);
 
         //upload file ảnh
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(avatarFile.getOriginalFilename()));
@@ -151,9 +176,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         Path filePath = Paths.get(this.fileUpload + fileName);
         Files.copy(avatarFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-        userDetail.setAvatar(fileName);
+        employee.setAvatar(fileName);
 
-        employeeRepository.save(userDetail);
+        employeeRepository.save(employee);
+    }
+
+    private void validateCode(String code) {
+        Employee employee = employeeRepository.findByCode(code).orElse(null);
+        if (employee != null) {
+            throw new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001);
+        }
     }
 
     @Override
@@ -173,7 +205,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             Department department = new Department();
             if (userDetailDTO.getDepartmentId() != null) {
                 department = departmentRepository.findById(userDetailDTO.getDepartmentId()).orElseThrow(() ->
-                        new AppException(AppConstants.DEPARTMENT_CODE_002,AppConstants.DEPARTMENT_MESS_002));
+                        new AppException(AppConstants.DEPARTMENT_CODE_002, AppConstants.DEPARTMENT_MESS_002));
             }
             employee.setDepartment(department);
         }
@@ -218,14 +250,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         try (InputStream in = CommonUtils.getInputStreamByFileName("export-employee-template.xlsx")) {
 
             List<Employee> employees = employeeRepository.findAllByIsActive(EmploymentStatus.EMPLOYMENT.getCode());
-            Map<Long,String> departmentMap = MapperUtils.buildMap(departmentRepository.findAll(),Department::getId,Department::getDepartmentName);
-            Map<Long, String> positionMap = MapperUtils.buildMap(positionRepository.findAll(),Position::getId,Position::getPositionName);
+            Map<Long, String> departmentMap = MapperUtils.buildMap(departmentRepository.findAll(), Department::getId, Department::getDepartmentName);
+            Map<Long, String> positionMap = MapperUtils.buildMap(positionRepository.findAll(), Position::getId, Position::getPositionName);
 
             AtomicInteger index = new AtomicInteger();
             List<UserDetailExcelResponse> report = new ArrayList<>();
             for (Employee employee : employees) {
                 UserDetailExcelResponse item = new UserDetailExcelResponse();
-                MapperUtils.map(employee,item);
+                MapperUtils.map(employee, item);
                 if (employee.getDepartment() != null) {
                     item.setDepartmentName(departmentMap.get(employee.getDepartment().getId()));
                 }
@@ -279,15 +311,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<Employee> employees = employeeRepository.findAllByIsActive(EmploymentStatus.EMPLOYMENT.getCode());
         if (employees != null) {
             totalEmployeeDTO.setTotalEmployee(employees.size());
-        }
-        else {
+        } else {
             totalEmployeeDTO.setTotalEmployee(0);
         }
         Long totalEmployeeBirths = employeeRepository.countActiveEmployeesWithBirthdayInCurrentMonth(EmploymentStatus.EMPLOYMENT.getCode());
         if (totalEmployeeBirths != null) {
             totalEmployeeDTO.setTotalBirthDayMonth(totalEmployeeBirths);
-        }
-        else {
+        } else {
             totalEmployeeDTO.setTotalBirthDayMonth(0L);
         }
         totalEmployeeDTO.setTotalLateWork(2);

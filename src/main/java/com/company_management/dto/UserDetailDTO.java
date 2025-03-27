@@ -17,10 +17,10 @@ public class UserDetailDTO {
 
     private Long id;
 
-    @NotBlank(message = "Mã nhân viên không được để trống!")
+//    @NotBlank(message = "Mã nhân viên không được để trống!")
     private String employeeCode;
 
-    @NotBlank(message = "Tên nhân viên không được để trống!")
+//    @NotBlank(message = "Tên nhân viên không được để trống!")
     private String employeeName;
 
     private Integer gender;

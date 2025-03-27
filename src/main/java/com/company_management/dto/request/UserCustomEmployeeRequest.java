@@ -12,8 +12,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserCustomEmployeeRequest {
 
-    @NotNull(message = "Mã tài khoản không được để trống!")
+//    @NotNull(message = "Mã tài khoản không được để trống!")
     private Long id;
-    @NotNull(message = "Mã nhân viên không được để trống!")
+//    @NotNull(message = "Mã nhân viên không được để trống!")
     private Long userDetailId;
 }

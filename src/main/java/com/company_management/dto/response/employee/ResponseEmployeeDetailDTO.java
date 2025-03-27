@@ -1,14 +1,11 @@
 package com.company_management.dto.response.employee;
 
-import com.company_management.dto.ContractDTO;
-import com.company_management.dto.SocialInsuranceDTO;
-import com.company_management.dto.WageDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -19,31 +16,25 @@ public class ResponseEmployeeDetailDTO {
 
     private Long id;
 
-    private String employeeCode;
+    private String code;
 
-    private String employeeName;
-
-    private Integer gender;
-
-    private Date birthday;
+    private String fullName;
 
     private String avatar;
-
-    private String phone;
-
-    private String email;
-
-    private String address;
-
-    private Integer isActive;
 
     private String departmentName;
 
     private String positionName;
 
-    private List<ContractDTO> contracts;
+    private String seatCode;
 
-    private List<SocialInsuranceDTO> socialInsurances;
+    private ResponseEmployeeInfoDTO employeeInfo;
 
-    private List<WageDTO> wages;
+    private List<ResponseEmployeeDetailContractsDTO> contracts;
+
+    private List<ResponseEmployeeDetailSocialDTO> socialInsurances;
+
+    private List<ResponseEmployeeDetailWageDTO> wages;
+
+    private List<ResponseEmployeeDetailQualificationDTO> qualifications;
 }

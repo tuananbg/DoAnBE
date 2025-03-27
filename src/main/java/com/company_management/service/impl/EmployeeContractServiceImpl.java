@@ -1,11 +1,7 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.enums.ContractType;
-import com.company_management.common.enums.Status;
-import com.company_management.dto.common.RequestPage;
-import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.mapper.MapperUtils;
-import com.company_management.dto.response.PageResponse;
 import com.company_management.dto.response.ResponseTotalDTO;
 import com.company_management.entity.EmployeeContracts;
 import com.company_management.exception.AppException;
@@ -38,7 +34,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class EmployeeContractServiceImpl implements EmployeeContractService {
 
-    private final EmployeeContractRepository employeeContractRepository;
+    private final EmployeeContractsRepository employeeContractRepository;
 
     @Value("${upload.path}")
     private String fileUpload;

@@ -67,4 +67,18 @@ public abstract class BaseEntity implements Serializable {
     public int hashCode() {
         return Objects.hash(id, createdDate, createdBy, updatedDate, updatedBy, isActive);
     }
+
+    @PrePersist
+    protected void prePersist() {
+        if (this.createdBy == null) {
+            this.createdBy = "admin";
+        }
+        if (this.createdDate == null) {
+            this.createdDate = new Date();
+        }
+        if (this.isActive == null) {
+            this.isActive = 1; // Giả sử 1 là active
+        }
+    }
+
 }

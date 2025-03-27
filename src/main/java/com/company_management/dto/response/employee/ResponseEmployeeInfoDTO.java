@@ -1,7 +1,7 @@
-package com.company_management.dto.request.employee;
-
+package com.company_management.dto.response.employee;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,16 +13,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestEmployeeDetailDTO {
-
-    private String code;
-
-    private String fullName;
-
-    private String avatar;
-
-    private String seatCode;
-
+public class ResponseEmployeeInfoDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date dateOfBirth;
 
@@ -45,5 +36,4 @@ public class RequestEmployeeDetailDTO {
     private String mobile;
 
     private String nation;
-
 }

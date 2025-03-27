@@ -36,9 +36,11 @@ public class EmployeeInfo extends BaseEntity {
     @Column(name = "ACCOUNT_NUMBER")
     private String accountNumber;
 
+    // địa chỉ thường trú
     @Column(name = "PERMANENT_ADDRESS")
     private String permanentAddress;
 
+    //Địa chị hiện tại
     @Column(name ="CURRENT_ADDRESS")
     private String currentAddress;
 

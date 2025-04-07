@@ -4,10 +4,14 @@ import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ObjectError;
 import com.company_management.common.ResultResp;
+import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.ResponseWageEmployeeDetailDTO;
 import com.company_management.dto.UserDetailWageDTO;
 import com.company_management.dto.WageDTO;
 import com.company_management.dto.common.BaseResponse;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
+import com.company_management.dto.response.ResponseWageListDTO;
 import com.company_management.service.WageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,24 +41,26 @@ public class WageController {
 
     @Value("${upload.path}")
     private String fileUpload;
+
     @PostMapping(value = "/create")
     public ResultResp<Object> create(@ModelAttribute("file") MultipartFile file,
                                      @ModelAttribute @Valid WageDTO wageDTO
-                                     ) {
+    ) {
         wageService.add(file, wageDTO);
         return ResultResp.success(ErrorCode.CREATED_OK);
     }
 
     @PostMapping(value = "/createForEmployee")
-    public ResultResp<Object> createForEmployee(@RequestBody  @Valid UserDetailWageDTO userDetailWageDTO
+    public ResultResp<Object> createForEmployee(@RequestBody @Valid UserDetailWageDTO userDetailWageDTO
     ) {
         wageService.addForEmployee(userDetailWageDTO);
         return ResultResp.success(ErrorCode.CREATED_OK);
     }
 
-    @PostMapping(value = "/search")
-    public ResultResp<Object> search(@RequestBody WageDTO wageDTO, Pageable pageable) {
-        return ResultResp.success(wageService.search(wageDTO, pageable));
+    @GetMapping(value = "/list/{status}")
+    public BaseResponse<ResponsePage<ResponseWageListDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword,
+                                                                   @PathVariable("status") ObjectStatus status, RequestPage page) {
+        return BaseResponse.ok(wageService.getList(status, keyword, page));
     }
 
     @PostMapping(value = "/searchForEmployee")
@@ -117,7 +123,7 @@ public class WageController {
 
     @GetMapping("/employee-detail/{id}")
     private BaseResponse<List<ResponseWageEmployeeDetailDTO>> getEmployeeDetail(@PathVariable Long id) {
-        return BaseResponse.ok(AppConstants.STATUS_200, AppConstants.MESSAGE_200,wageService.getEmployeeWageDetails(id));
+        return BaseResponse.ok(AppConstants.STATUS_200, AppConstants.MESSAGE_200, wageService.getEmployeeWageDetails(id));
     }
 
 }

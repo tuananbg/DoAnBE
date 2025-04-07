@@ -9,16 +9,19 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponsePositionDTO {
-    private Long id;
+public class ResponseSeatDTO {
 
+    //Mã vị trí
+    private String code;
+
+    //Tên chức danh
     private String positionName;
 
-    private String positionCode;
-
-    private String positionDescription;
-
+    //Tên phòng ban
     private String departmentName;
 
-    private Integer isActive;
+    private String description;
+
+    private Boolean active;
+
 }

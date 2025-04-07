@@ -35,7 +35,7 @@ public class PositionController {
         return BaseResponse.ok(AppConstants.STATUS_200, AppConstants.MESSAGE_200, positionService.getAllPositionSelection());
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResultResp<Object> createPosition(@Valid @RequestBody RequestPositionDTO positionDTO) {
         positionService.create(positionDTO);
         return ResultResp.success(ErrorCode.CREATED_OK, null);

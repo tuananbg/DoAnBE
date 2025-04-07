@@ -1,7 +1,11 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.ResponseWageEmployeeDetailDTO;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.mapper.MapperUtils;
+import com.company_management.dto.response.ResponseWageListDTO;
 import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;
 import com.company_management.dto.UserDetailWageDTO;
@@ -53,24 +57,14 @@ public class WageServiceImpl implements WageService {
     }
 
     @Override
-    public DataPage<WageDTO> search(WageDTO wageDTO, Pageable pageable) {
-        Pageable paging = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
-
-        Page<Object[]> wagePage = wageRepository.findAllWithPagination(
-                DataUtils.isNullOrEmpty(wageDTO.getWageName()) ? null : wageDTO.getWageName().trim().toLowerCase(),
-                DataUtils.isNullOrEmpty(wageDTO.getCreatedDate()) ? null : wageDTO.getCreatedDate(),
-                paging);
-        List<WageDTO> wageDTOList = DataUtils.convertListObjectsToClass(new ArrayList<>(Arrays.asList(
-                        "wageId", "wageName", "wageBase", "wageDescription", "attachFile", "createdDate")),
-                wagePage.getContent(),
-                WageDTO.class);
-        DataPage<WageDTO> dataPage = new DataPage<>();
-        dataPage.setData(wageDTOList);
-        dataPage.setPageIndex(wagePage.getPageable().getPageNumber());
-        dataPage.setPageSize(wagePage.getPageable().getPageSize());
-        dataPage.setPageCount(wagePage.getTotalPages());
-        dataPage.setDataCount(wagePage.getTotalElements());
-        return dataPage;
+    public ResponsePage<ResponseWageListDTO> getList(ObjectStatus status, String keyword, RequestPage page) {
+        Page<Wage> wages = wageRepository.findAllByIsActive(status.getCode(), keyword, page.toPageable());
+        List<ResponseWageListDTO> responseWageListDTOS = wages.getContent().stream().map(item -> {
+            ResponseWageListDTO dto = new ResponseWageListDTO();
+            MapperUtils.map(item, dto);
+            return dto;
+        }).toList();
+        return new ResponsePage<>(responseWageListDTOS, page, wages.getTotalElements());
     }
 
     @Override

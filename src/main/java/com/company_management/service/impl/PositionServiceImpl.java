@@ -1,35 +1,20 @@
 package com.company_management.service.impl;
 
-import com.company_management.common.enums.Status;
+import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.mapper.MapperUtils;
 import com.company_management.dto.request.RequestPositionDTO;
 import com.company_management.dto.response.ResponsePositionDTO;
-import com.company_management.dto.response.employee.ResponseListEmployeeDTO;
 import com.company_management.exception.AppException;
-import com.company_management.dto.PositionDTO;
 import com.company_management.entity.Position;
-import com.company_management.dto.request.SearchPositionRequest;
-import com.company_management.dto.response.DataPage;
 import com.company_management.repository.PositionRepository;
 import com.company_management.service.PositionService;
 import com.company_management.utils.CommonUtils;
-import com.company_management.utils.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jxls.transformer.XLSTransformer;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -56,15 +41,15 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     @Transactional
-    public void create(RequestPositionDTO positionDTO) {
-        Position position = positionRepository.findByPositionCode(positionDTO.getPositionCode()).orElse(null);
-        if (position != null) {
+    public void create(RequestPositionDTO request) {
+        if (positionRepository.existsByPositionCode(request.getPositionCode())) {
           throw new AppException("ERR01", "Không tìm thấy chức vụ này!");
         }
-        else {
-            ResponsePositionDTO responsePositionDTO = MapperUtils.map(positionDTO, ResponsePositionDTO.class);
-            position.setIsActive(Status.ACTIVE.getCode());
-        }
+        Position position = new Position();
+        position.setPositionCode(request.getPositionCode());
+        position.setPositionName(request.getPositionName());
+        position.setPositionDescription(request.getPositionDescription());
+        position.setIsActive(ObjectStatus.ACTIVE.getCode());
         positionRepository.save(position);
     }
 

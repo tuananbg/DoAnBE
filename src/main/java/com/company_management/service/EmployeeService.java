@@ -1,5 +1,6 @@
 package com.company_management.service;
 
+import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.dto.UserDetailDTO;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
@@ -17,7 +18,7 @@ import java.io.IOException;
 
 public interface EmployeeService {
 
-    ResponsePage<ResponseListEmployeeDTO> findAllByKeywordAndStatus(String keyword, RequestPage page);
+    ResponsePage<ResponseListEmployeeDTO> findAllByKeywordAndStatus(String keyword, EmploymentStatus status, RequestPage page);
 
     ResponseEmployeeDetailDTO detailEmployee(Long id);
 

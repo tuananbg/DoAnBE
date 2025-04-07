@@ -3,6 +3,7 @@ package com.company_management.controller.HRM;
 import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
+import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.dto.UserDetailDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
@@ -59,10 +60,11 @@ public class EmployeeController {
         return BaseResponse.ok(AppConstants.STATUS_200, AppConstants.EMPLOYEE_CREATE_SUCCESS);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/list/{status}")
     public BaseResponse<ResponsePage<ResponseListEmployeeDTO>> findAllByKeywordAndStatus(@RequestParam(name = "keyword", required = false) String keyword,
+                                                                                         @PathVariable("status") EmploymentStatus status,
                                                                                          @ModelAttribute @Valid RequestPage page) {
-        return BaseResponse.ok(employeeService.findAllByKeywordAndStatus(keyword, page));
+        return BaseResponse.ok(employeeService.findAllByKeywordAndStatus(keyword,status, page));
     }
 
 //    @GetMapping("/detail-id/{id}")

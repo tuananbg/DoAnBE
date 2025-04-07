@@ -3,7 +3,7 @@ package com.company_management.service.impl;
 import com.company_management.common.AppConstants;
 import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.common.enums.Gender;
-import com.company_management.common.enums.Status;
+import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.mapper.MapperUtils;
@@ -44,7 +44,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -62,26 +61,26 @@ public class EmployeeServiceImpl implements EmployeeService {
     private String fileUpload;
 
     @Override
-    public ResponsePage<ResponseListEmployeeDTO> findAllByKeywordAndStatus(String keyword, RequestPage page) {
-        Page<Employee> employees = employeeRepository.findAllByKeywordAndStatus(keyword, Status.ACTIVE.getCode(), page.toPageable());
+    public ResponsePage<ResponseListEmployeeDTO> findAllByKeywordAndStatus(String keyword,EmploymentStatus status, RequestPage page) {
+        Page<Employee> employees = employeeRepository.findAllByKeywordAndStatus(keyword, status.getCode(), page.toPageable());
         List<ResponseListEmployeeDTO> responseEmployeeDTOList = employees.getContent()
                 .stream()
                 .map(item -> {
-                    ResponseListEmployeeDTO reponse = new ResponseListEmployeeDTO();
-                    reponse.setId(item.getId());
-                    reponse.setEmployeeCode(item.getCode());
-                    reponse.setEmployeeName(item.getFullName());
-                    reponse.setDepartmentName(item.getDepartmentName());
-                    reponse.setPositionName(item.getPositionName());
+                    ResponseListEmployeeDTO response = new ResponseListEmployeeDTO();
+                    response.setId(item.getId());
+                    response.setEmployeeCode(item.getCode());
+                    response.setEmployeeName(item.getFullName());
+                    response.setDepartmentName(item.getDepartmentName());
+                    response.setPositionName(item.getPositionName());
                     if (item.getEmployeeInfo() != null) {
                         EmployeeInfo employeeInfo = employeeInfoRepository.findById(item.getEmployeeInfo().getId()).orElse(null);
                         if (employeeInfo != null) {
-                            reponse.setGender(employeeInfo.getGender());
-                            reponse.setPhone(employeeInfo.getMobile());
-                            reponse.setAddress(employeeInfo.getPermanentAddress());
+                            response.setGender(employeeInfo.getGender());
+                            response.setPhone(employeeInfo.getMobile());
+                            response.setAddress(employeeInfo.getPermanentAddress());
                         }
                     }
-                    return reponse;
+                    return response;
                 }).toList();
         return new ResponsePage<>(responseEmployeeDTOList, page, employees.getTotalElements());
 
@@ -144,7 +143,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee employee = new Employee();
         MapperUtils.mapOnlyNotNullProperty(request, employee);
-        employee.setIsActive(Status.ACTIVE.getCode());
+        employee.setIsActive(ObjectStatus.ACTIVE.getCode());
 //        if (request.getSeatCode() != null) {
 //            Seat seat = seatRepository.findByCode(request.getSeatCode()).orElse(null);
 //            if (seat == null) {

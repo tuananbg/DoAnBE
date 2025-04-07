@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface SeatRepository extends JpaRepository<Seat, Long> {
     Optional<Seat> findByCode(String code);
+
+    boolean existsByCode(String code);
 }

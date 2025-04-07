@@ -8,10 +8,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum Status {
-    INACTIVE(0, "RETIRED", "Không hoạt động"),
-    ACTIVE(1, "EMPLOYMENT", "Hoạt động"),
-    LOCK(2,"LOCK","Account đang bị khoá"),
+public enum ObjectStatus {
+    INACTIVE(0, "INACTIVE", "Không hoạt động"),
+    ACTIVE(1, "ACTIVE", "Hoạt động"),
     ;
 
     @JsonValue
@@ -21,8 +20,8 @@ public enum Status {
 
     private String description;
 
-    public static Status findByCode(String status) {
-        for (Status status1 : values()) {
+    public static ObjectStatus findByCode(String status) {
+        for (ObjectStatus status1 : values()) {
             if (status1.getStatus().equalsIgnoreCase(status)) {
                 return status1;
             }
@@ -30,8 +29,8 @@ public enum Status {
         throw new IllegalArgumentException("status = " + status + " isn't defined!!!");
     }
 
-    public static Status findByCodeStatus(Integer code) {
-        for (Status status1 : values()) {
+    public static ObjectStatus findByCodeStatus(Integer code) {
+        for (ObjectStatus status1 : values()) {
             if (status1.getCode().equals(code)) {
                 return status1;
             }

@@ -116,5 +116,17 @@ public class DepartmentServiceImpl implements DepartmentService {
         return response;
     }
 
+    @Override
+    public List<ResponseDepartmentDTO> getListAllDepartment() {
+        List<Department> departments = departmentRepository.findAllByIsActive(DepartmentStatus.ACTIVE.getCode());
+        List<ResponseDepartmentDTO> response = new ArrayList<>();
+        for (Department department : departments) {
+            ResponseDepartmentDTO item = new ResponseDepartmentDTO();
+            MapperUtils.map(department, item);
+            response.add(item);
+        }
+        return response;
+    }
+
 
 }

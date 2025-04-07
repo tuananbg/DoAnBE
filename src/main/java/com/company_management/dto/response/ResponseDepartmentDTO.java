@@ -7,8 +7,8 @@ import lombok.*;
 @Getter
 @Setter
 public class ResponseDepartmentDTO {
-    private Long departmentId;
+    private Long id;
     private String departmentCode;
     private String departmentName;
-    private Integer status;
+    private Integer active;
 }

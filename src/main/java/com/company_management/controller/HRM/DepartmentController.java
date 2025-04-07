@@ -1,5 +1,6 @@
 package com.company_management.controller.HRM;
 
+import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.dto.DepartmentDTO;
@@ -26,6 +27,11 @@ public class DepartmentController {
     public ResultResp<Object> getAllPage(@RequestBody SearchDepartmentRequest searchDepartmentRequest,
                                          Pageable pageable) {
         return ResultResp.success(departmentService.findAllPage(searchDepartmentRequest, pageable));
+    }
+
+    @GetMapping("/list")
+    public BaseResponse<List<ResponseDepartmentDTO>> list() {
+        return BaseResponse.ok(departmentService.getListAllDepartment());
     }
 
     @PostMapping("/create")

@@ -24,4 +24,6 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
     @Query
     Optional<Position> findByPositionCode(String positionCode);
 
+    boolean existsByPositionCode(String positionCode);
+
 }

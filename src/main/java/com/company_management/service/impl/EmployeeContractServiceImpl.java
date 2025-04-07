@@ -1,7 +1,11 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.enums.ContractType;
+import com.company_management.common.enums.ObjectStatus;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.mapper.MapperUtils;
+import com.company_management.dto.response.ResponseContractListDTO;
 import com.company_management.dto.response.ResponseTotalDTO;
 import com.company_management.entity.EmployeeContracts;
 import com.company_management.exception.AppException;
@@ -15,6 +19,7 @@ import com.company_management.utils.DataUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -47,26 +53,16 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
     }
 
     @Override
-    public DataPage<ContractDTO> search(ContractDTO contractDTO, Pageable pageable) {
-//        Pageable paging = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
-//
-//        Page<Object[]> contractPage = employeeContractRepository.findAllWithPagination(
-//                DataUtils.isNullOrEmpty(contractDTO.getContractCode()) ? null : contractDTO.getContractCode().trim().toLowerCase(),
-//                DataUtils.isNullOrEmpty(contractDTO.getContractType()) ? null : contractDTO.getContractType().trim().toLowerCase(),
-//                paging);
-//        List<ContractDTO> contractDTOList = DataUtils.convertListObjectsToClass(new ArrayList<>(Arrays.asList(
-//                        "contractId", "contractCode", "contractType", "attachFile", "isActive")),
-//                contractPage.getContent(),
-//                ContractDTO.class);
-//        DataPage<ContractDTO> dataPage = new DataPage<>();
-//        dataPage.setData(contractDTOList);
-//        dataPage.setPageIndex(contractPage.getPageable().getPageNumber());
-//        dataPage.setPageSize(contractPage.getPageable().getPageSize());
-//        dataPage.setPageCount(contractPage.getTotalPages());
-//        dataPage.setDataCount(contractPage.getTotalElements());
-//        return dataPage;
-        return null;
+    public ResponsePage<ResponseContractListDTO> getList(ObjectStatus status, String keyword, RequestPage page) {
+        Page<EmployeeContracts> employeeContracts = employeeContractRepository.findAllByIsActive(status.getCode(), keyword, page.toPageable());
+        List<ResponseContractListDTO> responseContractListDTOS = employeeContracts.getContent().stream().map(item -> {
+            ResponseContractListDTO response = new ResponseContractListDTO();
+            MapperUtils.map(item, response);
+            return response;
+        }).toList();
+        return new ResponsePage<>(responseContractListDTOS, page, employeeContracts.getTotalElements());
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -170,10 +166,10 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
 //        for (EmployeeContracts employeeContract: employeeContracts) {
 //
 //        }
-        for (int i=0;i<3;i ++){
+        for (int i = 0; i < 3; i++) {
             ResponseTotalDTO response = new ResponseTotalDTO();
             response.setValue(5);
-            response.setName(ContractType.from(i+1).getName());
+            response.setName(ContractType.from(i + 1).getName());
             responseTotalDTOList.add(response);
         }
         return responseTotalDTOList;

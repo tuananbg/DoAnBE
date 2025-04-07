@@ -3,12 +3,14 @@ package com.company_management.controller.HRM;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ObjectError;
 import com.company_management.common.ResultResp;
+import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.ContractDTO;
 import com.company_management.dto.UserDetailContractDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.response.BasicResponse;
+import com.company_management.dto.response.ResponseContractListDTO;
 import com.company_management.dto.response.ResponseTotalDTO;
 import com.company_management.service.EmployeeContractService;
 import jakarta.validation.Valid;
@@ -55,9 +57,10 @@ public class ContractController {
         return ResultResp.success(ErrorCode.CREATED_OK);
     }
 
-    @PostMapping(value = "/search")
-    public ResultResp<Object> search(@RequestBody ContractDTO contractDTO, Pageable pageable) {
-        return ResultResp.success(contractService.search(contractDTO, pageable));
+    @GetMapping(value = "/list/{status}")
+    public BaseResponse<ResponsePage<ResponseContractListDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword,
+                                                                       @PathVariable("status") ObjectStatus status, RequestPage page) {
+        return BaseResponse.ok(contractService.getList(status, keyword, page));
     }
 
     @PostMapping(value = "/searchForEmployee")

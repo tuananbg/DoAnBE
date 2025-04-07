@@ -77,7 +77,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         UserAccount user =
                 userAccountRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException(
-                        "Không tìm thấy User có địa chỉ email" + request.getEmail()));
+                        "Không tìm thấy User có địa chỉ email " + request.getEmail()));
         if (!user.getIsActive().equals(Constants.STATUS_ACTIVE_INT)) {
             throw new RuntimeException("User chưa được kích hoạt");
         }

@@ -22,4 +22,6 @@ public interface DepartmentService {
     ResponseDepartmentDTO detailDepartment(Long id);
 
     List<ResponseTotalDTO> totalDepartment();
+
+    List<ResponseDepartmentDTO> getListAllDepartment();
 }

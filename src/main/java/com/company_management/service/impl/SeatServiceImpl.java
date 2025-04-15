@@ -1,6 +1,6 @@
 package com.company_management.service.impl;
 
-import com.company_management.dto.mapper.MapperUtils;
+import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.request.RequestSeatDTO;
 import com.company_management.dto.response.ResponseSeatDTO;
 import com.company_management.entity.Position;
@@ -11,7 +11,6 @@ import com.company_management.repository.SeatRepository;
 import com.company_management.service.SeatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -55,7 +54,6 @@ public class SeatServiceImpl implements SeatService {
         if (requestSeatDTO.getPositionId() != null) {
             positionRepository.findById(requestSeatDTO.getPositionId()).ifPresent(seat::setPosition);
         }
-        seat.setDirectManager(requestSeatDTO.getDirectManager());
 
         seatRepository.save(seat);
     }

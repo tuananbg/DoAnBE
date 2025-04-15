@@ -4,9 +4,11 @@ import com.company_management.common.enums.ContractType;
 import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
-import com.company_management.dto.mapper.MapperUtils;
+import com.company_management.utils.mapper.MapperUtils;
+import com.company_management.dto.request.RequestEmployeeContractDTO;
 import com.company_management.dto.response.ResponseContractListDTO;
 import com.company_management.dto.response.ResponseTotalDTO;
+import com.company_management.entity.Employee;
 import com.company_management.entity.EmployeeContracts;
 import com.company_management.exception.AppException;
 import com.company_management.dto.ContractDTO;
@@ -16,6 +18,7 @@ import com.company_management.dto.response.DataPage;
 import com.company_management.repository.*;
 import com.company_management.service.EmployeeContractService;
 import com.company_management.utils.DataUtils;
+import com.company_management.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,8 +34,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -41,6 +45,7 @@ import java.util.stream.Collectors;
 public class EmployeeContractServiceImpl implements EmployeeContractService {
 
     private final EmployeeContractsRepository employeeContractRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -55,11 +60,14 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
     @Override
     public ResponsePage<ResponseContractListDTO> getList(ObjectStatus status, String keyword, RequestPage page) {
         Page<EmployeeContracts> employeeContracts = employeeContractRepository.findAllByIsActive(status.getCode(), keyword, page.toPageable());
-        List<ResponseContractListDTO> responseContractListDTOS = employeeContracts.getContent().stream().map(item -> {
-            ResponseContractListDTO response = new ResponseContractListDTO();
-            MapperUtils.map(item, response);
-            return response;
-        }).toList();
+        List<ResponseContractListDTO> responseContractListDTOS = employeeContracts
+                .getContent()
+                .stream()
+                .map(item -> {
+                    ResponseContractListDTO response = new ResponseContractListDTO();
+                    MapperUtils.map(item, response);
+                    return response;
+                }).toList();
         return new ResponsePage<>(responseContractListDTOS, page, employeeContracts.getTotalElements());
     }
 
@@ -119,11 +127,19 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void add(MultipartFile file, ContractDTO contractDTO) {
-        log.info("------------------------saveData Started--------------------------");
-        if (null == contractDTO.getContractId()) {
+    public void create(MultipartFile file, RequestEmployeeContractDTO request) {
+        if (request.getEmployeeCode() != null) {
+            Employee employee = employeeRepository.findByCode(request.getEmployeeCode()).orElseThrow(
+                    () -> new AppException("ERR01", "Không tìm thấy nhân viên này!"));
+
             EmployeeContracts contract = new EmployeeContracts();
-            contract.setContractType(contractDTO.getContractType());
+            MapperUtils.map(request, contract);
+            contract.setEmployee(employee);
+            contract.setEmployeeName(employee.getFullName());
+            contract.setContractTypeDisplay(ContractType.fromCode(request.getContractType()).getName());
+            String termValue = termValueDisplay(request.getContractEffectiveDate(),request.getContractEndDate());
+            contract.setContractTermValue(termValue);
+
             if (file != null && file.getOriginalFilename() != null) {
                 try {
                     // Lưu tệp Word vào máy
@@ -132,13 +148,41 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
                     Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
                     contract.setAttachFile(fileName);
                 } catch (IOException e) {
-                    log.error("Lỗi xảy ra khi xử lý file", e);
                     throw new AppException("ERO02", "Lỗi xảy ra khi xử lý file");
                 }
             }
             employeeContractRepository.save(contract);
         }
-        log.info("------------------------saveData Finished--------------------------");
+
+    }
+    public static String termValueDisplay(Date startDate, Date endDate) {
+        if (startDate == null && endDate == null) {
+            return "0 ngày";
+        }
+        else if (startDate != null && endDate == null) {
+            return "Vô thời hạn";
+        }else {
+            LocalDate start = DateUtils.convertToLocalDate(startDate);
+            LocalDate end = DateUtils.convertToLocalDate(endDate);
+
+            if (end.isBefore(start)) {
+                return "0 ngày";
+            }
+
+            long totalDays = ChronoUnit.DAYS.between(start, end);
+
+            int years = (int) (totalDays / 365);
+            int months = (int) ((totalDays % 365) / 30);
+            int days = (int) ((totalDays % 365) % 30);
+
+            StringBuilder sb = new StringBuilder();
+            if (years > 0) sb.append(years).append(" năm ");
+            if (months > 0) sb.append(months).append(" tháng ");
+            if (days > 0 || sb.length() == 0) sb.append(days).append(" ngày");
+
+            return sb.toString().trim();
+        }
+
     }
 
     @Override

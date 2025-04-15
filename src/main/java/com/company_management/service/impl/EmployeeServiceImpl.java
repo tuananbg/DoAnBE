@@ -6,7 +6,7 @@ import com.company_management.common.enums.Gender;
 import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
-import com.company_management.dto.mapper.MapperUtils;
+import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.request.employee.RequestEmployeeDetailDTO;
 import com.company_management.dto.response.*;
 import com.company_management.dto.response.employee.ResponseEmployeeDetailContractsDTO;

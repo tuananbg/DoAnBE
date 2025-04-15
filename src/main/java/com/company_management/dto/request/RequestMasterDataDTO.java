@@ -9,13 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestSeatDTO {
-    //Mã ghế
+public class RequestMasterDataDTO {
     private String code;
-
-    //Mô tả
+    private String name;
     private String description;
-
-    private Long positionId;
-
 }

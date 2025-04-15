@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public enum Role {
-    ADMIN( "ADMIN", "Không hoạt động"),
-    USER( "USER", "Hoạt động"),
+    ADMIN( "ADMIN", "Quản trị viên"),
+    USER( "USER", "Nhân viên"),
     ;
 
     @JsonValue

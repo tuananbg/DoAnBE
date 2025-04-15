@@ -1,7 +1,9 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.enums.ObjectStatus;
-import com.company_management.dto.mapper.MapperUtils;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
+import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.request.RequestPositionDTO;
 import com.company_management.dto.response.ResponsePositionDTO;
 import com.company_management.exception.AppException;
@@ -11,6 +13,8 @@ import com.company_management.service.PositionService;
 import com.company_management.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +63,18 @@ public class PositionServiceImpl implements PositionService {
         if (positionRepository.deleteById(id, CommonUtils.getUserLoginName()) <= 0) {
             throw new AppException("ERR01", "Không tìm thấy chức vụ!");
         }
+    }
+
+    @Override
+    public ResponsePage<ResponsePositionDTO> getListByStatus(ObjectStatus status,String keyword, RequestPage page) {
+        Page<Position> positions = positionRepository.findAllByKeyword(status.getCode(),keyword,page.toPageable());
+        List<ResponsePositionDTO> responsePositionDTOS = positions.getContent()
+                .stream()
+                .map(
+                        item -> MapperUtils.map(item, ResponsePositionDTO.class
+                        )
+                ).toList();
+        return new ResponsePage<>(responsePositionDTOS, page, positions.getTotalElements());
     }
 
 //    @Override

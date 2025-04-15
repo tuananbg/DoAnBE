@@ -21,7 +21,9 @@ public class RequestEmployeeDetailDTO {
 
     private String avatar;
 
-    private String seatCode;
+    private String departmentCode;
+
+    private String positionCode;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date dateOfBirth;

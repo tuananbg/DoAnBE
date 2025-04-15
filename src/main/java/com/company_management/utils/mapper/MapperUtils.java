@@ -1,4 +1,4 @@
-package com.company_management.dto.mapper;
+package com.company_management.utils.mapper;
 
 import lombok.experimental.UtilityClass;
 import org.modelmapper.Condition;

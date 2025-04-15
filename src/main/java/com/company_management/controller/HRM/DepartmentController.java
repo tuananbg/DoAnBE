@@ -3,8 +3,11 @@ package com.company_management.controller.HRM;
 import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
+import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.DepartmentDTO;
 import com.company_management.dto.common.BaseResponse;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.SearchDepartmentRequest;
 import com.company_management.dto.response.ResponseDepartmentDTO;
 import com.company_management.dto.response.ResponseTotalDTO;
@@ -23,10 +26,11 @@ public class DepartmentController {
 
     private final DepartmentService departmentService;
 
-    @PostMapping("/getAllPage")
-    public ResultResp<Object> getAllPage(@RequestBody SearchDepartmentRequest searchDepartmentRequest,
-                                         Pageable pageable) {
-        return ResultResp.success(departmentService.findAllPage(searchDepartmentRequest, pageable));
+    @GetMapping("/list/{status}")
+    public BaseResponse<ResponsePage<ResponseDepartmentDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword,
+                                                                    @PathVariable("status") ObjectStatus status,
+                                                                    RequestPage page) {
+        return BaseResponse.ok(departmentService.findAllPage(status, keyword, page));
     }
 
     @GetMapping("/list")

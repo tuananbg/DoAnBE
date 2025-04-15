@@ -1,6 +1,9 @@
 package com.company_management.service;
 
+import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.DepartmentDTO;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.SearchDepartmentRequest;
 import com.company_management.dto.response.ResponseDepartmentDTO;
 import com.company_management.dto.response.ResponseTotalDTO;
@@ -11,7 +14,7 @@ import java.util.List;
 
 public interface DepartmentService {
 
-    Page<DepartmentDTO> findAllPage(SearchDepartmentRequest searchDepartmentRequest, Pageable pageable);
+    ResponsePage<ResponseDepartmentDTO> findAllPage(ObjectStatus status, String keyword, RequestPage pageable);
 
     void addDepartment(DepartmentDTO departmentDTO);
 

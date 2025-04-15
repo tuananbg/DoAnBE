@@ -1,6 +1,9 @@
 package com.company_management.service;
 
+import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.PositionDTO;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.RequestPositionDTO;
 import com.company_management.dto.request.SearchPositionRequest;
 import com.company_management.dto.response.DataPage;
@@ -19,6 +22,8 @@ public interface PositionService {
     void create(RequestPositionDTO positionDTO);
 
     void deletePosition(Long id);
+
+    ResponsePage<ResponsePositionDTO> getListByStatus(ObjectStatus status,String keyword, RequestPage page);
 
 //    ByteArrayInputStream exportExcel(SearchPositionRequest searchPositionRequest, Pageable pageable);
 

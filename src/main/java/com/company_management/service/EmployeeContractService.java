@@ -5,6 +5,7 @@ import com.company_management.dto.ContractDTO;
 import com.company_management.dto.UserDetailContractDTO;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
+import com.company_management.dto.request.RequestEmployeeContractDTO;
 import com.company_management.dto.response.ResponseContractListDTO;
 import com.company_management.dto.response.ResponseEmployeeContractsDetail;
 import com.company_management.dto.response.DataPage;
@@ -26,7 +27,7 @@ public interface EmployeeContractService {
 
     void updateForEmployee(UserDetailContractDTO userDetailContractDTO);
 
-    void add(MultipartFile file, ContractDTO contractDTO);
+    void create(MultipartFile file, RequestEmployeeContractDTO contractDTO);
 
     void addForEmployee(UserDetailContractDTO userDetailContractDTO);
 

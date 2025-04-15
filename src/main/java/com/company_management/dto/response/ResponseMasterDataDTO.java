@@ -1,4 +1,4 @@
-package com.company_management.dto.request;
+package com.company_management.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,13 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestSeatDTO {
-    //Mã ghế
+public class ResponseMasterDataDTO {
     private String code;
-
-    //Mô tả
+    private String name;
     private String description;
-
-    private Long positionId;
-
 }

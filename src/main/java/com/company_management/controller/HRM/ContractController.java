@@ -1,5 +1,6 @@
 package com.company_management.controller.HRM;
 
+import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ObjectError;
 import com.company_management.common.ResultResp;
@@ -9,6 +10,7 @@ import com.company_management.dto.UserDetailContractDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
+import com.company_management.dto.request.RequestEmployeeContractDTO;
 import com.company_management.dto.response.BasicResponse;
 import com.company_management.dto.response.ResponseContractListDTO;
 import com.company_management.dto.response.ResponseTotalDTO;
@@ -43,11 +45,10 @@ public class ContractController {
     private String fileUpload;
 
     @PostMapping(value = "/create")
-    public ResultResp<Object> create(@ModelAttribute("file") MultipartFile file,
-                                     @ModelAttribute @Valid ContractDTO contractDTO
-    ) {
-        contractService.add(file, contractDTO);
-        return ResultResp.success(ErrorCode.CREATED_OK);
+    public BaseResponse<Object> create(@ModelAttribute("file") MultipartFile file,
+                                       @ModelAttribute @Valid RequestEmployeeContractDTO request) {
+        contractService.create(file, request);
+        return BaseResponse.ok(AppConstants.STATUS_201, AppConstants.MESSAGE_201);
     }
 
     @PostMapping(value = "/createForEmployee")

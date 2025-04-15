@@ -1,6 +1,6 @@
 package com.company_management.service.impl;
 
-import com.company_management.dto.mapper.MapperUtils;
+import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.response.ResponseQualificationEmployeeDetailDTO;
 import com.company_management.exception.AppException;
 import com.company_management.dto.QualificationDTO;
@@ -10,15 +10,10 @@ import com.company_management.service.QualificationService;
 import com.company_management.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service

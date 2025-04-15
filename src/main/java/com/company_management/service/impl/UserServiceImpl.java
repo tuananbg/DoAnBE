@@ -1,18 +1,14 @@
 package com.company_management.service.impl;
 
-import com.company_management.common.DataUtil;
-import com.company_management.common.DateUtil;
 import com.company_management.dto.response.*;
 import com.company_management.entity.*;
 import com.company_management.exception.AppException;
 import com.company_management.exception.BadRequestException;
-import com.company_management.dto.request.AccountSearchRequest;
 import com.company_management.dto.request.UserCustomEmployeeRequest;
 import com.company_management.dto.request.UserDetailRequest;
 import com.company_management.dto.request.UserSearchRequest;
 import com.company_management.repository.*;
 import com.company_management.service.UserService;
-import com.company_management.utils.DataUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -81,11 +77,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AccountDetailResponse findAccountDetail(Long id) {
-        if (DataUtil.isNullOrZero(id)) {
-            throw new BadRequestException("Dữ liệu không hợp lệ");
-        }
-//        UserCustom user = userCustomRepository.findById(id).orElseThrow(() -> new BadRequestException("Có lỗi " +
-//                "xảy ra: Không tìm thấy User theo id: " + id));
+//        if (DataUtil.isNullOrZero(id)) {
+//            throw new BadRequestException("Dữ liệu không hợp lệ");
+//        }
+////        UserCustom user = userCustomRepository.findById(id).orElseThrow(() -> new BadRequestException("Có lỗi " +
+////                "xảy ra: Không tìm thấy User theo id: " + id));
         return null;
     }
 

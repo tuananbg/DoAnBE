@@ -1,9 +1,12 @@
 package com.company_management.repository;
 
 import com.company_management.entity.Position;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -25,5 +28,14 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
     Optional<Position> findByPositionCode(String positionCode);
 
     boolean existsByPositionCode(String positionCode);
+
+    @Query(value = "SELECT p FROM Position p  WHERE " +
+            "(:keyword IS NULL  OR " +
+            "UPPER(p.positionCode) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
+//            "UPPER(p.positionCategory.name) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
+            "UPPER(p.positionName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
+            "AND p.isActive = :status " +
+            "ORDER BY p.createdDate ASC")
+    Page<Position> findAllByKeyword(@Param("status") Integer isActive,@Param("keyword") String keyword, Pageable pageable);
 
 }

@@ -14,10 +14,21 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestPositionDTO {
 
+    //Tên chức danh
     private String positionName;
 
+    //Mã chức danh
     private String positionCode;
 
+    //Mô tả
     private String positionDescription;
 
+    //Đơn vị
+    private String departmentCode;
+
+    //Loại chức danh
+    private String positionCategory;
+
+    //Cấp bậc
+    private String jobGroup;
 }

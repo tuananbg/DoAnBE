@@ -1,14 +1,16 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.enums.DepartmentStatus;
-import com.company_management.dto.mapper.MapperUtils;
+import com.company_management.common.enums.ObjectStatus;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
+import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.response.ResponseDepartmentDTO;
 import com.company_management.dto.response.ResponseTotalDTO;
 import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;
 import com.company_management.dto.DepartmentDTO;
 import com.company_management.entity.Department;
-import com.company_management.dto.request.SearchDepartmentRequest;
 import com.company_management.repository.DepartmentRepository;
 import com.company_management.repository.EmployeeRepository;
 import com.company_management.service.DepartmentService;
@@ -17,7 +19,6 @@ import com.company_management.utils.DataUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,24 +36,17 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public Page<DepartmentDTO> findAllPage(SearchDepartmentRequest searchDepartmentRequest, Pageable pageable) {
-        String name = (searchDepartmentRequest.getName() != null &&
-                !searchDepartmentRequest.getName().isEmpty()) ? searchDepartmentRequest.getName() : null;
-        List<String> statuses = new ArrayList<>();
-        if (searchDepartmentRequest.getStatus() == null) {
-            statuses = List.of("0", "1");
-        } else {
-            statuses.add(searchDepartmentRequest.getStatus().toString());
-        }
-        Page<Department> pageDepartment = departmentRepository.findAllWithPagination(statuses, name, pageable);
-        return pageDepartment.map(department -> {
-            DepartmentDTO dto = new DepartmentDTO();
-            dto.setDepartmentId(department.getId());
-            dto.setDepartmentCode(department.getDepartmentCode());
-            dto.setDepartmentName(department.getDepartmentName());
-            dto.setStatus(department.getIsActive());
-            return dto;
-        });
+    public ResponsePage<ResponseDepartmentDTO> findAllPage(ObjectStatus status, String keyword, RequestPage page) {
+        Page<Department> departments = departmentRepository.findAllByIsActive(status.getCode(), keyword, page.toPageable());
+        List<ResponseDepartmentDTO> departmentDTOSList = departments
+                .getContent()
+                .stream()
+                .map(item -> {
+                    ResponseDepartmentDTO dto = new ResponseDepartmentDTO();
+                    MapperUtils.map(item, dto);
+                    return dto;
+                }).toList();
+        return new ResponsePage<>(departmentDTOSList, page, departments.getTotalElements());
     }
 
     @Override
@@ -106,7 +100,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         List<Department> departments = departmentRepository.findAllByIsActive(DepartmentStatus.ACTIVE.getCode());
         for (Department department : departments) {
             List<Employee> employees = employeeRepository.findAllByDepartment(department.getId());
-            if (employees != null){
+            if (employees != null) {
                 ResponseTotalDTO item = new ResponseTotalDTO();
                 item.setName(department.getDepartmentName());
                 item.setValue(employees.size());

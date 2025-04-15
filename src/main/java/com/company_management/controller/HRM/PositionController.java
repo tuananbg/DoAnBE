@@ -3,8 +3,11 @@ package com.company_management.controller.HRM;
 import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
+import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.PositionDTO;
 import com.company_management.dto.common.BaseResponse;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.RequestPositionDTO;
 import com.company_management.dto.request.SearchPositionRequest;
 import com.company_management.dto.response.ResponsePositionDTO;
@@ -36,14 +39,20 @@ public class PositionController {
     }
 
     @PostMapping("/create")
-    public ResultResp<Object> createPosition(@Valid @RequestBody RequestPositionDTO positionDTO) {
+    public BaseResponse<Object> createPosition(@Valid @RequestBody RequestPositionDTO positionDTO) {
         positionService.create(positionDTO);
-        return ResultResp.success(ErrorCode.CREATED_OK, null);
+        return BaseResponse.ok(AppConstants.STATUS_201, AppConstants.MESSAGE_201);
     }
 
     @GetMapping("/detail/{id}")
     public ResultResp<Object> getByIdPosition(@PathVariable("id") Long id) {
         return ResultResp.success(ErrorCode.CREATED_OK, positionService.detailPosition(id));
+    }
+
+    @GetMapping("/list/{status}")
+    public BaseResponse<ResponsePage<ResponsePositionDTO>> getAllPositions(@RequestParam(name = "keyword", required = false) String keyword,
+                                                                           @PathVariable("status") ObjectStatus status, RequestPage page) {
+        return BaseResponse.ok(positionService.getListByStatus(status,keyword,page));
     }
 
 //    @PutMapping

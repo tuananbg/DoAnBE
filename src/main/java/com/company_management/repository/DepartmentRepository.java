@@ -1,6 +1,7 @@
 package com.company_management.repository;
 
 import com.company_management.entity.Department;
+import com.company_management.entity.EmployeeContracts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,27 +19,19 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Query(value = "SELECT d FROM Department d WHERE LOWER(d.departmentCode) = :departmentCode")
     Optional<Department> findByCode(String departmentCode);
 
-    @Query(value = "SELECT d.department_code\n" +
-            "        FROM department d \n" +
-            "        WHERE 1 = 1"
-            , nativeQuery = true)
-    List<String> listCodeDepartment();
-
-    @Query(value = """
-            SELECT *
-            FROM department d
-            where (:name is null or lower(d.department_name) LIKE lower(concat('%', :name, '%')))
-            and d.IS_ACTIVE in :status
-            ORDER BY d.created_date DESC
-            """,
-            nativeQuery = true)
-    Page<Department> findAllWithPagination(@Param("status") List<String> status,
-                                           @Param("name") String name,
-                                           Pageable pageable);
-
     @Modifying
     @Query(value = "update Department u set u.isActive = 0, u.updatedDate = now(), u.updatedBy = :user where u.id = :id and u.isActive = 1")
     int deleteById(Long id, Long user);
 
     List<Department> findAllByIsActive(Integer status);
+
+    @Query(value = "SELECT d FROM Department d  WHERE " +
+            "(:keyword IS NULL OR " +
+            "UPPER(d.departmentCode) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
+            "UPPER(d.departmentName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
+            "AND d.isActive = :status " +
+            "ORDER BY d.createdDate ASC")
+    Page<Department> findAllByIsActive(@Param("status") Integer isActive, @Param("keyword") String keyword, Pageable pageable);
+
+
 }

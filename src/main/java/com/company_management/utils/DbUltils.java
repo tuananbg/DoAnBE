@@ -1,4 +1,4 @@
-package com.company_management.common;
+package com.company_management.utils;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;

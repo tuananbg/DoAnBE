@@ -1,11 +1,18 @@
 package com.company_management.service.impl;
 
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
+import com.company_management.dto.request.RequestSocialInsuranceDTO;
+import com.company_management.dto.response.ResponseSocialInsuranceDTO;
+import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;
 import com.company_management.dto.SocialInsuranceDTO;
 import com.company_management.entity.SocialInsurance;
+import com.company_management.repository.EmployeeRepository;
 import com.company_management.repository.SocialInsuranceRepository;
 import com.company_management.service.SocialInsuranceService;
 import com.company_management.utils.CommonUtils;
+import com.company_management.utils.mapper.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,14 +31,15 @@ import java.util.stream.Collectors;
 public class SocialInsuranceServiceImpl implements SocialInsuranceService {
 
     private final SocialInsuranceRepository socialInsuranceRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public Page<SocialInsuranceDTO> search(Long userDetailId, Pageable pageable) {
-        Page<SocialInsurance> socialInsurances = socialInsuranceRepository.findByUserDetailId(userDetailId, pageable);
-        List<SocialInsuranceDTO> socialInsuranceDTOS = socialInsurances.stream().map(
+    public Page<ResponseSocialInsuranceDTO> getListEmployee(String employeeCode, RequestPage pageable) {
+        Page<SocialInsurance> socialInsurances = socialInsuranceRepository.findAllByEmployeeCode(employeeCode, pageable.toPageable());
+        List<ResponseSocialInsuranceDTO> socialInsuranceDTOS = socialInsurances.getContent().stream().map(
                 res -> {
-                    SocialInsuranceDTO socialInsuranceDTO = new SocialInsuranceDTO();
+                    ResponseSocialInsuranceDTO socialInsuranceDTO = new ResponseSocialInsuranceDTO();
                     socialInsuranceDTO.setSocialInsuranceId(res.getId());
                     socialInsuranceDTO.setSocialInsuranceCode(res.getSocialInsuranceCode());
                     socialInsuranceDTO.setInitialPayment(res.getInitialPayment());
@@ -42,7 +50,7 @@ public class SocialInsuranceServiceImpl implements SocialInsuranceService {
                     return socialInsuranceDTO;
                 }
         ).collect(Collectors.toList());
-        return new PageImpl<>(socialInsuranceDTOS, pageable, socialInsurances.getTotalElements());
+        return new ResponsePage<>(socialInsuranceDTOS, pageable, socialInsurances.getTotalElements());
     }
 
     @Override
@@ -77,19 +85,15 @@ public class SocialInsuranceServiceImpl implements SocialInsuranceService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void add(SocialInsuranceDTO socialInsuranceDTO) {
-//        SocialInsurance socialInsurance = socialInsuranceMapper.toEntity(socialInsuranceDTO);
-//        socialInsurance.setInitialPayment(Double.parseDouble(socialInsuranceDTO.getInitialPayment().toString()));
-//        socialInsurance.setPercent(Double.parseDouble(socialInsuranceDTO.getPercent().toString()));
-//        socialInsurance.setActualPayment(Double.parseDouble(socialInsuranceDTO.getActualPayment().toString()));
-//        socialInsurance.setLicenseDate(socialInsuranceDTO.getLicenseDate());
-//        socialInsurance.setExpiredDate(socialInsuranceDTO.getExpiredDate());
-//        if (socialInsuranceDTO.getUserDetailId() != null) {
-////            socialInsurance.setUserDetailId(socialInsuranceDTO.getUserDetailId());
-//        } else {
-//            throw new AppException("ERR01", "Chọn nhân viên để thêm mã bảo hiểm xã hội");
-//        }
-//        socialInsuranceRepository.save(socialInsurance);
+    public void create(RequestSocialInsuranceDTO request) {
+        if (request.getEmployeeCode() == null){
+            throw new AppException("ERR1","Mã nhân viên không được để trống");
+        }
+        Employee employee = employeeRepository.findByCode(request.getEmployeeCode()).orElseThrow(()->new AppException("ERR01","MÃ CBNV không tồn tại trong hệ thống"));
+        SocialInsurance socialInsurance = new SocialInsurance();
+        MapperUtils.map(request, socialInsurance);
+        socialInsurance.setEmployee(employee);
+        socialInsuranceRepository.save(socialInsurance);
     }
 
     @Override

@@ -5,12 +5,16 @@ import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.dto.QualificationDTO;
 import com.company_management.dto.common.BaseResponse;
+import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
+import com.company_management.dto.request.RequestQualificationDTO;
+import com.company_management.dto.response.ResponseQualificationDTO;
 import com.company_management.dto.response.ResponseQualificationEmployeeDetailDTO;
 import com.company_management.service.QualificationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +28,9 @@ public class QualificationController {
 
     final QualificationService qualificationService;
 
-        @PostMapping(value = "/create")
-    public ResultResp<Object> create(@RequestBody @Valid QualificationDTO qualificationDTO) {
-        qualificationService.addQualification(qualificationDTO);
+    @PostMapping(value = "/create")
+    public ResultResp<Object> create(@RequestBody @Valid RequestQualificationDTO request) {
+        qualificationService.create(request);
         return ResultResp.success(ErrorCode.CREATED_OK);
     }
 
@@ -35,9 +39,9 @@ public class QualificationController {
 //        return ResultResp.success(qualificationService.search(userDetailId, pageable));
 //    }
 
-    @GetMapping(value = "/detail/{id}")
-    public ResultResp<Object> detail(@PathVariable Long id) {
-        return ResultResp.success(qualificationService.detail(id));
+    @GetMapping(value = "/{id}")
+    public BaseResponse<ResponseQualificationDTO> detail(@PathVariable Long id) {
+        return BaseResponse.ok(qualificationService.detail(id));
     }
 
     @PutMapping
@@ -52,10 +56,10 @@ public class QualificationController {
         return ResultResp.success(null);
     }
 
-    @GetMapping(value = "/employee-detail/{userDetailId}")
-    public BaseResponse<List<ResponseQualificationEmployeeDetailDTO>> getDetail(@PathVariable("userDetailId") Long userDetailId) {
+    @GetMapping(value = "/employee-detail/{employeeCode}")
+    public BaseResponse<ResponsePage<ResponseQualificationEmployeeDetailDTO>> getDetail(@PathVariable("employeeCode") String employeeCode, RequestPage page) {
 
-        return BaseResponse.ok(AppConstants.STATUS_200, AppConstants.MESSAGE_200,qualificationService.getDetailEmployees(userDetailId));
+        return BaseResponse.ok(AppConstants.GET_CODE_200, AppConstants.GET_MESSAGE_200,qualificationService.getDetailEmployees(employeeCode,page));
     }
 
 

@@ -31,4 +31,6 @@ public interface WageRepository extends JpaRepository<Wage, Long> {
             "AND w.isActive = :status " +
             "ORDER BY w.createdDate ASC")
     Page<Wage> findAllByIsActive(@Param("status") Integer active, @Param("keyword") String keyword, Pageable pageable);
+
+    Page<Wage> findAllByEmployeeCode(String employeeCode, Pageable pageable);
 }

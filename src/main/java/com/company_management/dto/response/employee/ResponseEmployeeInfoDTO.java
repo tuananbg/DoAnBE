@@ -14,26 +14,34 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseEmployeeInfoDTO {
+    //Ngày sinh
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date dateOfBirth;
 
+    //Giới tính
     private int gender;
 
+    //Nơi sinh
     private String placeOfBirth;
 
+    //Mã số thuế
     private String taxCode;
 
+    //Số bảo hiểm
     private String insuranceNumber;
 
-    private String accountNumber;
-
+    //Địa chỉ thường trú
     private String permanentAddress;
 
+    //Địa chỉ hiện tại
     private String currentAddress;
 
+    //
     private String identityNumber;
 
+    //Só điện thoại
     private String mobile;
 
+    //
     private String nation;
 }

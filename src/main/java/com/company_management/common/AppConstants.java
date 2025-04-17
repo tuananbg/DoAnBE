@@ -5,10 +5,10 @@ public class AppConstants {
     }
 
     /* common controller */
-    public static final String STATUS_200 = "200";
-    public static final String MESSAGE_200 = "Request processed successfully";
-    public static final String STATUS_201 = "201";
-    public static final String MESSAGE_201 = "Created successfully";
+    public static final String GET_CODE_200 = "200";
+    public static final String GET_MESSAGE_200 = "Request processed successfully";
+    public static final String CREATE_SUCCESS_CODE_201 = "201";
+    public static final String CREATE_SUCCESS_MESS_201 = "Created successfully";
     public static final String EMPLOYEE_CREATE_SUCCESS = "Thêm mới nhân viên thành công !";
     ///  CBNV
     public static final String EMPLOYEE_CODE_001 = "EMP001";

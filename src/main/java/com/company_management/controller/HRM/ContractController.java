@@ -48,7 +48,7 @@ public class ContractController {
     public BaseResponse<Object> create(@ModelAttribute("file") MultipartFile file,
                                        @ModelAttribute @Valid RequestEmployeeContractDTO request) {
         contractService.create(file, request);
-        return BaseResponse.ok(AppConstants.STATUS_201, AppConstants.MESSAGE_201);
+        return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201, AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
     @PostMapping(value = "/createForEmployee")
@@ -62,6 +62,11 @@ public class ContractController {
     public BaseResponse<ResponsePage<ResponseContractListDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword,
                                                                        @PathVariable("status") ObjectStatus status, RequestPage page) {
         return BaseResponse.ok(contractService.getList(status, keyword, page));
+    }
+
+    @GetMapping(value = "/list/employee-detail/{employeeCode}")
+    public BaseResponse<ResponsePage<ResponseContractListDTO>> getListEmployeeCode(@PathVariable("employeeCode") String employeeCode, RequestPage page) {
+        return BaseResponse.ok(contractService.getListEmployeeCode(employeeCode, page));
     }
 
     @PostMapping(value = "/searchForEmployee")

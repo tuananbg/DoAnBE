@@ -75,9 +75,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                     if (item.getEmployeeInfo() != null) {
                         EmployeeInfo employeeInfo = employeeInfoRepository.findById(item.getEmployeeInfo().getId()).orElse(null);
                         if (employeeInfo != null) {
-                            response.setGender(employeeInfo.getGender());
+                            response.setGenderName(Gender.fromCode(employeeInfo.getGender()).getName());
                             response.setPhone(employeeInfo.getMobile());
-                            response.setAddress(employeeInfo.getPermanentAddress());
+                            response.setAddress(employeeInfo.getCurrentAddress());
                         }
                     }
                     return response;
@@ -107,6 +107,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
         ResponseEmployeeDetailDTO detailDTO = new ResponseEmployeeDetailDTO();
         MapperUtils.map(employee, detailDTO);
+        detailDTO.setEmployeeCode(employee.getCode());
         return detailDTO;
     }
 
@@ -116,6 +117,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
         ResponseEmployeeDetailDTO detailDTO = new ResponseEmployeeDetailDTO();
         MapperUtils.map(employee, detailDTO);
+        detailDTO.setEmployeeCode(employee.getCode());
 
         if (employee.getEmployeeInfo() != null) {
             ResponseEmployeeInfoDTO employeeInfoDTO = new ResponseEmployeeInfoDTO();
@@ -124,14 +126,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             detailDTO.setEmployeeInfo(employeeInfoDTO);
         }
 
-        List<EmployeeContracts> employeeContractsList = employeeContractsRepository.findAllByEmployeeId(employee.getId());
-        List<ResponseEmployeeDetailContractsDTO> employeeContractsDTOList = new ArrayList<>();
-        for (EmployeeContracts employeeContracts : employeeContractsList) {
-            ResponseEmployeeDetailContractsDTO employeeContractsDTO = new ResponseEmployeeDetailContractsDTO();
-            MapperUtils.map(employeeContracts, employeeContractsDTO);
-            employeeContractsDTOList.add(employeeContractsDTO);
-        }
-        detailDTO.setContracts(employeeContractsDTOList);
 
         return detailDTO;
     }
@@ -144,25 +138,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = new Employee();
         MapperUtils.mapOnlyNotNullProperty(request, employee);
         employee.setIsActive(ObjectStatus.ACTIVE.getCode());
-//        if (request.getSeatCode() != null) {
-//            Seat seat = seatRepository.findByCode(request.getSeatCode()).orElse(null);
-//            if (seat == null) {
-//                throw new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001);
-//            }
-//            Position position = seat.getPosition();
-//            employee.setSeatCode(seat.getCode());
-//
-//            if (position != null) {
-//                employee.setPositionName(position.getPositionName());
-//                employee.setPositionCode(position.getPositionCode());
-//                Department department = position.getDepartment();
-//                if (department != null) {
-//                    employee.setDepartmentName(department.getDepartmentName());
-//                    employee.setDepartmentCode(department.getDepartmentCode());
-//                    employee.setDepartment(department);
-//                }
-//            }
-//        }
+        if (request.getDepartmentCode() != null) {
+            Department department = departmentRepository.findByCode(request.getDepartmentCode()).orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
+            employee.setDepartment(department);
+            employee.setDepartmentName(department.getDepartmentName());
+            employee.setDepartmentCode(department.getDepartmentCode());
+        }
+        if (request.getPositionCode() != null) {
+            Position position = positionRepository.findByPositionCode(request.getPositionCode()).orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
+            employee.setPositionName(position.getPositionName());
+            employee.setPositionCode(position.getPositionCode());
+        }
 
         EmployeeInfo employeeInfo = new EmployeeInfo();
 

@@ -31,7 +31,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public BaseResponse<Object> register(@RequestBody RegisterRequest request) {
         authenticationService.register(request);
-        return BaseResponse.ok(AppConstants.STATUS_201, AppConstants.MESSAGE_201);
+        return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201, AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
     @PostMapping("/login")

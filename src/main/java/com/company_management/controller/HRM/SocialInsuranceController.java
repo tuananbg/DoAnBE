@@ -1,8 +1,13 @@
 package com.company_management.controller.HRM;
 
+import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.dto.SocialInsuranceDTO;
+import com.company_management.dto.common.BaseResponse;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.request.RequestQualificationDTO;
+import com.company_management.dto.request.RequestSocialInsuranceDTO;
 import com.company_management.service.SocialInsuranceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +24,14 @@ public class SocialInsuranceController {
     final SocialInsuranceService socialInsuranceService;
 
     @PostMapping(value = "/create")
-    public ResultResp<Object> create(@RequestBody @Valid SocialInsuranceDTO socialInsuranceDTO) {
-        socialInsuranceService.add(socialInsuranceDTO);
-        return ResultResp.success(ErrorCode.CREATED_OK);
+    public BaseResponse<Object> create(@RequestBody @Valid RequestSocialInsuranceDTO request) {
+        socialInsuranceService.create(request);
+        return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201,AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
-    @PostMapping(value = "/search/{userDetailId}")
-    public ResultResp<Object> search(@PathVariable("userDetailId") Long userDetailId, Pageable pageable) {
-        return ResultResp.success(socialInsuranceService.search(userDetailId, pageable));
+    @GetMapping(value = "/list/employee-detail/{employeeCode}")
+    public ResultResp<Object> getListEmployee(@PathVariable("employeeCode") String employeeCode, RequestPage pageable) {
+        return ResultResp.success(socialInsuranceService.getListEmployee(employeeCode, pageable));
     }
 
     @GetMapping(value = "/detail/{id}")

@@ -22,7 +22,7 @@ public class MasterDataController {
     @PostMapping(value = "/create/jobGroup")
     public BaseResponse<Object> createJobGroup(@RequestBody @Valid RequestMasterDataDTO request) {
         masterDataService.createJobGroup(request);
-        return BaseResponse.ok(AppConstants.STATUS_201, AppConstants.MESSAGE_201);
+        return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201, AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
     @GetMapping(value = "/list/jobGroup")
@@ -33,7 +33,7 @@ public class MasterDataController {
     @PostMapping(value = "/create/positionCategory")
     public BaseResponse<Object> createPositionCategory(@RequestBody @Valid RequestMasterDataDTO request) {
         masterDataService.createPositionCategory(request);
-        return BaseResponse.ok(AppConstants.STATUS_201, AppConstants.MESSAGE_201);
+        return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201, AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
     @GetMapping(value = "/list/positionCategory")

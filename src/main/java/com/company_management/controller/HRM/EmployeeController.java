@@ -57,7 +57,7 @@ public class EmployeeController {
     public BaseResponse<Object> addEmployee(@ModelAttribute("avatarFile") MultipartFile avatarFile,
                                             @ModelAttribute @Valid RequestEmployeeDetailDTO request) throws IOException {
         employeeService.createEmployee(avatarFile, request);
-        return BaseResponse.ok(AppConstants.STATUS_200, AppConstants.EMPLOYEE_CREATE_SUCCESS);
+        return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201, AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
     @GetMapping("/list/{status}")

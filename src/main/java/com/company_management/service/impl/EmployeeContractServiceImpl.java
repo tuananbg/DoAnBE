@@ -71,6 +71,20 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
         return new ResponsePage<>(responseContractListDTOS, page, employeeContracts.getTotalElements());
     }
 
+    @Override
+    public ResponsePage<ResponseContractListDTO> getListEmployeeCode(String employeeCode, RequestPage page) {
+        Page<EmployeeContracts> employeeContracts = employeeContractRepository.findAllByEmployeeCode(employeeCode, page.toPageable());
+        List<ResponseContractListDTO> responseContractListDTOS = employeeContracts
+                .getContent()
+                .stream()
+                .map(item -> {
+                    ResponseContractListDTO response = new ResponseContractListDTO();
+                    MapperUtils.map(item, response);
+                    return response;
+                }).toList();
+        return new ResponsePage<>(responseContractListDTOS, page, employeeContracts.getTotalElements());
+    }
+
 
     @Override
     @Transactional(readOnly = true)

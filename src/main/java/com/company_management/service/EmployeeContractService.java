@@ -21,6 +21,8 @@ public interface EmployeeContractService {
 
     ResponsePage<ResponseContractListDTO> getList(ObjectStatus status,String keyword, RequestPage page);
 
+    ResponsePage<ResponseContractListDTO> getListEmployeeCode(String employeeCode, RequestPage page);
+
     ResponseEmployeeContractsDetail detail(Long id);
 
     void update(MultipartFile file, ContractDTO contractDTO);

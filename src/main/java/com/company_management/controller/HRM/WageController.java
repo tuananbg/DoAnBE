@@ -121,9 +121,9 @@ public class WageController {
         }
     }
 
-    @GetMapping("/employee-detail/{id}")
-    private BaseResponse<List<ResponseWageEmployeeDetailDTO>> getEmployeeDetail(@PathVariable Long id) {
-        return BaseResponse.ok(AppConstants.STATUS_200, AppConstants.MESSAGE_200, wageService.getEmployeeWageDetails(id));
+    @GetMapping("/employee-detail/{employeeCode}")
+    private BaseResponse<ResponsePage<ResponseWageEmployeeDetailDTO>> getEmployeeDetail(@PathVariable("employeeCode") String employeeCode,RequestPage page) {
+        return BaseResponse.ok(wageService.getEmployeeWageDetails(employeeCode,page));
     }
 
 }

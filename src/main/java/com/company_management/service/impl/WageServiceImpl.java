@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -223,13 +224,15 @@ public class WageServiceImpl implements WageService {
     }
 
     @Override
-    public List<ResponseWageEmployeeDetailDTO> getEmployeeWageDetails(Long id) {
-        return wageRepository.findAllByUserDetailId(id).stream().map(
+    public ResponsePage<ResponseWageEmployeeDetailDTO> getEmployeeWageDetails(String employeeCode,RequestPage page) {
+        Page<Wage> wagePage = wageRepository.findAllByEmployeeCode(employeeCode,page.toPageable());
+        List<ResponseWageEmployeeDetailDTO> responseWageEmployeeDetailDTOS = wagePage.getContent().stream().map(
                 item -> {
                     ResponseWageEmployeeDetailDTO dto = new ResponseWageEmployeeDetailDTO();
                     MapperUtils.map(item, dto);
                     return dto;
                 }).toList();
+        return new ResponsePage<>(responseWageEmployeeDetailDTOS,page, wagePage.getTotalElements());
     }
 
 }

@@ -9,6 +9,7 @@ import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.response.DataPage;
 import com.company_management.dto.response.ResponseWageListDTO;
 import com.company_management.dto.response.WageResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,5 +35,5 @@ public interface WageService {
 
     void deleteForEmployeeByIds(Long id);
 
-    List<ResponseWageEmployeeDetailDTO> getEmployeeWageDetails(Long id);
+    ResponsePage<ResponseWageEmployeeDetailDTO> getEmployeeWageDetails(String employeeCode,RequestPage requestPage);
 }

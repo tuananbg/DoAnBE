@@ -28,5 +28,7 @@ public interface EmployeeContractsRepository extends JpaRepository<EmployeeContr
             "ORDER BY ec.createdDate ASC")
     Page<EmployeeContracts> findAllByIsActive(@Param("status") Integer isActive, @Param("keyword") String keyword, Pageable pageable);
 
+    Page<EmployeeContracts> findAllByEmployeeCode(String code, Pageable pageable);
+
 
 }

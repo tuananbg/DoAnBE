@@ -19,12 +19,12 @@ public class SeatController {
 
     @GetMapping("/list")
     public BaseResponse<List<ResponseSeatDTO>> getAllPosition() {
-        return BaseResponse.ok(AppConstants.STATUS_200, AppConstants.MESSAGE_200, seatService.findAll());
+        return BaseResponse.ok(AppConstants.GET_CODE_200, AppConstants.GET_MESSAGE_200, seatService.findAll());
     }
 
     @PostMapping("/create")
     public BaseResponse<Object> create(@RequestBody RequestSeatDTO request) {
         seatService.create(request);
-        return BaseResponse.ok(AppConstants.STATUS_200, AppConstants.MESSAGE_200);
+        return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201, AppConstants.CREATE_SUCCESS_MESS_201);
     }
 }

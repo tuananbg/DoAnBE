@@ -16,25 +16,20 @@ public class ResponseEmployeeDetailDTO {
 
     private Long id;
 
-    private String code;
+    //Mã CBNV
+    private String employeeCode;
 
+    //Họ tên
     private String fullName;
 
+    //Ảnh đại diện
     private String avatar;
 
+    //Phòng ban
     private String departmentName;
 
+    //Chức vụ
     private String positionName;
 
-    private String seatCode;
-
     private ResponseEmployeeInfoDTO employeeInfo;
-
-    private List<ResponseEmployeeDetailContractsDTO> contracts;
-
-    private List<ResponseEmployeeDetailSocialDTO> socialInsurances;
-
-    private List<ResponseEmployeeDetailWageDTO> wages;
-
-    private List<ResponseEmployeeDetailQualificationDTO> qualifications;
 }

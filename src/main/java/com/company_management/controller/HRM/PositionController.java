@@ -35,13 +35,13 @@ public class PositionController {
 
     @GetMapping("/list/selection")
     public BaseResponse<List<ResponsePositionDTO>> getAllPosition() {
-        return BaseResponse.ok(AppConstants.STATUS_200, AppConstants.MESSAGE_200, positionService.getAllPositionSelection());
+        return BaseResponse.ok(AppConstants.GET_CODE_200, AppConstants.GET_MESSAGE_200, positionService.getAllPositionSelection());
     }
 
     @PostMapping("/create")
     public BaseResponse<Object> createPosition(@Valid @RequestBody RequestPositionDTO positionDTO) {
         positionService.create(positionDTO);
-        return BaseResponse.ok(AppConstants.STATUS_201, AppConstants.MESSAGE_201);
+        return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201, AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
     @GetMapping("/detail/{id}")

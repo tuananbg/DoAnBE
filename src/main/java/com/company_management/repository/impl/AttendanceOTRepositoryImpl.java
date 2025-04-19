@@ -1,8 +1,8 @@
 //package com.company_management.repository.impl;
 //
 //import com.company_management.dto.AttendanceOTDTO;
-//import com.company_management.dto.request.SearchAttendanceOTRequest;
-//import com.company_management.dto.response.DataPage;
+//import com.company_management.dto.request.pa.SearchAttendanceOTRequest;
+//import com.company_management.dto.common.DataPage;
 //import com.company_management.utils.DataUtils;
 //import jakarta.persistence.EntityManager;
 //import jakarta.persistence.PersistenceContext;

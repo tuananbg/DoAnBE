@@ -1,7 +1,7 @@
 //package com.company_management.controller.auth;
 //
 //import com.company_management.dto.MenuItemDTO;
-//import com.company_management.dto.response.BasicResponse;
+//import com.company_management.dto.common.BasicResponse;
 //import com.company_management.service.MenuItemService;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.http.HttpStatus;

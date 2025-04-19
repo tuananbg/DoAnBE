@@ -1,7 +1,7 @@
 package com.company_management.repository;
 
 import com.company_management.entity.BaseEntity;
-import com.company_management.dto.response.DataPage;
+import com.company_management.dto.common.DataPage;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;

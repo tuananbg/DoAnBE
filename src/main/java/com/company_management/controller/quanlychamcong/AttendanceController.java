@@ -3,7 +3,7 @@ package com.company_management.controller.quanlychamcong;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.dto.AttendanceDTO;
-import com.company_management.dto.request.SearchAttendanceRequest;
+import com.company_management.dto.request.pa.SearchAttendanceRequest;
 import com.company_management.service.AttendanceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

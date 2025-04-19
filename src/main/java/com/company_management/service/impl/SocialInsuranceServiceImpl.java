@@ -2,8 +2,8 @@ package com.company_management.service.impl;
 
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
-import com.company_management.dto.request.RequestSocialInsuranceDTO;
-import com.company_management.dto.response.ResponseSocialInsuranceDTO;
+import com.company_management.dto.request.pa.RequestSocialInsuranceDTO;
+import com.company_management.dto.response.pa.ResponseSocialInsuranceDTO;
 import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;
 import com.company_management.dto.SocialInsuranceDTO;
@@ -16,8 +16,6 @@ import com.company_management.utils.mapper.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

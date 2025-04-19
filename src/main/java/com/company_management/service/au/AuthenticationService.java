@@ -1,11 +1,11 @@
 //package com.company_management.service.au;
 //
 //import com.company_management.dto.au.RequestLoginDTO;
-//import com.company_management.dto.request.ChangePasswordRequest;
+//import com.company_management.dto.au.ChangePasswordRequest;
 //
-//import com.company_management.dto.request.RegisterRequest;
-//import com.company_management.dto.response.ResponseLoginDTO;
-//import com.company_management.dto.response.BasicResponse;
+//import com.company_management.dto.au.RegisterRequest;
+//import com.company_management.dto.response.au.ResponseLoginDTO;
+//import com.company_management.dto.common.BasicResponse;
 //
 //
 //import java.security.Principal;

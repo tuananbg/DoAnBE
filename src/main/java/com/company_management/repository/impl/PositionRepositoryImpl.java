@@ -1,8 +1,8 @@
 //package com.company_management.repository.impl;
 //
 //import com.company_management.dto.PositionDTO;
-//import com.company_management.dto.request.SearchPositionRequest;
-//import com.company_management.dto.response.DataPage;
+//import com.company_management.dto.request.pa.SearchPositionRequest;
+//import com.company_management.dto.common.DataPage;
 //import com.company_management.repository.PositionRepositoryCustom;
 //import com.company_management.utils.DataUtils;
 //import jakarta.persistence.EntityManager;

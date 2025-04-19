@@ -2,7 +2,7 @@
 //
 //
 //import com.company_management.dto.ContractDTO;
-//import com.company_management.dto.response.DataPage;
+//import com.company_management.dto.common.DataPage;
 //import com.company_management.utils.DataUtils;
 //import jakarta.persistence.EntityManager;
 //import jakarta.persistence.PersistenceContext;

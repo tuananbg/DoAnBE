@@ -2,12 +2,12 @@ package com.company_management.service.impl;
 
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
-import com.company_management.dto.request.RequestQualificationDTO;
-import com.company_management.dto.response.ResponseQualificationDTO;
+import com.company_management.dto.request.pa.RequestQualificationDTO;
+import com.company_management.dto.response.pa.ResponseQualificationDTO;
 import com.company_management.entity.Employee;
 import com.company_management.repository.EmployeeRepository;
 import com.company_management.utils.mapper.MapperUtils;
-import com.company_management.dto.response.ResponseQualificationEmployeeDetailDTO;
+import com.company_management.dto.response.pa.ResponseQualificationEmployeeDetailDTO;
 import com.company_management.exception.AppException;
 import com.company_management.dto.QualificationDTO;
 import com.company_management.entity.Qualification;

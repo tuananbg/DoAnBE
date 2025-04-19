@@ -1,12 +1,16 @@
 package com.company_management.service.impl;
 
+import com.company_management.dto.common.BasicResponse;
+import com.company_management.dto.common.PageResponse;
 import com.company_management.dto.response.*;
+import com.company_management.dto.response.au.AccountDetailResponse;
+import com.company_management.dto.response.au.AccountSearchResponse;
 import com.company_management.entity.*;
 import com.company_management.exception.AppException;
 import com.company_management.exception.BadRequestException;
-import com.company_management.dto.request.UserCustomEmployeeRequest;
-import com.company_management.dto.request.UserDetailRequest;
-import com.company_management.dto.request.UserSearchRequest;
+import com.company_management.dto.request.pa.UserCustomEmployeeRequest;
+import com.company_management.dto.request.pa.UserDetailRequest;
+import com.company_management.dto.request.pa.UserSearchRequest;
 import com.company_management.repository.*;
 import com.company_management.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -86,7 +90,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageResponse<AccountSearchResponse> searchAccount( Pageable pageable) {
+    public PageResponse<AccountSearchResponse> searchAccount(Pageable pageable) {
 //        return userCustomRepository.searchAccount(pageable);
         return null;
     }

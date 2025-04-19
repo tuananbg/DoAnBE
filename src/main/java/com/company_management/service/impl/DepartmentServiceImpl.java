@@ -5,7 +5,7 @@ import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.utils.mapper.MapperUtils;
-import com.company_management.dto.response.ResponseDepartmentDTO;
+import com.company_management.dto.response.pa.ResponseDepartmentDTO;
 import com.company_management.dto.response.ResponseTotalDTO;
 import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;

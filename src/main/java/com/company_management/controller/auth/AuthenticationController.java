@@ -3,14 +3,12 @@ package com.company_management.controller.auth;
 
 import com.company_management.dto.au.RequestLoginDTO;
 import com.company_management.dto.common.BaseResponse;
-import com.company_management.dto.response.ResponseLoginDTO;
+import com.company_management.dto.response.au.ResponseLoginDTO;
 import com.company_management.service.au.AuthorService;
 import com.company_management.service.au.impl.AuthorServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

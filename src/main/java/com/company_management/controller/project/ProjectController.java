@@ -5,8 +5,8 @@ import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
-import com.company_management.dto.request.RequestProjectDTO;
-import com.company_management.dto.response.ResponseListProjectDTO;
+import com.company_management.dto.request.projcet.RequestProjectDTO;
+import com.company_management.dto.response.project.ResponseListProjectDTO;
 import com.company_management.service.ProjectService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,4 +31,6 @@ public class ProjectController {
                                                                       @PathVariable("status") ObjectStatus status, RequestPage page) {
         return BaseResponse.ok(projectService.getList(status, keyword, page));
     }
+
+
 }

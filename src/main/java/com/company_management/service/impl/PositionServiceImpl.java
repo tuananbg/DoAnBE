@@ -4,8 +4,8 @@ import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.utils.mapper.MapperUtils;
-import com.company_management.dto.request.RequestPositionDTO;
-import com.company_management.dto.response.ResponsePositionDTO;
+import com.company_management.dto.request.pa.RequestPositionDTO;
+import com.company_management.dto.response.pa.ResponsePositionDTO;
 import com.company_management.exception.AppException;
 import com.company_management.entity.Position;
 import com.company_management.repository.PositionRepository;
@@ -14,7 +14,6 @@ import com.company_management.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

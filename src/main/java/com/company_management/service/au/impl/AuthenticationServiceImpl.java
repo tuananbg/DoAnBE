@@ -3,11 +3,11 @@
 //import com.company_management.common.Constants;
 //import com.company_management.common.enums.RoleEnum;
 //import com.company_management.dto.au.RequestLoginDTO;
-//import com.company_management.dto.request.ChangePasswordRequest;
+//import com.company_management.dto.au.ChangePasswordRequest;
 //import com.company_management.dto.request.MailRequest;
-//import com.company_management.dto.request.RegisterRequest;
-//import com.company_management.dto.response.ResponseLoginDTO;
-//import com.company_management.dto.response.BasicResponse;
+//import com.company_management.dto.au.RegisterRequest;
+//import com.company_management.dto.response.au.ResponseLoginDTO;
+//import com.company_management.dto.common.BasicResponse;
 //import com.company_management.entity.Account;
 //import com.company_management.exception.AppException;
 //import com.company_management.exception.BadRequestException;

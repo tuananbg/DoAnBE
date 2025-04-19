@@ -1,7 +1,7 @@
 package com.company_management.service;
 
-import com.company_management.dto.request.RequestSeatDTO;
-import com.company_management.dto.response.ResponseSeatDTO;
+import com.company_management.dto.request.pa.RequestSeatDTO;
+import com.company_management.dto.response.pa.ResponseSeatDTO;
 
 import java.util.List;
 

@@ -1,11 +1,11 @@
 //package com.company_management.repository.impl;
 //
 //import com.company_management.common.DataUtil;
-//import com.company_management.dto.request.AccountSearchRequest;
-//import com.company_management.dto.request.UserSearchRequest;
-//import com.company_management.dto.response.AccountDetailResponse;
-//import com.company_management.dto.response.AccountSearchResponse;
-//import com.company_management.dto.response.PageResponse;
+//import com.company_management.dto.au.AccountSearchRequest;
+//import com.company_management.dto.request.pa.UserSearchRequest;
+//import com.company_management.dto.response.au.AccountDetailResponse;
+//import com.company_management.dto.response.au.AccountSearchResponse;
+//import com.company_management.dto.common.PageResponse;
 //import com.company_management.dto.response.UserSearchResponse;
 //import com.company_management.repository._UserCustomRepository;
 //import jakarta.persistence.EntityManager;

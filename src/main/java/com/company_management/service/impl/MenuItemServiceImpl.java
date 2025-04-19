@@ -3,7 +3,7 @@
 //import com.company_management.exception.BadRequestException;
 //import com.company_management.dto.MenuItemDTO;
 //import com.company_management.entity.MenuItem;
-//import com.company_management.dto.response.BasicResponse;
+//import com.company_management.dto.common.BasicResponse;
 //import com.company_management.repository.MenuItemRepository;
 //import com.company_management.service.MenuItemService;
 //import lombok.RequiredArgsConstructor;

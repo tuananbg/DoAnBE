@@ -7,7 +7,7 @@ import com.company_management.config.AppConfig;
 import com.company_management.dto.au.EmployeeInfo;
 import com.company_management.dto.au.RequestChangePasswordDTO;
 import com.company_management.dto.au.RequestLoginDTO;
-import com.company_management.dto.response.ResponseLoginDTO;
+import com.company_management.dto.response.au.ResponseLoginDTO;
 import com.company_management.entity.Account;
 import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;

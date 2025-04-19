@@ -4,11 +4,8 @@ import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.DepartmentDTO;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
-import com.company_management.dto.request.SearchDepartmentRequest;
-import com.company_management.dto.response.ResponseDepartmentDTO;
+import com.company_management.dto.response.pa.ResponseDepartmentDTO;
 import com.company_management.dto.response.ResponseTotalDTO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 

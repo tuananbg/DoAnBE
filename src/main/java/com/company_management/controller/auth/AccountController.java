@@ -3,21 +3,16 @@ package com.company_management.controller.auth;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.dto.common.BaseResponse;
-import com.company_management.dto.request.UserCustomEmployeeRequest;
-import com.company_management.dto.response.AccountSearchResponse;
-import com.company_management.dto.response.PageResponse;
+import com.company_management.dto.request.pa.UserCustomEmployeeRequest;
+import com.company_management.dto.response.au.AccountSearchResponse;
+import com.company_management.dto.common.PageResponse;
 import com.company_management.dto.response.ResponseAccountRole;
 import com.company_management.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("${apiPrefix}/account")

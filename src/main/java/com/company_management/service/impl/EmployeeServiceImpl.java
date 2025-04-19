@@ -4,17 +4,21 @@ import com.company_management.common.AppConstants;
 import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.common.enums.Gender;
 import com.company_management.common.enums.ObjectStatus;
+import com.company_management.dto.common.DataPage;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
-import com.company_management.dto.response.employee.*;
+import com.company_management.dto.response.pa.employee.ResponseEmployeeDetailDTO;
+import com.company_management.dto.response.pa.employee.ResponseEmployeeInfoDTO;
+import com.company_management.dto.response.pa.employee.ResponseEmployeeSelectDTO;
+import com.company_management.dto.response.pa.employee.ResponseListEmployeeDTO;
 import com.company_management.utils.mapper.MapperUtils;
-import com.company_management.dto.request.employee.RequestEmployeeDetailDTO;
+import com.company_management.dto.request.pa.employee.RequestEmployeeDetailDTO;
 import com.company_management.dto.response.*;
 import com.company_management.entity.*;
 import com.company_management.exception.AppException;
 import com.company_management.dto.UserDetailDTO;
 
-import com.company_management.dto.request.SearchEmployeeRequest;
+import com.company_management.dto.request.pa.SearchEmployeeRequest;
 import com.company_management.repository.*;
 import com.company_management.service.EmployeeService;
 import com.company_management.utils.CommonUtils;
@@ -58,7 +62,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private String fileUpload;
 
     @Override
-    public ResponsePage<ResponseListEmployeeDTO> findAllByKeywordAndStatus(String keyword,EmploymentStatus status, RequestPage page) {
+    public ResponsePage<ResponseListEmployeeDTO> findAllByKeywordAndStatus(String keyword, EmploymentStatus status, RequestPage page) {
         Page<Employee> employees = employeeRepository.findAllByKeywordAndStatus(keyword, status.getCode(), page.toPageable());
         List<ResponseListEmployeeDTO> responseEmployeeDTOList = employees.getContent()
                 .stream()

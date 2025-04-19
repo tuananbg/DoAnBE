@@ -3,29 +3,18 @@ package com.company_management.service.impl;
 import com.company_management.exception.AppException;
 import com.company_management.dto.AttendanceOTDTO;
 import com.company_management.entity.AttendanceOt;
-import com.company_management.dto.request.SearchAttendanceOTRequest;
-import com.company_management.dto.response.DataPage;
+import com.company_management.dto.request.pa.SearchAttendanceOTRequest;
+import com.company_management.dto.common.DataPage;
 import com.company_management.repository.AttendanceOTRepository;
 import com.company_management.service.AttendanceOTService;
 import com.company_management.utils.CommonUtils;
-import com.company_management.utils.DataUtils;
-import com.company_management.utils.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jxls.transformer.XLSTransformer;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor

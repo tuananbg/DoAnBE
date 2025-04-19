@@ -1,8 +1,8 @@
 package com.company_management.service.impl;
 
 import com.company_management.utils.mapper.MapperUtils;
-import com.company_management.dto.request.RequestSeatDTO;
-import com.company_management.dto.response.ResponseSeatDTO;
+import com.company_management.dto.request.pa.RequestSeatDTO;
+import com.company_management.dto.response.pa.ResponseSeatDTO;
 import com.company_management.entity.Position;
 import com.company_management.entity.Seat;
 import com.company_management.exception.AppException;

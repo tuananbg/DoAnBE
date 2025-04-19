@@ -2,7 +2,7 @@
 //
 //
 //import com.company_management.entity.BaseEntity;
-//import com.company_management.dto.response.DataPage;
+//import com.company_management.dto.common.DataPage;
 //import com.company_management.repository.CustomBaseRepository;
 //import jakarta.persistence.EntityManager;
 //import jakarta.persistence.PersistenceContext;

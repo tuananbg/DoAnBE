@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public enum Role {
+public enum RoleEnum {
     ADMIN( "ADMIN", "Quản trị viên"),
     USER( "USER", "Nhân viên"),
     ;
@@ -18,8 +18,8 @@ public enum Role {
 
     private String name;
 
-    public static Role findByCode(String status) {
-        for (Role role : values()) {
+    public static RoleEnum findByCode(String status) {
+        for (RoleEnum role : values()) {
             if (role.getCode().equalsIgnoreCase(status)) {
                 return role;
             }

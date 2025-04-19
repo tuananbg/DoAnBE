@@ -2,7 +2,7 @@ package com.company_management.controller.HRM;
 
 import com.company_management.dto.request.UserDetailRequest;
 import com.company_management.dto.response.BasicResponse;
-import com.company_management.service.JwtService;
+import com.company_management.service.au.JwtService;
 import com.company_management.dto.request.UserSearchRequest;
 import com.company_management.dto.response.PageResponse;
 import com.company_management.dto.response.UserSearchResponse;

@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     private final DepartmentRepository departmentRepository;
     private final PositionRepository positionRepository;
     private final WageRepository wageRepository;
-    private final UserAccountRepository userAccountRepository;
+    private final AccountRepository accountRepository;
     private final EmployeeRepository employeeRepository;
 
     @Override
@@ -33,22 +33,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserSearchResponse findUserDetailById(Long id) {
-        UserAccount userCustom = userAccountRepository.findById(id).orElseThrow(() -> new BadRequestException(
+        Account account = accountRepository.findById(id).orElseThrow(() -> new BadRequestException(
                 "Không tìm thấy User theo id" + id));
         Employee employee =
-                employeeRepository.findById(userCustom.getEmployee().getId()).orElseThrow(() -> new AppException(
+                employeeRepository.findById(account.getEmployee().getId()).orElseThrow(() -> new AppException(
                         "API-500", "Có lỗi xảy ra"));
         UserSearchResponse result = new UserSearchResponse();
-        result.setId(userCustom.getId());
-        result.setFullName(userCustom.getUsername());
-        result.setEmail(userCustom.getEmail());
+        result.setId(account.getId());
+        result.setFullName(account.getCode());
+        result.setEmail(account.getEmployee().getEmployeeInfo().getEmail());
         return result;
     }
 
     @Override
     public BasicResponse createUserDetail(UserDetailRequest request) {
-        UserAccount user =
-                userAccountRepository.findById(request.getUserId()).orElseThrow(() -> new BadRequestException("Có lỗi " +
+        Account user =
+                accountRepository.findById(request.getUserId()).orElseThrow(() -> new BadRequestException("Có lỗi " +
                         "xảy ra: Không tìm thấy User theo id: " + request.getUserId()));
         Employee employee =
                 employeeRepository.findById(user.getEmployee().getId()).orElseThrow(() -> new AppException("API-500",
@@ -93,11 +93,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseAccountRole findAccountRole(Long id) {
-        UserAccount userAccount = userAccountRepository.findByEmployeeId(id).orElseThrow(() -> new BadRequestException(""));
+        Account account = accountRepository.findByEmployeeId(id).orElseThrow(() -> new BadRequestException(""));
         ResponseAccountRole responseAccountRole = new ResponseAccountRole();
-        responseAccountRole.setId(userAccount.getId());
-        responseAccountRole.setRoles(userAccount.getRole().getCode());
-        responseAccountRole.setFullName(userAccount.getUsername());
+        responseAccountRole.setId(account.getId());
+//        responseAccountRole.setRoles(account.getEmployee().getRoles());
+//        responseAccountRole.setFullName(account.getUsername());
         return responseAccountRole;
 
     }

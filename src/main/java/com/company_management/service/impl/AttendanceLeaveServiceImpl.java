@@ -3,36 +3,22 @@ package com.company_management.service.impl;
 import com.company_management.exception.AppException;
 import com.company_management.dto.AttendanceLeaveDTO;
 import com.company_management.entity.AttendanceLeave;
-import com.company_management.dto.request.MailRequest;
 import com.company_management.dto.request.SearchLeaveRequest;
 import com.company_management.dto.response.DataPage;
 import com.company_management.repository.AttendanceLeaveRepository;
-import com.company_management.repository.UserAccountRepository;
+import com.company_management.repository.AccountRepository;
 import com.company_management.repository.EmployeeInfoRepository;
 import com.company_management.service.AttendanceLeaveService;
 import com.company_management.service.EmailService;
 import com.company_management.utils.CommonUtils;
-import com.company_management.utils.DataUtils;
-import com.company_management.utils.DateTimeUtils;
-import com.company_management.utils.LogisticsMailUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jxls.transformer.XLSTransformer;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.ITemplateEngine;
-import org.thymeleaf.context.Context;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +27,7 @@ public class AttendanceLeaveServiceImpl implements AttendanceLeaveService {
 
     private final AttendanceLeaveRepository attendanceLeaveRepository;
 
-    private final UserAccountRepository userCustomRepository;
+    private final AccountRepository userCustomRepository;
 
     private final EmployeeInfoRepository employeeInfoRepository;
 

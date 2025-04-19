@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationResponse {
+public class ResponseLoginDTO {
     private String token;
 
     private String fullName;

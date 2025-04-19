@@ -32,6 +32,14 @@ public class Project extends BaseEntity {
     private String projectDescription; // mo ta du an
 
     @Basic
+    @Column(name = "PROJECT_MANAGER_CODE")
+    private String projectManagerCode;  //Quản lý dự án
+
+    @Basic
+    @Column(name = "CLIENT_NAME")
+    private String clientName; // Tên khách hàng
+
+    @Basic
     @Column(name = "START_DAY")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date startDay;  // ngay bat dau
@@ -49,8 +57,5 @@ public class Project extends BaseEntity {
     @Column(name = "TIMESHEET")
     private Double timesheet;  // so gio thuc hien dang đc khai bao
 
-    @Basic
-    @Column(name = "TASK_NUMBER")
-    private Long taskNumber;  // so luong task
 
 }

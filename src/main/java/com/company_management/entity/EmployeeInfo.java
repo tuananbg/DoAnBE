@@ -21,6 +21,7 @@ public class EmployeeInfo extends BaseEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date dateOfBirth;
 
+    //giới tính
     @Column(name = "GENDER")
     private int gender;
 
@@ -35,6 +36,9 @@ public class EmployeeInfo extends BaseEntity {
 
     @Column(name = "ACCOUNT_NUMBER")
     private String accountNumber;
+
+    @Column(name="EMAIL")
+    private String email;
 
     // địa chỉ thường trú
     @Column(name = "PERMANENT_ADDRESS")
@@ -52,4 +56,7 @@ public class EmployeeInfo extends BaseEntity {
 
     @Column(name = "NATION")
     private String nation;
+
+    @OneToOne(mappedBy = "employeeInfo")
+    private Employee employee;
 }

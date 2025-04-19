@@ -32,6 +32,12 @@ CREATE TABLE `JOB_GROUP` (
     PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+INSERT INTO `JOB_GROUP` (`CODE`, `NAME`, `DESCRIPTION`, `STATUS`, `CREATED_BY`, `CREATED_DATE`)
+VALUES 
+  ('01', 'Nhân viên', 'Nhóm nhân viên thông thường', 1, 'admin', NOW()),
+  ('02', 'Quản lý', 'Nhóm quản lý cấp trung và cao', 1, 'admin', NOW());
+
+
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 
@@ -47,6 +53,22 @@ CREATE TABLE `POSITION_CATEGORY` (
     `MODIFIED_BY`     	VARCHAR(255) DEFAULT NULL ,
     PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `POSITION_CATEGORY` (`CODE`, `NAME`, `DESCRIPTION`, `STATUS`, `CREATED_BY`, `CREATED_DATE`)
+VALUES 
+  ('01', 'Giám đốc', 'Chức danh Giám đốc điều hành', 1, 'admin', NOW()),
+  ('02', 'Quyền Giám đốc', 'Chức danh Quyền Giám đốc', 1, 'admin', NOW()),
+  ('03', 'Phó giám đốc', 'Chức danh Phó Giám đốc hỗ trợ điều hành', 1, 'admin', NOW()),
+  ('04', 'Trưởng phòng', 'Chức danh Trưởng phòng ban', 1, 'admin', NOW()),
+  ('05', 'Quyền Trưởng phòng', 'Chức danh Quyền Trưởng phòng ban', 1, 'admin', NOW()),
+  ('06', 'Phó trưởng phòng', 'Chức danh Phó Trưởng phòng ban', 1, 'admin', NOW()),
+  ('07', 'Quản lý cấp cao', 'Chức danh quản lý cấp cao', 1, 'admin', NOW()),
+  ('08', 'Quản lý', 'Chức danh quản lý cấp trung', 1, 'admin', NOW()),
+  ('09', 'Chuyên viên', 'Chức danh chuyên môn nghiệp vụ', 1, 'admin', NOW()),
+  ('10', 'Nhân viên', 'Chức danh nhân viên thông thường', 1, 'admin', NOW()),
+  ('11', 'Thủ quỹ', 'Chức danh nhân viên quản lý quỹ', 1, 'admin', NOW()),
+  ('12', 'Kiểm ngân', 'Chức danh nhân viên kiểm ngân', 1, 'admin', NOW()),
+  ('13', 'Trưởng bộ phận', 'Chức danh trưởng bộ phận nghiệp vụ', 1, 'admin', NOW());
+
 
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;

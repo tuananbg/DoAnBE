@@ -6,10 +6,7 @@ import com.company_management.common.enums.TaskStatusEnum;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestProjectDTO;
-import com.company_management.dto.response.project.ResponseDetailTaskDTO;
-import com.company_management.dto.response.project.ResponseListProjectDTO;
-import com.company_management.dto.response.project.ResponseListTaskOfProjectDTO;
-import com.company_management.dto.response.project.ResponseSelectProjectDTO;
+import com.company_management.dto.response.project.*;
 import com.company_management.entity.Project;
 import com.company_management.entity.Task;
 import com.company_management.exception.AppException;
@@ -87,6 +84,26 @@ public class ProjectServiceImpl implements ProjectService {
                 }
             }
             dto.setTaskForm(taskDTOList);
+            data.add(dto);
+        }
+        return data;
+    }
+
+    @Override
+    public List<ResponseProjectDashboardTO> getListDashboard() {
+        List<Project> projects = projectRepository.findAll();
+        List<ResponseProjectDashboardTO> data = new ArrayList<>();
+        long taskAll = taskRepository.countAllTasks();
+        for (Project project : projects) {
+            ResponseProjectDashboardTO dto = new ResponseProjectDashboardTO();
+            dto.setProjectName(project.getProjectName());
+
+            long tasksOfProject = taskRepository.countTaskByManagerCode(project.getProjectCode());
+            dto.setNumberOfTasks((int) tasksOfProject);
+
+            long percent = tasksOfProject / taskAll;
+
+            dto.setPercentage(percent);
             data.add(dto);
         }
         return data;

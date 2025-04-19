@@ -25,4 +25,14 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "AND t.status = :status " +
             "ORDER BY t.priority ASC")
     Page<Task> findByStatus(@Param("status") Integer status,@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT COUNT(t) FROM Task t JOIN Project p " +
+            "ON t.project.projectCode = p.projectCode" +
+            " WHERE p.projectCode = :projectCode")
+    long countTaskByManagerCode(@Param("projectCode") String projectCode);
+
+    @Query("SELECT COUNT(t) FROM Task t")
+    long countAllTasks();
+
+
 }

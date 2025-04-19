@@ -6,10 +6,7 @@ import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestProjectDTO;
-import com.company_management.dto.response.project.ResponseDetailTaskDTO;
-import com.company_management.dto.response.project.ResponseListProjectDTO;
-import com.company_management.dto.response.project.ResponseListTaskOfProjectDTO;
-import com.company_management.dto.response.project.ResponseSelectProjectDTO;
+import com.company_management.dto.response.project.*;
 import com.company_management.service.ProjectService;
 import com.company_management.utils.annotation.PasswordMatching;
 import jakarta.validation.Valid;
@@ -46,6 +43,11 @@ public class ProjectController {
     @GetMapping(value = "/detail/task/{id}")
     public BaseResponse<List<ResponseListTaskOfProjectDTO>> getDetailTask(@PathVariable("id") long id) {
         return BaseResponse.ok(projectService.getListTask(id));
+    }
+
+    @GetMapping(value = "/dashboard")
+    public BaseResponse<List<ResponseProjectDashboardTO>> getListDashboard() {
+        return BaseResponse.ok(projectService.getListDashboard());
     }
 
 }

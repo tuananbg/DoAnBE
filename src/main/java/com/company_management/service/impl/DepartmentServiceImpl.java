@@ -71,7 +71,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             department.setDepartmentName(departmentDTO.getDepartmentName());
         }
         if (!DataUtils.isNullOrEmpty(departmentDTO.getStatus())) {
-            department.setIsActive(departmentDTO.getStatus());
+            department.setStatus(departmentDTO.getStatus());
         }
         departmentRepository.save(department);
     }
@@ -97,7 +97,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public List<ResponseTotalDTO> totalDepartment() {
         List<ResponseTotalDTO> response = new ArrayList<>();
-        List<Department> departments = departmentRepository.findAllByIsActive(DepartmentStatus.ACTIVE.getCode());
+        List<Department> departments = departmentRepository.findAllByStatus(DepartmentStatus.ACTIVE.getCode());
         for (Department department : departments) {
             List<Employee> employees = employeeRepository.findAllByDepartment(department.getId());
             if (employees != null) {
@@ -112,7 +112,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public List<ResponseDepartmentDTO> getListAllDepartment() {
-        List<Department> departments = departmentRepository.findAllByIsActive(DepartmentStatus.ACTIVE.getCode());
+        List<Department> departments = departmentRepository.findAllByStatus(DepartmentStatus.ACTIVE.getCode());
         List<ResponseDepartmentDTO> response = new ArrayList<>();
         for (Department department : departments) {
             ResponseDepartmentDTO item = new ResponseDepartmentDTO();

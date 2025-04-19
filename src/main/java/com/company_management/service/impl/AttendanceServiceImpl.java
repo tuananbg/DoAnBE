@@ -55,7 +55,7 @@ public class AttendanceServiceImpl implements AttendanceService {
             Account account = accountRepository.findById(CommonUtils.getUserLoginName())
                     .orElseThrow(() -> new AppException("ERR01", "Không tìm thấy tài khoản này"));
             attendance.setEmployeeId(account.getEmployee().getId());
-            attendance.setIsActive(1);
+            attendance.setStatus(1);
             Calendar nineAM = Calendar.getInstance();
             nineAM.set(Calendar.HOUR_OF_DAY, 8);
             nineAM.set(Calendar.MINUTE, 30);

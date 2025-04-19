@@ -17,7 +17,7 @@ public class ResponseWageListDTO {
     private String wageName;
     private Double wageBase; //so tiền phu cap
     private String wageDescription;
-    private Integer isActive;
+    private Integer status;
     private String attachFile;  //file thong tin phu cap
     private Date createdDate;
 }

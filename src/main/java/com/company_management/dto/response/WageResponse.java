@@ -25,6 +25,6 @@ public class WageResponse {
     private String userDetailName;
     private String attachFile;  //file thong tin phu cap
     private List<Long> userDetailId;
-    private Integer isActive; // la hop dong hien tai
+    private Integer status; // la hop dong hien tai
 
 }

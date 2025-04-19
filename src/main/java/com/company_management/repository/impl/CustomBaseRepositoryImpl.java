@@ -138,7 +138,7 @@
 //    @Transactional("transactionManager")
 //    @Override
 //    public ENT insert(ENT ent) {
-//        ent.setIsActive(1);
+//        ent.setStatus(1);
 ////    ent.setCreateDate(new Date());
 ////    ent.setCreateUser(1L);
 ////    ent.setUserModifyId(1L);

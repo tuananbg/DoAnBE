@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface AttendanceOTRepository extends JpaRepository<AttendanceOt, Long> {
 
     @Modifying
-    @Query(value = "update AttendanceOt p set p.isActive = 0, p.updatedDate = now(), p.updatedBy = :user where p.id = :id ")
+    @Query(value = "update AttendanceOt p set p.status = 0, p.updatedDate = now(), p.updatedBy = :user where p.id = :id ")
     int deleteById(Long id, Long user);
 
 }

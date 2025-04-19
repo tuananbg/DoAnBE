@@ -13,7 +13,7 @@ public class SearchLeaveRequest {
 
     private Date startDay;
     private Date endDay;
-    private Integer isActive;
+    private Integer status;
     private Long employeeId;
 
 }

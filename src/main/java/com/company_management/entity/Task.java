@@ -26,6 +26,9 @@ public class Task extends BaseEntity {
     @Column(name = "TASK_DESCRIPTION")
     private String taskDescription; // mô ta cong viec
 
+    @Column(name = "MANAGER_CODE")
+    private String managerCode; // Người theo dõi
+
     @Column(name = "START_DAY")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date startDay; // ngay bat dau

@@ -1,9 +1,6 @@
 package com.company_management.dto.request.projcet;
 
-import com.company_management.entity.Employee;
-import com.company_management.entity.Project;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,10 +27,12 @@ public class RequestCreateTaskDTO {
     private Date endDay;  // han ket thuc
 
     //Dự án
-    private Project project;
+    private String projectCode;
 
     //Nhân viên phụ trách
-    private Employee employee;
+    private String employeeCode;
+
+    private String managerCode;
 
     private int priority;  //do uu tien
 }

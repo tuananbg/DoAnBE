@@ -6,6 +6,7 @@ import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestProjectDTO;
 import com.company_management.dto.response.project.ResponseListProjectDTO;
+import com.company_management.dto.response.project.ResponseSelectProjectDTO;
 import com.company_management.entity.Project;
 import com.company_management.exception.AppException;
 import com.company_management.repository.ProjectRepository;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,9 +47,21 @@ public class ProjectServiceImpl implements ProjectService {
         return new ResponsePage<>(data,page,projectPage.getTotalElements());
     }
 
+    @Override
+    public List<ResponseSelectProjectDTO> getListSelect() {
+        List<Project> projects = projectRepository.findAll();
+        List<ResponseSelectProjectDTO> data = new ArrayList<>();
+        for (Project project : projects) {
+            ResponseSelectProjectDTO dto = new ResponseSelectProjectDTO();
+            MapperUtils.map(project, dto);
+            data.add(dto);
+        }
+        return data;
+    }
+
     private void checkProjectCode(String projectCode) {
         if (projectCode != null) {
-            if (!projectRepository.existsByProjectCode(projectCode)){
+            if (projectRepository.existsByProjectCode(projectCode)){
                 throw new AppException(AppConstants.PROJECT_CODE_EXIST_CODE_001,AppConstants.PROJECT_CODE_EXIST_MESS_001);
             }
         }

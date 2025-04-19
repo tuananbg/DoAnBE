@@ -19,10 +19,10 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Optional<Employee> findByCode(String code);
 
     @Modifying
-    @Query(value = "update Employee e set e.isActive = 0, e.updatedDate = now(), e.updatedBy = :user where e.id = :id and e.isActive = 1 or e.isActive = 2 ")
+    @Query(value = "update Employee e set e.status = 0, e.updatedDate = now(), e.updatedBy = :user where e.id = :id and e.status = 1 or e.status = 2 ")
     int deleteById(Long id, Long user);
 
-    List<Employee> findAllByIsActive(Integer isActive);
+    List<Employee> findAllByStatus(Integer status);
 
     @Query(value = "SELECT e FROM Employee e " +
             "join Department d on e.department.id = d.id " +
@@ -36,13 +36,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "UPPER(e.positionCode) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
             "UPPER(COALESCE(ei.identityNumber, '')) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
             "(:keyword IS NULL OR COALESCE(DATE_FORMAT(ei.dateOfBirth, '%d'), '') = :keyword)) " +
-            "AND e.isActive = :status " +
+            "AND e.status = :status " +
             "ORDER BY e.code ASC")
     Page<Employee> findAllByKeywordAndStatus(@Param("keyword") String keyword, @Param("status") Integer status, Pageable pageable);
 
     @Query("SELECT COUNT(e) FROM EmployeeInfo ei JOIN Employee e on e.employeeInfo.id = ei.id " +
             "WHERE FUNCTION('MONTH', ei.dateOfBirth) = FUNCTION('MONTH', CURRENT_DATE) " +
-            "AND e.isActive = :status")
+            "AND e.status = :status")
     Long countActiveEmployeesWithBirthdayInCurrentMonth(Integer status);
 
 

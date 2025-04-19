@@ -20,18 +20,18 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     Optional<Department> findByCode(String departmentCode);
 
     @Modifying
-    @Query(value = "update Department u set u.isActive = 0, u.updatedDate = now(), u.updatedBy = :user where u.id = :id and u.isActive = 1")
+    @Query(value = "update Department u set u.status = 0, u.updatedDate = now(), u.updatedBy = :user where u.id = :id and u.status = 1")
     int deleteById(Long id, Long user);
 
-    List<Department> findAllByIsActive(Integer status);
+    List<Department> findAllByStatus(Integer status);
 
     @Query(value = "SELECT d FROM Department d  WHERE " +
             "(:keyword IS NULL OR " +
             "UPPER(d.departmentCode) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
             "UPPER(d.departmentName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
-            "AND d.isActive = :status " +
+            "AND d.status = :status " +
             "ORDER BY d.createdDate ASC")
-    Page<Department> findAllByIsActive(@Param("status") Integer isActive, @Param("keyword") String keyword, Pageable pageable);
+    Page<Department> findAllByIsActive(@Param("status") Integer status, @Param("keyword") String keyword, Pageable pageable);
 
 
 }

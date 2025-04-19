@@ -16,7 +16,7 @@ public interface EmployeeContractsRepository extends JpaRepository<EmployeeContr
 
     Optional<EmployeeContracts> findById(Long id);
 
-    List<EmployeeContracts> findAllByIsActive(Integer isActive);
+    List<EmployeeContracts> findAllByStatus(Integer status);
 
     List<EmployeeContracts> findAllByEmployeeId(Long id);
 
@@ -24,7 +24,7 @@ public interface EmployeeContractsRepository extends JpaRepository<EmployeeContr
             "(:keyword IS NULL OR " +
             "UPPER(ec.contractType) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
             "UPPER(ec.contractTypeDisplay) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
-            "AND ec.isActive = :status " +
+            "AND ec.status = :status " +
             "ORDER BY ec.createdDate ASC")
     Page<EmployeeContracts> findAllByIsActive(@Param("status") Integer isActive, @Param("keyword") String keyword, Pageable pageable);
 

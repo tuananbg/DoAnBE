@@ -26,6 +26,6 @@ public class AttendanceResponse {
     private Double workingTime;
     private Double workingPoint;
     private Long totalPenalty;
-    private Integer isActive;
+    private Integer status;
 
 }

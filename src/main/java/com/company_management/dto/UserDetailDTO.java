@@ -37,7 +37,7 @@ public class UserDetailDTO {
 
     private String address;
 
-    private Integer isActive;
+    private Integer status;
 
     private Long departmentId;
 

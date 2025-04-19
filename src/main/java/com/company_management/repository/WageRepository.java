@@ -17,7 +17,7 @@ import java.util.List;
 public interface WageRepository extends JpaRepository<Wage, Long> {
 
     @Modifying
-    @Query(value = "update Wage c set c.isActive = 0, c.updatedDate = now(), c.updatedBy = :user where c.id = :id and c.isActive = 1 or c.isActive = 2 ")
+    @Query(value = "update Wage c set c.status = 0, c.updatedDate = now(), c.updatedBy = :user where c.id = :id and c.status = 1 or c.status = 2 ")
     int updateById(Long id, Long user);
 
     @Query(value = "SELECT  w from Wage w " +
@@ -28,7 +28,7 @@ public interface WageRepository extends JpaRepository<Wage, Long> {
     @Query(value = "SELECT w FROM Wage w  WHERE " +
             "(:keyword IS NULL OR " +
             "UPPER(w.wageName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
-            "AND w.isActive = :status " +
+            "AND w.status = :status " +
             "ORDER BY w.createdDate ASC")
     Page<Wage> findAllByIsActive(@Param("status") Integer active, @Param("keyword") String keyword, Pageable pageable);
 

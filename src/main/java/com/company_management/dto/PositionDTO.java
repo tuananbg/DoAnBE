@@ -20,7 +20,7 @@ public class PositionDTO {
     private String positionCode;
     private String positionDescription;
     private String departmentName;
-    private Integer isActive;
+    private Integer status;
     private Long departmentId;
     private Integer index;
 }

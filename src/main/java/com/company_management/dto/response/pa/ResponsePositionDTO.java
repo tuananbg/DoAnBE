@@ -20,5 +20,5 @@ public class ResponsePositionDTO {
 
     private String departmentName;
 
-    private Integer isActive;
+    private Integer status;
 }

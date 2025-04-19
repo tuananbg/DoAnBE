@@ -13,5 +13,5 @@ public interface PositionCategoryRepository extends JpaRepository<PositionCatego
 
     boolean existsByCode(String code);
 
-    List<PositionCategory> findByIsActive(Integer isActive);
+    List<PositionCategory> findAllByStatus(Integer status);
 }

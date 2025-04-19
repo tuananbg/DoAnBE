@@ -13,5 +13,5 @@ public interface JobGroupRepository extends JpaRepository<JobGroup, Integer> {
 
     boolean existsByCode(String code);
 
-    List<JobGroup> findByIsActive(Integer isActive);
+    List<JobGroup> findAllByStatus(Integer status);
 }

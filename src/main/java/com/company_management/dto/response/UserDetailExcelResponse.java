@@ -25,7 +25,7 @@ public class UserDetailExcelResponse {
     private String avatar;
     private String email;
     private String address;
-    private Integer isActive;
+    private Integer status;
     private Long departmentId;
     private String departmentName;
 }

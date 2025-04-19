@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface AttendanceLeaveRepository extends JpaRepository<AttendanceLeave, Long> {
 
     @Modifying
-    @Query(value = "update AttendanceLeave p set p.isActive = 0, p.updatedDate = now(), p.updatedBy = :user where p.id = :id ")
+    @Query(value = "update AttendanceLeave p set p.status = 0, p.updatedDate = now(), p.updatedBy = :user where p.id = :id ")
     int deleteById(Long id, Long user);
 
 }

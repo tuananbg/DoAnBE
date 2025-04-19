@@ -20,14 +20,16 @@ public class RequestProjectDTO {
 
     private String projectDescription; // mo ta du an
 
+    private String clientName;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date startDay;  // ngay bat dau
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date endDay;  // han ket thuc
 
-    private Double estimate;  // so gio du kien
+    private String projectManagerCode;
 
-    private Double timesheet;  // so gio thuc hien dang đc khai bao
+    private Integer status;
 
 }

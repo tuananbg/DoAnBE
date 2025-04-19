@@ -32,5 +32,5 @@ public class AttendanceDTO {
 
     private Long totalPenalty;
 
-    private Integer isActive;
+    private Integer status;
 }

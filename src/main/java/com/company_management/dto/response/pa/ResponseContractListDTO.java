@@ -21,6 +21,6 @@ public class ResponseContractListDTO {
     private Date signDate; // ngay ky HD
     private Date activeDate; // ngay hieu luc
     private Date expiredDate; // thoi han hop dong
-    private Integer isActive; // la hop dong hien tai
+    private Integer status; // la hop dong hien tai
 
 }

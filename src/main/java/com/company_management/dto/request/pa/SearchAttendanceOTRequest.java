@@ -13,6 +13,6 @@ public class SearchAttendanceOTRequest {
 
     private Date startDay;
     private Long employeeId;
-    private Integer isActive;
+    private Integer status;
 
 }

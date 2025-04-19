@@ -138,7 +138,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee employee = new Employee();
         MapperUtils.mapOnlyNotNullProperty(request, employee);
-        employee.setIsActive(ObjectStatus.ACTIVE.getCode());
+        employee.setStatus(ObjectStatus.ACTIVE.getCode());
         if (request.getDepartmentCode() != null) {
             Department department = departmentRepository.findByCode(request.getDepartmentCode()).orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
             employee.setDepartment(department);
@@ -235,7 +235,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try (InputStream in = CommonUtils.getInputStreamByFileName("export-employee-template.xlsx")) {
 
-            List<Employee> employees = employeeRepository.findAllByIsActive(EmploymentStatus.EMPLOYMENT.getCode());
+            List<Employee> employees = employeeRepository.findAllByStatus(EmploymentStatus.EMPLOYMENT.getCode());
             Map<Long, String> departmentMap = MapperUtils.buildMap(departmentRepository.findAll(), Department::getId, Department::getDepartmentName);
             Map<Long, String> positionMap = MapperUtils.buildMap(positionRepository.findAll(), Position::getId, Position::getPositionName);
 
@@ -286,7 +286,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void lockEmployee(Long id) {
         Employee employee = employeeRepository.findById(id).orElse(null);
         if (employee != null) {
-            employee.setIsActive(0);
+            employee.setStatus(0);
             employeeRepository.save(employee);
         }
     }
@@ -294,7 +294,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public TotalEmployeeDTO totalEmployee(String code) {
         TotalEmployeeDTO totalEmployeeDTO = new TotalEmployeeDTO();
-        List<Employee> employees = employeeRepository.findAllByIsActive(EmploymentStatus.EMPLOYMENT.getCode());
+        List<Employee> employees = employeeRepository.findAllByStatus(EmploymentStatus.EMPLOYMENT.getCode());
         if (employees != null) {
             totalEmployeeDTO.setTotalEmployee(employees.size());
         } else {
@@ -313,7 +313,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<ResponseEmployeeSelectDTO> selectEmployee() {
-        List<Employee> employees = employeeRepository.findAllByIsActive(EmploymentStatus.EMPLOYMENT.getCode());
+        List<Employee> employees = employeeRepository.findAllByStatus(EmploymentStatus.EMPLOYMENT.getCode());
         List<ResponseEmployeeSelectDTO>  employeeSelectDTOS = new ArrayList<>();
         for (Employee employee : employees) {
             ResponseEmployeeSelectDTO dto = new ResponseEmployeeSelectDTO();

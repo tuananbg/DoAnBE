@@ -26,5 +26,5 @@ public class AttendanceOTDTO {
     private String followCode;
     private String followName;
     private String descriptionOt;  //mô tả công việc cần ot
-    private Integer isActive;  // trạng thái đã duyệt, chờ duyệt, từ chối
+    private Integer status;  // trạng thái đã duyệt, chờ duyệt, từ chối
 }

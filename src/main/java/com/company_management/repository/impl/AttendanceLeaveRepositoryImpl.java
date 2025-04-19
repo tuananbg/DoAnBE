@@ -40,12 +40,12 @@
 //                "       le.REVIEWER_ID as reviewerId,\n" +
 //                "       ur.EMPLOYEE_CODE as reviewerCode,\n" +
 //                "       ur.EMPLOYEE_NAME as reviewerName,\n" +
-//                "       le.IS_ACTIVE as isActive\n" +
+//                "       le.STATUS as isActive\n" +
 //                "from ATTENDANCE_LEAVE le\n" +
 //                "left join USER_DETAIL ud on le.EMPLOYEE_ID = ud.id\n" +
 //                "left join USER_DETAIL ut on le.TRACKER_ID = ut.id\n" +
 //                "left join USER_DETAIL ur on le.REVIEWER_ID = ur.id\n" +
-//                "where 1 = 1 and (le.IS_ACTIVE = 1 or le.IS_ACTIVE = 2 or le.IS_ACTIVE = 3) \n");
+//                "where 1 = 1 and (le.STATUS = 1 or le.STATUS = 2 or le.STATUS = 3) \n");
 //
 //        Map<String, Object> map = getStringObjectMap(searchLeaveRequest, sqlSelect);
 //        Query nativeQuery;
@@ -115,7 +115,7 @@
 //                "       le.REVIEWER_ID as reviewerId,\n" +
 //                "       ur.EMPLOYEE_CODE as reviewerCode,\n" +
 //                "       ur.EMPLOYEE_NAME as reviewerName,\n" +
-//                "       le.IS_ACTIVE as isActive\n" +
+//                "       le.STATUS as isActive\n" +
 //                "from ATTENDANCE_LEAVE le\n" +
 //                "left join USER_DETAIL ud on le.EMPLOYEE_ID = ud.id\n" +
 //                "left join USER_DETAIL ut on le.TRACKER_ID = ut.id\n" +
@@ -152,7 +152,7 @@
 //            map.put("endDay", searchLeaveRequest.getEndDay());
 //        }
 //        if (!DataUtils.isNullOrEmpty(searchLeaveRequest.getIsActive())) {
-//            sqlSelect.append("  and le.IS_ACTIVE = :isActive");
+//            sqlSelect.append("  and le.STATUS = :isActive");
 //            map.put("isActive", searchLeaveRequest.getIsActive());
 //        }
 //        if (!DataUtils.isNullOrEmpty(searchLeaveRequest.getEmployeeId())) {

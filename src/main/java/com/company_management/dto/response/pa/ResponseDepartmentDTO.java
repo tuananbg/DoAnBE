@@ -10,5 +10,5 @@ public class ResponseDepartmentDTO {
     private Long id;
     private String departmentCode;
     private String departmentName;
-    private Integer isActive;
+    private Integer status;
 }

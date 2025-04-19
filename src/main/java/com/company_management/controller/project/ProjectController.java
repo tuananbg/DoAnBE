@@ -7,11 +7,15 @@ import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestProjectDTO;
 import com.company_management.dto.response.project.ResponseListProjectDTO;
+import com.company_management.dto.response.project.ResponseSelectProjectDTO;
 import com.company_management.service.ProjectService;
+import com.company_management.utils.annotation.PasswordMatching;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("${apiPrefix}/project")
@@ -32,5 +36,9 @@ public class ProjectController {
         return BaseResponse.ok(projectService.getList(status, keyword, page));
     }
 
+    @GetMapping(value = "/select")
+    public BaseResponse<List<ResponseSelectProjectDTO>> select() {
+        return BaseResponse.ok(projectService.getListSelect());
+    }
 
 }

@@ -19,7 +19,7 @@ public class WageDTO {
     private String wageName;
     private Double wageBase; //so tiền phu cap
     private String wageDescription;
-    private Integer isActive;
+    private Integer status;
     private String attachFile;  //file thong tin phu cap
     private String empSign;
     private Long userDetailWageId;

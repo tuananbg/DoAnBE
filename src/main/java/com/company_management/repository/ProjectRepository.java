@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
@@ -19,7 +20,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "(:keyword IS NULL OR " +
             "UPPER(pr.projectCode) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
             "UPPER(pr.projectName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
-            "AND pr.isActive = :status " +
+            "AND pr.status = :status " +
             "ORDER BY pr.createdDate ASC")
     Page<Project> findAllByIsActiveAndKeyword(@Param("status") Integer isActive,@Param("keyword") String keyword, Pageable pageable);
+
+    List<Project> findAllByStatus(Integer status);
 }

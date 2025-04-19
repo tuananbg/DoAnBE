@@ -11,7 +11,7 @@ public class SearchPositionRequest {
 
     private Integer positionCode;
     private String positionName;
-    private Integer isActive;
+    private Integer status;
 
 
 }

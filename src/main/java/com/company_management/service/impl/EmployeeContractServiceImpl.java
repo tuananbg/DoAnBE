@@ -104,8 +104,8 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
         if (!DataUtils.isNullOrEmpty(contractDTO.getContractType())) {
             contract.setContractType(contractDTO.getContractType());
         }
-        if (!DataUtils.isNullOrEmpty(contractDTO.getIsActive())) {
-            contract.setIsActive(contractDTO.getIsActive());
+        if (!DataUtils.isNullOrEmpty(contractDTO.getStatus())) {
+            contract.setStatus(contractDTO.getStatus());
         }
         //upload file word
         if (file != null && file.getOriginalFilename() != null) {

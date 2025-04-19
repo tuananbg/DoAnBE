@@ -25,7 +25,7 @@ public class ResponseListEmployeeDTO {
 
     private String address;
 
-    private Integer isActive;
+    private Integer status;
 
     private String departmentName;
 

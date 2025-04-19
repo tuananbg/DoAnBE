@@ -20,7 +20,7 @@ public class ContractDTO {
     private Long contractId;
     @NotBlank(message = "Mã hợp đồng không hợp lệ! (Không được để trống)")
     private String contractCode; // ma hop dong
-    private Integer isActive; // la hop dong hien tai
+    private Integer status; // la hop dong hien tai
     @NotBlank(message = "Loại hợp đồng không hợp lệ! (Không được để trống)")
     private String contractType; // loai hop dong: thu viec, chinh thuc,....
     private String attachFile;

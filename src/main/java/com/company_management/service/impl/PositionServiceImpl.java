@@ -52,7 +52,7 @@ public class PositionServiceImpl implements PositionService {
         position.setPositionCode(request.getPositionCode());
         position.setPositionName(request.getPositionName());
         position.setPositionDescription(request.getPositionDescription());
-        position.setIsActive(ObjectStatus.ACTIVE.getCode());
+        position.setStatus(ObjectStatus.ACTIVE.getCode());
         positionRepository.save(position);
     }
 

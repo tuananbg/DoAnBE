@@ -37,7 +37,7 @@
 //                "       le.FOLLOW_ID as followId,\n" +
 //                "       ut.EMPLOYEE_CODE as followCode,\n" +
 //                "       ut.EMPLOYEE_NAME as followName,\n" +
-//                "       le.IS_ACTIVE as isActive\n" +
+//                "       le.STATUS as isActive\n" +
 //                "from ATTENDANCE_OT le\n" +
 //                "left join USER_DETAIL ud on le.EMPLOYEE_ID = ud.ID\n" +
 //                "left join USER_DETAIL ut on le.FOLLOW_ID = ut.ID\n" +

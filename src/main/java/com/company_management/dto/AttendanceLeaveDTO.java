@@ -31,6 +31,6 @@ public class AttendanceLeaveDTO {
     private Long reviewerId;  //người phe duyệt
     private String reviewerCode;
     private String reviewerName;
-    private Integer isActive;  // trạng thái đã duyệt, chờ duyệt, từ chối
+    private Integer status;  // trạng thái đã duyệt, chờ duyệt, từ chối
     private String isActiveName;  // trạng thái đã duyệt, chờ duyệt, từ chối
 }

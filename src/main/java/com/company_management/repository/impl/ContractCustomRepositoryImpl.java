@@ -29,7 +29,7 @@
 //        Map<String, Object> params = new HashMap<>();
 //        querySTR.append("SELECT ct.ID,\n" +
 //                "       ct.CONTRACT_CODE,\n" +
-//                "       ct.IS_ACTIVE,\n" +
+//                "       ct.STATUS,\n" +
 //                "       ct.CONTRACT_TYPE,\n" +
 //                "       DATE_FORMAT(ct.SIGN_DATE, '%d/%m/%Y') AS sign_date,\n" +
 //                "       DATE_FORMAT(ct.ACTIVE_DATE, '%d/%m/%Y') AS active_date,\n" +
@@ -71,7 +71,7 @@
 //            ContractDTO ct = new ContractDTO();
 //            ct.setContractId(DataUtil.safeToLong(ob[0]));
 //            ct.setContractCode(DataUtil.safeToString(ob[1]));
-//            ct.setIsActive(DataUtil.safeToInt(ob[2]));
+//            ct.setStatus(DataUtil.safeToInt(ob[2]));
 //            ct.setContractType(DataUtil.safeToString(ob[3]));
 //            ct.setSignDate(DataUtil.safeToDate(ob[4]));
 //            ct.setActiveDate(DataUtil.safeToDate(ob[5]));

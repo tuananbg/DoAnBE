@@ -43,8 +43,8 @@ public abstract class BaseEntity implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date updatedDate;
 
-    @Column(name = "IS_ACTIVE")
-    private Integer isActive ;
+    @Column(name = "STATUS")
+    private Integer status ;
 
     @Override
     public String toString() {
@@ -65,7 +65,7 @@ public abstract class BaseEntity implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, createdDate, createdBy, updatedDate, updatedBy, isActive);
+        return Objects.hash(id, createdDate, createdBy, updatedDate, updatedBy, status);
     }
 
     @PrePersist
@@ -76,8 +76,8 @@ public abstract class BaseEntity implements Serializable {
         if (this.createdDate == null) {
             this.createdDate = new Date();
         }
-        if (this.isActive == null) {
-            this.isActive = 1; // Giả sử 1 là active
+        if (this.status == null) {
+            this.status = 1; // Giả sử 1 là active
         }
     }
 

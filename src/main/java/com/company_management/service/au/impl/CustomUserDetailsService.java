@@ -73,7 +73,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Account account = new Account();
         account.setCode(EmployeeInfo.SUPER_ADMIN);
         account.setPassword(password);
-        employee.setIsActive(EmploymentStatus.EMPLOYMENT.getCode());
+        employee.setStatus(EmploymentStatus.EMPLOYMENT.getCode());
         employee.setFullName("Admin");
         employee.setCode("Admin");
         Set<Role> roles = new HashSet<>();

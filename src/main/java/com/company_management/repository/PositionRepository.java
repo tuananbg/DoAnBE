@@ -17,7 +17,7 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
 
 
     @Modifying
-    @Query(value = "update Position p set p.isActive = 0, p.updatedDate = now(), p.updatedBy = :user where p.id = :id and p.isActive = 1 or p.isActive = 2 ")
+    @Query(value = "update Position p set p.status = 0, p.updatedDate = now(), p.updatedBy = :user where p.id = :id and p.status = 1 or p.status = 2 ")
     int deleteById(Long id, Long user);
 
     @Query
@@ -30,7 +30,7 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
             "UPPER(p.positionCode) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
 //            "UPPER(p.positionCategory.name) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
             "UPPER(p.positionName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
-            "AND p.isActive = :status " +
+            "AND p.status = :status " +
             "ORDER BY p.createdDate ASC")
     Page<Position> findAllByKeyword(@Param("status") Integer isActive,@Param("keyword") String keyword, Pageable pageable);
 

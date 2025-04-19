@@ -20,7 +20,11 @@ import java.util.Date;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Account extends BaseEntity {
 
-//    @Schema(description = "Tên đăng nhập (duy nhất)")
+    //    @Schema(description = "Tên đăng nhập (duy nhất)")
+    @Column(name = "ACCOUNT")
+    private String account;
+
+    //Mã CBNV
     @Column(name = "code")
     private String code;
 

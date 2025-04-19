@@ -2,14 +2,19 @@ package com.company_management.service.impl;
 
 import com.company_management.common.AppConstants;
 import com.company_management.common.enums.ObjectStatus;
+import com.company_management.common.enums.TaskStatusEnum;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestProjectDTO;
+import com.company_management.dto.response.project.ResponseDetailTaskDTO;
 import com.company_management.dto.response.project.ResponseListProjectDTO;
+import com.company_management.dto.response.project.ResponseListTaskOfProjectDTO;
 import com.company_management.dto.response.project.ResponseSelectProjectDTO;
 import com.company_management.entity.Project;
+import com.company_management.entity.Task;
 import com.company_management.exception.AppException;
 import com.company_management.repository.ProjectRepository;
+import com.company_management.repository.TaskRepository;
 import com.company_management.service.ProjectService;
 import com.company_management.utils.mapper.MapperUtils;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +32,7 @@ import java.util.List;
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final TaskRepository taskRepository;
 
     @Override
     public void create(RequestProjectDTO request) {
@@ -54,6 +61,32 @@ public class ProjectServiceImpl implements ProjectService {
         for (Project project : projects) {
             ResponseSelectProjectDTO dto = new ResponseSelectProjectDTO();
             MapperUtils.map(project, dto);
+            data.add(dto);
+        }
+        return data;
+    }
+
+    @Override
+    public List<ResponseListTaskOfProjectDTO> getListTask(long id) {
+        Project project = projectRepository.findById(id).orElseThrow(() -> new AppException("ERR01","Dự án không tồn tại!"));
+        List<Task> tasks = taskRepository.findByProjectCode(project.getProjectCode());
+        List<Integer> statusList = tasks.stream().map(Task::getStatus).toList();
+        List<ResponseListTaskOfProjectDTO> data = new ArrayList<>();
+        for (Integer status : statusList) {
+            ResponseListTaskOfProjectDTO dto = new ResponseListTaskOfProjectDTO();
+            dto.setName(TaskStatusEnum.findByCode(status).getName());
+            List<ResponseDetailTaskDTO> taskDTOList = new ArrayList<>();
+            for (Task task : tasks) {
+                if (task.getStatus().equals(status)) {
+                    ResponseDetailTaskDTO taskDTO = new ResponseDetailTaskDTO();
+                    taskDTO.setTaskName(task.getTaskName());
+                    taskDTO.setId(task.getId());
+                    taskDTO.setTaskStatusName(TaskStatusEnum.findByCode(status).getName());
+                    taskDTO.setDescription(task.getTaskDescription());
+                    taskDTOList.add(taskDTO);
+                }
+            }
+            dto.setTaskForm(taskDTOList);
             data.add(dto);
         }
         return data;

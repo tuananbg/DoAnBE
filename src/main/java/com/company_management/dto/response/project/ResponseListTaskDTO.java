@@ -1,7 +1,5 @@
 package com.company_management.dto.response.project;
 
-import com.company_management.entity.Employee;
-import com.company_management.entity.Project;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +13,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class ResponseListTaskDTO {
     private int index;
+
+    private long id;
 
     private String taskCode;  // ma cong viec
 

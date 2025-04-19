@@ -1,0 +1,28 @@
+package com.company_management.repository;
+
+import com.company_management.entity.Task;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface TaskRepository extends JpaRepository<Task, Long> {
+
+    @Query(value = "SELECT t FROM Task t JOIN Project p ON t.project.id = p.id WHERE p.projectCode = :projectCode")
+    List<Task> findByProjectCode(@Param("projectCode") String projectCode);
+
+    boolean existsByTaskCode(String taskCode);
+
+    @Query(value = "SELECT t FROM Task t  WHERE " +
+            "(:keyword IS NULL OR " +
+            "UPPER(t.taskCode) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
+            "UPPER(t.taskName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
+            "AND t.status = :status " +
+            "ORDER BY t.priority ASC")
+    Page<Task> findByStatus(@Param("status") Integer status,@Param("keyword") String keyword, Pageable pageable);
+}

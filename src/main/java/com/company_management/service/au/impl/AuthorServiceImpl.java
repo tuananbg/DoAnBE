@@ -123,7 +123,7 @@ public class AuthorServiceImpl implements AuthorService {
             }
         } else {
             // get employee
-            Account em = accountRepo.findByCodeIgnoreCase(request.getAccount());
+            Account em = accountRepo.findByAccountIgnoreCase(request.getAccount());
             if (em == null) {
                 throw new AppException("ERR","Tài khoản không tồn tại");
             }

@@ -21,7 +21,7 @@ public class TaskController {
 
     private final TaskService taskService;
     @PostMapping(value = "/create")
-    public BaseResponse<Object> create(@ModelAttribute @Valid RequestCreateTaskDTO request) {
+    public BaseResponse<Object> create(@RequestBody  @Valid RequestCreateTaskDTO request) {
         taskService.createTask(request);
         return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201, AppConstants.CREATE_SUCCESS_MESS_201);
     }

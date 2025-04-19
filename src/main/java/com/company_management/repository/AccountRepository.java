@@ -21,6 +21,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByCode(String code);
 
+    Account findByAccountIgnoreCase(String account);
+
 
 //    @Query(value = "SELECT acc FROM account acc JOIN Employee e on acc.employee.id = e.id"
 //            + " WHERE (acc.status = :status) AND (e.authorStatus = :authorStatus) " +

@@ -37,7 +37,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             String password = ConfigDataCode.SYSTEM_ADMIN_PASSWORD;
             return loadAdminUser(password);
         }
-        Account account = accountRepo.findByCodeIgnoreCase(username);
+        Account account = accountRepo.findByAccountIgnoreCase(username);
         if (account == null) {
             throw new AppException(AuthorMessage.ACCOUNT_NOT_FOUND.getCode(),
                     AuthorMessage.ACCOUNT_NOT_FOUND.getMessage());
@@ -77,7 +77,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         employee.setFullName("Admin");
         employee.setCode("Admin");
         Set<Role> roles = new HashSet<>();
-        return new EmployeeInfo(employee, roles, "admin@bvb.com", new ArrayList<>(),account);
+        return new EmployeeInfo(employee, roles, "admin@dtdi.vn.com", new ArrayList<>(),account);
     }
 
 }

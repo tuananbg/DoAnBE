@@ -35,5 +35,9 @@ public class AppConstants {
     public static final String EXPORT_FILE_EXCEL_CODE_001 = "EXCEL001";
     public static final String EXPORT_FILE_EXCEL_MESS_001 = "Xuất file excel bị lỗi!";
 
+    //Project
+    public static final String PROJECT_CODE_EXIST_CODE_001 = "PRO01";
+    public static final String PROJECT_CODE_EXIST_MESS_001 = "Mã dự án đã tồn tại trong hệ thống!";
+
 
 }

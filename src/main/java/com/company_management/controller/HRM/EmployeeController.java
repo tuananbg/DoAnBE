@@ -12,6 +12,7 @@ import com.company_management.dto.request.SearchEmployeeRequest;
 import com.company_management.dto.request.employee.RequestEmployeeDetailDTO;
 import com.company_management.dto.response.TotalEmployeeDTO;
 import com.company_management.dto.response.employee.ResponseEmployeeDetailDTO;
+import com.company_management.dto.response.employee.ResponseEmployeeSelectDTO;
 import com.company_management.dto.response.employee.ResponseListEmployeeDTO;
 import com.company_management.service.EmployeeService;
 import com.company_management.utils.CommonUtils;
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -94,6 +96,13 @@ public class EmployeeController {
         employeeService.updateEmployee(avatarFile, userDetailDTO);
         return ResultResp.success(ErrorCode.UPDATED_OK, null);
     }
+
+    @GetMapping("/select")
+    public BaseResponse<List<ResponseEmployeeSelectDTO>> selectEmployee() {
+        return BaseResponse.ok(employeeService.selectEmployee());
+
+    }
+
 
     @DeleteMapping("/delete/{id}")
     public ResultResp<Object> deleteEmployee(@PathVariable("id") Long id) {

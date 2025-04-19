@@ -6,13 +6,10 @@ import com.company_management.common.enums.Gender;
 import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
+import com.company_management.dto.response.employee.*;
 import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.request.employee.RequestEmployeeDetailDTO;
 import com.company_management.dto.response.*;
-import com.company_management.dto.response.employee.ResponseEmployeeDetailContractsDTO;
-import com.company_management.dto.response.employee.ResponseEmployeeDetailDTO;
-import com.company_management.dto.response.employee.ResponseEmployeeInfoDTO;
-import com.company_management.dto.response.employee.ResponseListEmployeeDTO;
 import com.company_management.entity.*;
 import com.company_management.exception.AppException;
 import com.company_management.dto.UserDetailDTO;
@@ -308,5 +305,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         totalEmployeeDTO.setTotalLateWork(2);
         totalEmployeeDTO.setTotalLeaveWork(3);
         return totalEmployeeDTO;
+    }
+
+    @Override
+    public List<ResponseEmployeeSelectDTO> selectEmployee() {
+        List<Employee> employees = employeeRepository.findAllByIsActive(EmploymentStatus.EMPLOYMENT.getCode());
+        List<ResponseEmployeeSelectDTO>  employeeSelectDTOS = new ArrayList<>();
+        for (Employee employee : employees) {
+            ResponseEmployeeSelectDTO dto = new ResponseEmployeeSelectDTO();
+            dto.setEmployeeCode(employee.getCode());
+            dto.setEmployeeName(employee.getFullName());
+            employeeSelectDTOS.add(dto);
+        }
+        return employeeSelectDTOS;
     }
 }

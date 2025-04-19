@@ -9,12 +9,14 @@ import com.company_management.dto.request.employee.RequestEmployeeDetailDTO;
 import com.company_management.dto.response.ExportPdfEmployeeResponse;
 import com.company_management.dto.response.TotalEmployeeDTO;
 import com.company_management.dto.response.employee.ResponseEmployeeDetailDTO;
+import com.company_management.dto.response.employee.ResponseEmployeeSelectDTO;
 import com.company_management.dto.response.employee.ResponseListEmployeeDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
 
 public interface EmployeeService {
 
@@ -39,4 +41,6 @@ public interface EmployeeService {
     void lockEmployee(Long id);
 
     TotalEmployeeDTO totalEmployee(String code);
+
+    List<ResponseEmployeeSelectDTO> selectEmployee();
 }

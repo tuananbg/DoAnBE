@@ -1,10 +1,13 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.enums.AttendanceLeaveStatus;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
+import com.company_management.dto.response.attendance.ResponseAttendanceLeaveDTO;
 import com.company_management.exception.AppException;
 import com.company_management.dto.AttendanceLeaveDTO;
 import com.company_management.entity.AttendanceLeave;
 import com.company_management.dto.request.attendace.SearchLeaveRequest;
-import com.company_management.dto.common.DataPage;
 import com.company_management.repository.AttendanceLeaveRepository;
 import com.company_management.repository.AccountRepository;
 import com.company_management.repository.EmployeeInfoRepository;
@@ -27,7 +30,7 @@ public class AttendanceLeaveServiceImpl implements AttendanceLeaveService {
 
     private final AttendanceLeaveRepository attendanceLeaveRepository;
 
-    private final AccountRepository userCustomRepository;
+    private final AccountRepository accountRepository;
 
     private final EmployeeInfoRepository employeeInfoRepository;
 
@@ -35,9 +38,9 @@ public class AttendanceLeaveServiceImpl implements AttendanceLeaveService {
 
     private final ITemplateEngine templateEngine;
 
+
     @Override
-    public DataPage<AttendanceLeaveDTO> search(SearchLeaveRequest searchLeaveRequest, Pageable pageable) {
-//        return attendanceLeaveRepository.search(searchLeaveRequest, pageable);
+    public ResponsePage<ResponseAttendanceLeaveDTO> search(AttendanceLeaveStatus status, String keyword, RequestPage page) {
         return null;
     }
 

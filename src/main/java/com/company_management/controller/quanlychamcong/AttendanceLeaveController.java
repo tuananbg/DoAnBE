@@ -2,14 +2,21 @@ package com.company_management.controller.quanlychamcong;
 
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
+import com.company_management.common.enums.AttendanceLeaveStatus;
+import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.dto.AttendanceLeaveDTO;
+import com.company_management.dto.common.BaseResponse;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.attendace.SearchLeaveRequest;
+import com.company_management.dto.response.attendance.ResponseAttendanceLeaveDTO;
 import com.company_management.service.AttendanceLeaveService;
 import com.company_management.utils.CommonUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,10 +32,11 @@ public class AttendanceLeaveController {
 
     private final AttendanceLeaveService attendanceLeaveService;
 
-    @PostMapping("/search")
-    public ResultResp<Object> searchLeave(@RequestBody SearchLeaveRequest searchLeaveRequest,
-                                             Pageable pageable) {
-        return ResultResp.success(attendanceLeaveService.search(searchLeaveRequest, pageable));
+    @GetMapping("/list/{status}")
+    public BaseResponse<ResponsePage<ResponseAttendanceLeaveDTO>>  searchLeave(@RequestParam(name = "keyword", required = false) String keyword,
+                                                                               @PathVariable("status") AttendanceLeaveStatus status,
+                                                                               @ModelAttribute @Valid RequestPage page) {
+        return BaseResponse.ok(attendanceLeaveService.search(status,keyword, page));
     }
 
     @PostMapping

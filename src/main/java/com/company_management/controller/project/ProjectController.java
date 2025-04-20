@@ -3,7 +3,9 @@ package com.company_management.controller.project;
 import com.company_management.common.AppConstants;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.request.projcet.RequestProjectDTO;
+import com.company_management.dto.request.projcet.RequestUpdateTaskDTO;
 import com.company_management.dto.response.project.*;
+import com.company_management.exception.AppException;
 import com.company_management.service.ProjectService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +41,20 @@ public class ProjectController {
     public BaseResponse<List<ResponseListTaskOfProjectDTO>> getDetailTask(@PathVariable("id") long id) {
         return BaseResponse.ok(projectService.getListTask(id));
     }
+
+    @GetMapping(value = "/detail/{id}")
+    public BaseResponse<ResponseDetailProjectDTO> getDetail(@PathVariable("id") long id) {
+        return BaseResponse.ok(projectService.getDetail(id));
+    }
+    @PutMapping(value = "/update")
+    public BaseResponse<Object> update(@RequestBody @Valid RequestProjectDTO request) {
+        try {
+            projectService.update(request);
+            return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202, AppConstants.UPDATE_SUCCESS_CODE_202);
+        } catch (AppException ex) {
+            return BaseResponse.error(AppConstants.CODE_400, ex.getMessage());
+        }
+    }
+
 
 }

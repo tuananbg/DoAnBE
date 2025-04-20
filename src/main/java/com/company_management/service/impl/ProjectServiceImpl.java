@@ -101,6 +101,22 @@ public class ProjectServiceImpl implements ProjectService {
         return data;
     }
 
+    @Override
+    public ResponseDetailProjectDTO getDetail(long id) {
+        Project project = projectRepository.findById(id).orElseThrow(()->new AppException("ERR1","Dự án không tồn tại trong hệ thống!"));
+        ResponseDetailProjectDTO dto = new ResponseDetailProjectDTO();
+        MapperUtils.map(project, dto);
+        return dto;
+
+    }
+
+    @Override
+    public void update(RequestProjectDTO request) {
+        Project project = projectRepository.findByProjectCode(request.getProjectCode()).orElseThrow(()->new AppException("ERR01","Dự án không tồn tại trong hệ thống !"));
+        MapperUtils.mapOnlyNotNullProperty(request, project);
+        projectRepository.save(project);
+    }
+
     private void checkProjectCode(String projectCode) {
         if (projectCode != null) {
             if (projectRepository.existsByProjectCode(projectCode)){

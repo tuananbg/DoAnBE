@@ -34,6 +34,9 @@ public class ResponseListTaskDTO {
     //Nhân viên phụ trách
     private String employeeName;
 
+    //Nhân viên phụ trách
+    private String managerName;
+
     private int priority;  //do uu tien
 
     private String status;

@@ -26,10 +26,25 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "ORDER BY t.priority ASC")
     Page<Task> findByStatus(@Param("status") Integer status,@Param("keyword") String keyword, Pageable pageable);
 
-    @Query("SELECT COUNT(t) FROM Task t JOIN Project p " +
-            "ON t.project.projectCode = p.projectCode" +
-            " WHERE p.projectCode = :projectCode")
-    long countTaskByManagerCode(@Param("projectCode") String projectCode);
+    @Query("SELECT " +
+            "COUNT(t) AS totalCount, " +
+            "SUM(CASE WHEN t.status = :status THEN 1 ELSE 0 END) AS doneCount " +
+            "FROM Task t " +
+            "JOIN t.project p " +
+            "WHERE p.projectCode = :projectCode")
+    Object[] countTaskAndDoneByProjectCode(
+            @Param("projectCode") String projectCode,
+            @Param("status") Integer status);
+
+    @Query("SELECT\n" +
+            "    COALESCE(SUM(CASE WHEN t.status = 1 THEN 1 ELSE 0 END), 0) AS status1,\n" +
+            "  COALESCE(SUM(CASE WHEN t.status = 2 THEN 1 ELSE 0 END), 0) AS status2,\n" +
+            "  COALESCE(SUM(CASE WHEN t.status = 3 THEN 1 ELSE 0 END), 0) AS status3 " +
+            "FROM Task t\n" +
+            "JOIN Project p ON t.project.id = p.id\n" +
+            "WHERE p.projectCode = :projectCode")
+    Object[] countTaskByProjectCode(@Param("projectCode") String projectCode);
+
 
     @Query("SELECT COUNT(t) FROM Task t")
     long countAllTasks();

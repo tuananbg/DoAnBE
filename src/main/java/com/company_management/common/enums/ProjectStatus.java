@@ -27,7 +27,7 @@ public enum ProjectStatus {
                 return status1;
             }
         }
-        throw new IllegalArgumentException("status = " + name + " isn't defined!!!");
+        return null;
     }
 
     public static ProjectStatus findByCode(Integer code) {
@@ -36,6 +36,6 @@ public enum ProjectStatus {
                 return status1;
             }
         }
-        throw new IllegalArgumentException("code = " + code + " isn't defined!!!");
+        return null;
     }
 }

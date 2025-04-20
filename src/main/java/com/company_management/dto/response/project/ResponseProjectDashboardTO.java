@@ -12,5 +12,6 @@ import lombok.Setter;
 public class ResponseProjectDashboardTO {
     private String projectName;
     private int numberOfTasks;
+    private int numberOfTasksDone;
     private long percentage;
 }

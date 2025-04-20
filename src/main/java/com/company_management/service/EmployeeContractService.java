@@ -1,5 +1,6 @@
 package com.company_management.service;
 
+import com.company_management.common.enums.ContractStatusEnum;
 import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.ContractDTO;
 import com.company_management.dto.UserDetailContractDTO;
@@ -18,7 +19,7 @@ import java.util.List;
 public interface EmployeeContractService {
     DataPage<ContractDTO> searchForEmployee(ContractDTO contractDTO, Pageable page);
 
-    ResponsePage<ResponseContractListDTO> getList(ObjectStatus status,String keyword, RequestPage page);
+    ResponsePage<ResponseContractListDTO> getList(ContractStatusEnum status, String keyword, RequestPage page);
 
     ResponsePage<ResponseContractListDTO> getListEmployeeCode(String employeeCode, RequestPage page);
 

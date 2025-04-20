@@ -7,11 +7,14 @@ import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestCreateTaskDTO;
 import com.company_management.dto.response.project.ResponseListTaskDTO;
+import com.company_management.dto.response.project.ResponseProjectDashboardTO;
 import com.company_management.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("${apiPrefix}/task")
@@ -30,5 +33,10 @@ public class TaskController {
     public BaseResponse<ResponsePage<ResponseListTaskDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword,
                                                                    @PathVariable("status") TaskStatusEnum status, RequestPage page) {
         return BaseResponse.ok(taskService.getTasks(status, keyword, page));
+    }
+
+    @GetMapping(value = "/dashboard")
+    public BaseResponse<List<ResponseProjectDashboardTO>> getListDashboard() {
+        return BaseResponse.ok(taskService.getListDashboard());
     }
 }

@@ -1,14 +1,10 @@
 package com.company_management.controller.project;
 
 import com.company_management.common.AppConstants;
-import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.BaseResponse;
-import com.company_management.dto.common.RequestPage;
-import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestProjectDTO;
 import com.company_management.dto.response.project.*;
 import com.company_management.service.ProjectService;
-import com.company_management.utils.annotation.PasswordMatching;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +25,9 @@ public class ProjectController {
         return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201, AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
-    @GetMapping(value = "/list/{status}")
-    public BaseResponse<ResponsePage<ResponseListProjectDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword,
-                                                                      @PathVariable("status") ObjectStatus status, RequestPage page) {
-        return BaseResponse.ok(projectService.getList(status, keyword, page));
+    @GetMapping(value = "/list")
+    public BaseResponse<List<ResponseListProjectDTO>> getList() {
+        return BaseResponse.ok(projectService.getList());
     }
 
     @GetMapping(value = "/select")
@@ -43,11 +38,6 @@ public class ProjectController {
     @GetMapping(value = "/detail/task/{id}")
     public BaseResponse<List<ResponseListTaskOfProjectDTO>> getDetailTask(@PathVariable("id") long id) {
         return BaseResponse.ok(projectService.getListTask(id));
-    }
-
-    @GetMapping(value = "/dashboard")
-    public BaseResponse<List<ResponseProjectDashboardTO>> getListDashboard() {
-        return BaseResponse.ok(projectService.getListDashboard());
     }
 
 }

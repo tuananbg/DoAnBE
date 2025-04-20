@@ -19,16 +19,20 @@ public class ResponseListProjectDTO {
 
     private String projectDescription; // mo ta du an
 
+    private String projectStatus;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date startDay;  // ngay bat dau
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date endDay;  // han ket thuc
 
-    private Double estimate;  // so gio du kien
+    // Số lượng nhiệm vụ hoàn thành
+    private String taskDone;
 
-    private Double timesheet;  // so gio thuc hien dang đc khai bao
+    // Số lượng nhiệm vụ đang làm
+    private String taskTodo;
 
-    //Số lượng nhiệm vụ hiện tại
-    private int taskNumber;
+    //Số lượng nhiệm vụ đang xử lý
+    private String taskProcess;
 }

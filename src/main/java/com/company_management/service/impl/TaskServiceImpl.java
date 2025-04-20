@@ -5,6 +5,7 @@ import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestCreateTaskDTO;
 import com.company_management.dto.response.project.ResponseListTaskDTO;
+import com.company_management.dto.response.project.ResponseProjectDashboardTO;
 import com.company_management.entity.Employee;
 import com.company_management.entity.Project;
 import com.company_management.entity.Task;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -51,6 +53,16 @@ public class TaskServiceImpl implements TaskService {
                 .stream()
                 .map(item ->{
                     ResponseListTaskDTO dto = new ResponseListTaskDTO();
+                    Project project = item.getProject();
+                    if(project != null) {
+                        dto.setProjectName(project.getProjectName());
+                    }
+                    Employee employee = item.getEmployee();
+                    if(employee != null) {
+                        dto.setEmployeeName(employee.getFullName());
+                    }
+                    employeeRepository.findByCode(item.getManagerCode())
+                            .ifPresent(empManager -> dto.setManagerName(empManager.getFullName()));
                     MapperUtils.map(item,dto);
                     return dto;
                 }).toList();
@@ -61,6 +73,24 @@ public class TaskServiceImpl implements TaskService {
         if (taskRepository.existsByTaskCode(taskCode)) {
             throw new AppException("ERR","Mã nhiệm vụ đã tồn tại");
         }
+    }
+    @Override
+    public List<ResponseProjectDashboardTO> getListDashboard() {
+        List<Project> projects = projectRepository.findAll();
+        List<ResponseProjectDashboardTO> data = new ArrayList<>();
+        for (Project project : projects) {
+            ResponseProjectDashboardTO dto = new ResponseProjectDashboardTO();
+            dto.setProjectName(project.getProjectName());
+            Object[] result = taskRepository.countTaskAndDoneByProjectCode(project.getProjectCode(),TaskStatusEnum.DONE.getCode());
+            long tasksOfProject = Long.parseLong(result[0].toString());
+            long taskDoneOfProject = Long.parseLong(result[1].toString());
+            dto.setNumberOfTasks((int) tasksOfProject);
+            dto.setNumberOfTasksDone((int) taskDoneOfProject);
+            long percent = taskDoneOfProject / tasksOfProject;
+            dto.setPercentage(percent);
+            data.add(dto);
+        }
+        return data;
     }
 
 

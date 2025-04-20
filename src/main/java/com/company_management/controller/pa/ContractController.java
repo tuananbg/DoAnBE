@@ -4,6 +4,7 @@ import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ObjectError;
 import com.company_management.common.ResultResp;
+import com.company_management.common.enums.ContractStatusEnum;
 import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.ContractDTO;
 import com.company_management.dto.UserDetailContractDTO;
@@ -59,7 +60,7 @@ public class ContractController {
 
     @GetMapping(value = "/list/{status}")
     public BaseResponse<ResponsePage<ResponseContractListDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword,
-                                                                       @PathVariable("status") ObjectStatus status, RequestPage page) {
+                                                                       @PathVariable("status") ContractStatusEnum status, RequestPage page) {
         return BaseResponse.ok(contractService.getList(status, keyword, page));
     }
 

@@ -1,5 +1,6 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.enums.ContractStatusEnum;
 import com.company_management.common.enums.ContractType;
 import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.RequestPage;
@@ -35,6 +36,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -58,14 +60,23 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
     }
 
     @Override
-    public ResponsePage<ResponseContractListDTO> getList(ObjectStatus status, String keyword, RequestPage page) {
-        Page<EmployeeContracts> employeeContracts = employeeContractRepository.findAllByIsActive(status.getCode(), keyword, page.toPageable());
+    public ResponsePage<ResponseContractListDTO> getList(ContractStatusEnum status, String keyword, RequestPage page) {
+        Page<EmployeeContracts> employeeContracts = employeeContractRepository.findAllByIsActive(status.getValue(), keyword, page.toPageable());
         List<ResponseContractListDTO> responseContractListDTOS = employeeContracts
                 .getContent()
                 .stream()
                 .map(item -> {
                     ResponseContractListDTO response = new ResponseContractListDTO();
                     MapperUtils.map(item, response);
+                    response.setContractType(item.getContractTypeDisplay());
+                    response.setContractTerm(item.getContractTermDisplay());
+                    response.setSignDate(item.getContractSignDate());
+                    response.setEffectiveDate(item.getContractEffectiveDate());
+                    response.setExpiredDate(item.getContractEndDate());
+                    ContractStatusEnum contractStatusEnum = ContractStatusEnum.fromValue(item.getStatus());
+                    if (contractStatusEnum != null) {
+                        response.setContractStatus(ContractStatusEnum.fromValue(item.getStatus()).getName());
+                    }
                     return response;
                 }).toList();
         return new ResponsePage<>(responseContractListDTOS, page, employeeContracts.getTotalElements());
@@ -152,7 +163,12 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
             contract.setEmployeeName(employee.getFullName());
             contract.setContractTypeDisplay(ContractType.fromCode(request.getContractType()).getName());
             String termValue = termValueDisplay(request.getContractEffectiveDate(),request.getContractEndDate());
-            contract.setContractTermValue(termValue);
+            contract.setContractTypeDisplay(termValue);
+            if (checkContractEndDateForNextMonth(contract.getContractEndDate())) {
+                contract.setStatus(ContractStatusEnum.ABOUT_TO_EXPIRE.getValue());
+            } else {
+                contract.setStatus(ContractStatusEnum.EFFECTIVE.getValue());
+            }
 
             if (file != null && file.getOriginalFilename() != null) {
                 try {
@@ -232,6 +248,20 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
         }
         return responseTotalDTOList;
     }
+    // kiểm tra contractEndDate có rơi vào tháng sau hay không
+    public boolean checkContractEndDateForNextMonth(Date contractEndDate) {
+        if (contractEndDate == null) {
+            return false;
+        }
+
+        LocalDate contractEndLocalDate = contractEndDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate today = LocalDate.now();
+
+        LocalDate endOfNextMonth = today.plusMonths(2).withDayOfMonth(1).minusDays(1);
+
+        return !contractEndLocalDate.isBefore(today) && !contractEndLocalDate.isAfter(endOfNextMonth);
+    }
+
 
 
 }

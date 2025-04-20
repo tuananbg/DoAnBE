@@ -1,10 +1,8 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.AppConstants;
-import com.company_management.common.enums.ObjectStatus;
+import com.company_management.common.enums.ProjectStatus;
 import com.company_management.common.enums.TaskStatusEnum;
-import com.company_management.dto.common.RequestPage;
-import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestProjectDTO;
 import com.company_management.dto.response.project.*;
 import com.company_management.entity.Project;
@@ -16,12 +14,10 @@ import com.company_management.service.ProjectService;
 import com.company_management.utils.mapper.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,14 +37,30 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponsePage<ResponseListProjectDTO> getList(ObjectStatus status, String keyword, RequestPage page) {
-        Page<Project> projectPage = projectRepository.findAllByIsActiveAndKeyword(status.getCode(),keyword,page.toPageable());
-        List<ResponseListProjectDTO> data = projectPage.getContent().stream().map(item -> {
+    public List<ResponseListProjectDTO> getList() {
+        List<Project> projectPage = projectRepository.findAll();
+        List<ResponseListProjectDTO> data = new ArrayList<>();
+        for (Project project : projectPage) {
             ResponseListProjectDTO dto = new ResponseListProjectDTO();
-            MapperUtils.map(item, dto);
-            return dto;
-        }).toList();
-        return new ResponsePage<>(data,page,projectPage.getTotalElements());
+            Object[] result =taskRepository.countTaskByProjectCode(project.getProjectCode());
+            Object[] row = (Object[]) result[0];
+            String todo = row[0] != null ? row[0].toString() : "0";
+            String process = row[1] != null ? row[1].toString() : "0";
+            String done = row[2] != null ? row[2].toString() : "0";
+
+            dto.setTaskTodo(todo);
+            dto.setTaskProcess(process);
+            dto.setTaskDone(done);
+
+            ProjectStatus status = ProjectStatus.findByCode(project.getStatus());
+            if (status != null) {
+                dto.setProjectStatus(status.getDescription());
+            }
+
+            MapperUtils.map(project, dto);
+            data.add(dto);
+        }
+        return data;
     }
 
     @Override
@@ -84,26 +96,6 @@ public class ProjectServiceImpl implements ProjectService {
                 }
             }
             dto.setTaskForm(taskDTOList);
-            data.add(dto);
-        }
-        return data;
-    }
-
-    @Override
-    public List<ResponseProjectDashboardTO> getListDashboard() {
-        List<Project> projects = projectRepository.findAll();
-        List<ResponseProjectDashboardTO> data = new ArrayList<>();
-        long taskAll = taskRepository.countAllTasks();
-        for (Project project : projects) {
-            ResponseProjectDashboardTO dto = new ResponseProjectDashboardTO();
-            dto.setProjectName(project.getProjectName());
-
-            long tasksOfProject = taskRepository.countTaskByManagerCode(project.getProjectCode());
-            dto.setNumberOfTasks((int) tasksOfProject);
-
-            long percent = tasksOfProject / taskAll;
-
-            dto.setPercentage(percent);
             data.add(dto);
         }
         return data;

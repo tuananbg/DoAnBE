@@ -3,6 +3,8 @@ package com.company_management.service.impl;
 import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
+import com.company_management.entity.Department;
+import com.company_management.repository.DepartmentRepository;
 import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.request.pa.RequestPositionDTO;
 import com.company_management.dto.response.pa.ResponsePositionDTO;
@@ -25,6 +27,7 @@ import java.util.List;
 public class PositionServiceImpl implements PositionService {
 
     private final PositionRepository positionRepository;
+    private final DepartmentRepository departmentRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -46,13 +49,16 @@ public class PositionServiceImpl implements PositionService {
     @Transactional
     public void create(RequestPositionDTO request) {
         if (positionRepository.existsByPositionCode(request.getPositionCode())) {
-          throw new AppException("ERR01", "Không tìm thấy chức vụ này!");
+          throw new AppException("ERR01", "Mã chức vụ đã tồn tại trong hệ thống!");
         }
         Position position = new Position();
         position.setPositionCode(request.getPositionCode());
         position.setPositionName(request.getPositionName());
         position.setPositionDescription(request.getPositionDescription());
         position.setStatus(ObjectStatus.ACTIVE.getCode());
+        Department department = departmentRepository.findByCode(request.getDepartmentCode())
+                .orElseThrow(()-> new AppException("ERR1","Mã chức danh không tồn tại trong hệ thống!") );
+        position.setDepartment(department);
         positionRepository.save(position);
     }
 
@@ -70,8 +76,15 @@ public class PositionServiceImpl implements PositionService {
         List<ResponsePositionDTO> responsePositionDTOS = positions.getContent()
                 .stream()
                 .map(
-                        item -> MapperUtils.map(item, ResponsePositionDTO.class
-                        )
+                        item -> {
+                            ResponsePositionDTO response = new ResponsePositionDTO();
+                            MapperUtils.map(item, response);
+                            Department department = item.getDepartment();
+                            if (department != null) {
+                                response.setDepartmentName(department.getDepartmentName());
+                            }
+                            return response;
+                        }
                 ).toList();
         return new ResponsePage<>(responsePositionDTOS, page, positions.getTotalElements());
     }

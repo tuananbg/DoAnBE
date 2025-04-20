@@ -154,6 +154,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         EmployeeInfo employeeInfo = new EmployeeInfo();
 
         MapperUtils.mapOnlyNotNullProperty(request, employeeInfo);
+        employeeInfo.setDateOfBirth(request.getDateOfBirth());
+        employeeInfoRepository.save(employeeInfo);
+        employee.setEmployeeInfo(employeeInfo);
 
         //upload file ảnh
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(avatarFile.getOriginalFilename()));

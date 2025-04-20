@@ -12,15 +12,16 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseContractListDTO {
+    private long id;
     private String employeeCode;
     private String employeeName;
-    private Long contractId;
-    private String contractCode; // ma hop dong
+    private String contractNumber; // ma hop dong
     private String contractType; // loai hop dong: thu viec, chinh thuc,....
     private String attachFile;
     private Date signDate; // ngay ky HD
-    private Date activeDate; // ngay hieu luc
+    private Date effectiveDate; // ngay hieu luc
     private Date expiredDate; // thoi han hop dong
-    private Integer status; // la hop dong hien tai
+    private String contractTerm;
+    private String contractStatus; // la hop dong hien tai
 
 }

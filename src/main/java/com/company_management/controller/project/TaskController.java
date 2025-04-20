@@ -6,6 +6,7 @@ import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestCreateTaskDTO;
+import com.company_management.dto.response.project.ResponseDetailTaskDTO;
 import com.company_management.dto.response.project.ResponseListTaskDTO;
 import com.company_management.dto.response.project.ResponseProjectDashboardTO;
 import com.company_management.service.TaskService;
@@ -38,5 +39,10 @@ public class TaskController {
     @GetMapping(value = "/dashboard")
     public BaseResponse<List<ResponseProjectDashboardTO>> getListDashboard() {
         return BaseResponse.ok(taskService.getListDashboard());
+    }
+
+    @GetMapping(value = "/detail/{code}")
+    public BaseResponse<ResponseDetailTaskDTO> getListDashboard(@PathVariable("code") String code) {
+        return BaseResponse.ok(taskService.getDetailTask(code));
     }
 }

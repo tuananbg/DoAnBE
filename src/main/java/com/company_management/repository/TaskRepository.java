@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
@@ -28,7 +29,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query("SELECT " +
             "COUNT(t) AS totalCount, " +
-            "SUM(CASE WHEN t.status = :status THEN 1 ELSE 0 END) AS doneCount " +
+            "COALESCE(SUM(CASE WHEN t.status = :status THEN 1 ELSE 0 END),0) AS doneCount " +
             "FROM Task t " +
             "JOIN t.project p " +
             "WHERE p.projectCode = :projectCode")
@@ -48,6 +49,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query("SELECT COUNT(t) FROM Task t")
     long countAllTasks();
+
+    Optional<Task> findByTaskCode(String taskCode);
 
 
 }

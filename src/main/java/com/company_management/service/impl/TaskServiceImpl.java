@@ -4,6 +4,7 @@ import com.company_management.common.enums.TaskStatusEnum;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestCreateTaskDTO;
+import com.company_management.dto.response.project.ResponseDetailTaskDTO;
 import com.company_management.dto.response.project.ResponseListTaskDTO;
 import com.company_management.dto.response.project.ResponseProjectDashboardTO;
 import com.company_management.entity.Employee;
@@ -82,15 +83,36 @@ public class TaskServiceImpl implements TaskService {
             ResponseProjectDashboardTO dto = new ResponseProjectDashboardTO();
             dto.setProjectName(project.getProjectName());
             Object[] result = taskRepository.countTaskAndDoneByProjectCode(project.getProjectCode(),TaskStatusEnum.DONE.getCode());
-            long tasksOfProject = Long.parseLong(result[0].toString());
-            long taskDoneOfProject = Long.parseLong(result[1].toString());
+            Object[] row = (Object[]) result[0];
+            long tasksOfProject = Long.parseLong(row[0].toString());
+            long taskDoneOfProject = Long.parseLong(row[1].toString());
             dto.setNumberOfTasks((int) tasksOfProject);
             dto.setNumberOfTasksDone((int) taskDoneOfProject);
-            long percent = taskDoneOfProject / tasksOfProject;
+            long percent = 0;
+            if (taskDoneOfProject!= 0 && tasksOfProject!=0){
+                percent = taskDoneOfProject / tasksOfProject;
+            }
+
             dto.setPercentage(percent);
             data.add(dto);
         }
         return data;
+    }
+
+    @Override
+    public ResponseDetailTaskDTO getDetailTask(String code) {
+        Task task  = taskRepository.findByTaskCode(code).orElseThrow(()->new AppException("ERR1","Nhiệm vụ không tồn tại trong hệ thống!"));
+        ResponseDetailTaskDTO dto = new ResponseDetailTaskDTO();
+        MapperUtils.map(task,dto);
+        Employee employee = task.getEmployee();
+        if(employee != null) {
+            dto.setEmployeeCode(employee.getCode());
+        }
+        Project project = task.getProject();
+        if(project != null) {
+            dto.setProjectCode(project.getProjectCode());
+        }
+        return dto;
     }
 
 

@@ -84,10 +84,10 @@ public class ProjectServiceImpl implements ProjectService {
         for (Integer status : statusList) {
             ResponseListTaskOfProjectDTO dto = new ResponseListTaskOfProjectDTO();
             dto.setName(TaskStatusEnum.findByCode(status).getName());
-            List<ResponseDetailTaskDTO> taskDTOList = new ArrayList<>();
+            List<ResponseDetailListTaskDTO> taskDTOList = new ArrayList<>();
             for (Task task : tasks) {
                 if (task.getStatus().equals(status)) {
-                    ResponseDetailTaskDTO taskDTO = new ResponseDetailTaskDTO();
+                    ResponseDetailListTaskDTO taskDTO = new ResponseDetailListTaskDTO();
                     taskDTO.setTaskName(task.getTaskName());
                     taskDTO.setId(task.getId());
                     taskDTO.setTaskStatusName(TaskStatusEnum.findByCode(status).getName());

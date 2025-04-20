@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseListTaskOfProjectDTO {
-    private String name;
-    private List<ResponseDetailListTaskDTO> taskForm;
+public class ResponseDetailListTaskDTO {
+    private long id;
+    private String taskName;
+    private String taskStatusName;
+    private String description;
 }

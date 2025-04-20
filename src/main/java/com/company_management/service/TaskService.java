@@ -4,6 +4,7 @@ import com.company_management.common.enums.TaskStatusEnum;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestCreateTaskDTO;
+import com.company_management.dto.response.project.ResponseDetailTaskDTO;
 import com.company_management.dto.response.project.ResponseListTaskDTO;
 import com.company_management.dto.response.project.ResponseProjectDashboardTO;
 
@@ -15,4 +16,6 @@ public interface TaskService {
     ResponsePage<ResponseListTaskDTO> getTasks(TaskStatusEnum status, String keyword, RequestPage page);
 
     List<ResponseProjectDashboardTO> getListDashboard();
+
+    ResponseDetailTaskDTO getDetailTask(String code);
 }

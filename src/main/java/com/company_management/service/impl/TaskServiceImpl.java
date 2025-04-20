@@ -4,6 +4,7 @@ import com.company_management.common.enums.TaskStatusEnum;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestCreateTaskDTO;
+import com.company_management.dto.request.projcet.RequestUpdateTaskDTO;
 import com.company_management.dto.response.project.ResponseDetailTaskDTO;
 import com.company_management.dto.response.project.ResponseListTaskDTO;
 import com.company_management.dto.response.project.ResponseProjectDashboardTO;
@@ -44,6 +45,7 @@ public class TaskServiceImpl implements TaskService {
         Project project = projectRepository.findByProjectCode(request.getProjectCode())
                 .orElseThrow(()-> new AppException("ER002","Dự án không tồn tại trong hệ thống!"));
         task.setProject(project);
+        task.setStatus(request.getTaskStatus());
         taskRepository.save(task);
     }
 
@@ -112,7 +114,18 @@ public class TaskServiceImpl implements TaskService {
         if(project != null) {
             dto.setProjectCode(project.getProjectCode());
         }
+        dto.setTaskStatus(task.getStatus());
         return dto;
+    }
+
+    @Override
+    public void updateTask(RequestUpdateTaskDTO request) {
+        Task task = taskRepository.findByTaskCode(request.getTaskCode()).orElseThrow(()->new AppException("ERR01","Không tìm thấy nhiệm vụ trong hệ thống"));
+        MapperUtils.mapOnlyNotNullProperty(request,task);
+        Employee employee = employeeRepository.findByCode(request.getEmployeeCode()).orElseThrow(()->new AppException("ER01","Nhân viên không tôn tại trong hệ thống"));
+        task.setEmployee(employee);
+        task.setStatus(request.getTaskStatus());
+        taskRepository.save(task);
     }
 
 

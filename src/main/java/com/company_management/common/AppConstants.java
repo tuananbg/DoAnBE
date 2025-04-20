@@ -9,6 +9,9 @@ public class AppConstants {
     public static final String GET_MESSAGE_200 = "Request processed successfully";
     public static final String CREATE_SUCCESS_CODE_201 = "201";
     public static final String CREATE_SUCCESS_MESS_201 = "Created successfully";
+    public static final String UPDATE_SUCCESS_CODE_202 = "202";
+    public static final String CODE_400 = "400";
+    public static final String UPDATE_SUCCESS_MESS_202 = "Update successfully";
     public static final String EMPLOYEE_CREATE_SUCCESS = "Thêm mới nhân viên thành công !";
     ///  CBNV
     public static final String EMPLOYEE_CODE_001 = "EMP001";

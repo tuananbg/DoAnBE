@@ -34,5 +34,7 @@ public class RequestCreateTaskDTO {
 
     private String managerCode;
 
+    private int taskStatus;
+
     private int priority;  //do uu tien
 }

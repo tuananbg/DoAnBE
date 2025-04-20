@@ -1,4 +1,4 @@
-package com.company_management.dto.response.project;
+package com.company_management.dto.request.projcet;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -12,16 +12,10 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseDetailTaskDTO {
-    private long id;
-
-    private String taskName;  // ten cong viec
-
+public class RequestUpdateTaskDTO {
     private String taskCode;  // ma cong viec
 
     private String taskDescription; // mô ta cong viec
-
-    private String managerCode; // Người theo dõi
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date startDay; // ngay bat dau
@@ -29,9 +23,13 @@ public class ResponseDetailTaskDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date endDay;  // han ket thuc
 
+    //Dự án
     private String projectCode;
 
+    //Nhân viên phụ trách
     private String employeeCode;
+
+    private String managerCode;
 
     private int taskStatus;
 

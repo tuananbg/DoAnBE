@@ -6,9 +6,11 @@ import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestCreateTaskDTO;
+import com.company_management.dto.request.projcet.RequestUpdateTaskDTO;
 import com.company_management.dto.response.project.ResponseDetailTaskDTO;
 import com.company_management.dto.response.project.ResponseListTaskDTO;
 import com.company_management.dto.response.project.ResponseProjectDashboardTO;
+import com.company_management.exception.AppException;
 import com.company_management.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +46,15 @@ public class TaskController {
     @GetMapping(value = "/detail/{code}")
     public BaseResponse<ResponseDetailTaskDTO> getListDashboard(@PathVariable("code") String code) {
         return BaseResponse.ok(taskService.getDetailTask(code));
+    }
+
+    @PutMapping(value = "/update")
+    public BaseResponse<Object> update(@RequestBody @Valid RequestUpdateTaskDTO request) {
+        try {
+            taskService.updateTask(request);
+            return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202, AppConstants.UPDATE_SUCCESS_CODE_202);
+        } catch (AppException ex) {
+            return BaseResponse.error(AppConstants.CODE_400, ex.getMessage());
+        }
     }
 }

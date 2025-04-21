@@ -4,6 +4,7 @@ import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.common.enums.EmploymentStatus;
+import com.company_management.common.enums.ReportType;
 import com.company_management.dto.UserDetailDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
@@ -15,6 +16,7 @@ import com.company_management.dto.response.pa.employee.ResponseEmployeeDetailDTO
 import com.company_management.dto.response.pa.employee.ResponseEmployeeSelectDTO;
 import com.company_management.dto.response.pa.employee.ResponseListEmployeeDTO;
 import com.company_management.service.EmployeeService;
+import com.company_management.service.common.JasperReportService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.LogisticsMailUtils;
 import jakarta.validation.Valid;
@@ -22,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -51,6 +54,7 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     private final ITemplateEngine templateEngine;
+    private final JasperReportService jasperReportService;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -78,7 +82,7 @@ public class EmployeeController {
         return BaseResponse.ok(employeeService.detailEmployeeCode(code));
     }
 
-    @GetMapping("/{urlAvatar}")
+    @GetMapping("/avatar/{urlAvatar}")
     public ResponseEntity<byte[]> getImageByUrl(@PathVariable("urlAvatar") String urlAvatar) throws IOException {
         if (urlAvatar != null) {
             Path imagePath = Paths.get(fileUpload + urlAvatar);
@@ -110,14 +114,11 @@ public class EmployeeController {
         return ResultResp.success(ErrorCode.DELETED_OK, null);
     }
 
-    @PostMapping(value = "/export")
-    public ResponseEntity<Object> exportExcel(@RequestBody SearchEmployeeRequest searchEmployeeRequest, Pageable pageable) {
-        ByteArrayInputStream result = employeeService.exportExcel(searchEmployeeRequest, pageable);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        String fileName = CommonUtils.getFileNameReportUpdate("EXPORT_EMPLOYEE");
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-        return new ResponseEntity<>(new InputStreamResource(result), headers, HttpStatus.OK);
+    @GetMapping(value = "/download-xlsx")
+    public ResponseEntity<Resource> exportExcel() {
+        byte[] bytes = jasperReportService.employeeFullInformation();
+        String fileName = "BVB HRM_Qua trinh hop dong_ " + CommonUtils.getCurrentDate("ddMMyyyy") + "." + ReportType.XLSX.getCode();
+        return jasperReportService.baseDownload(bytes,fileName);
     }
 
     @PostMapping("/export-pdf/{id}")

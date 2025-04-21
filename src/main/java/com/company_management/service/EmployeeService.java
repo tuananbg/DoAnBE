@@ -32,7 +32,7 @@ public interface EmployeeService {
 
     void deleteEmployee(Long id);
 
-    ByteArrayInputStream exportExcel(SearchEmployeeRequest searchEmployeeRequest, Pageable pageable);
+    ByteArrayInputStream exportExcel();
 
 //    void updateEmployeeStatus();
 

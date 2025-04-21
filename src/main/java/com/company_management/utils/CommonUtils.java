@@ -13,14 +13,24 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
 
 
 @Slf4j
 public class CommonUtils {
+
+    // get current date with format
+    public static String getCurrentDate(String format) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(format);
+        LocalDateTime now = LocalDateTime.now();
+        return dtf.format(now);
+    }
 
     public Long getCurrentUsername() {
         return getUserLoginName();
@@ -167,6 +177,13 @@ public class CommonUtils {
             }
         } catch (IOException ioE) {
             return null;
+        }
+    }
+    public static String customEncodeURL(String url) {
+        try {
+            return URLEncoder.encode(url, "UTF-8").replace("+", "%20");
+        } catch (Exception e) {
+            throw new RuntimeException("Could not encode URL!", e);
         }
     }
 

@@ -234,7 +234,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional(readOnly = true)
-    public ByteArrayInputStream exportExcel(SearchEmployeeRequest searchEmployeeRequest, Pageable pageable) {
+    public ByteArrayInputStream exportExcel() {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try (InputStream in = CommonUtils.getInputStreamByFileName("export-employee-template.xlsx")) {
 

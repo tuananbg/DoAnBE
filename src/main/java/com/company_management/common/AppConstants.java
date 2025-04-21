@@ -42,5 +42,9 @@ public class AppConstants {
     public static final String PROJECT_CODE_EXIST_CODE_001 = "PRO01";
     public static final String PROJECT_CODE_EXIST_MESS_001 = "Mã dự án đã tồn tại trong hệ thống!";
 
+    //Download
+    public static final String DOWNLOAD_DATA_NULL_CODE_EX01 = "EX01";
+    public static final String DOWNLOAD_DATA_NULL_MESS_EX01 = "Không có dữ liệu phù hợp để tải xuống.";
+
 
 }

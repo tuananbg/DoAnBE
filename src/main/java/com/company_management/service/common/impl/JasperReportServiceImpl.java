@@ -8,6 +8,7 @@ import com.company_management.dto.response.UserDetailExcelResponse;
 import com.company_management.dto.response.pa.ReportEmployeeDTO;
 import com.company_management.entity.Department;
 import com.company_management.entity.Employee;
+import com.company_management.entity.EmployeeInfo;
 import com.company_management.entity.Position;
 import com.company_management.exception.AppException;
 import com.company_management.repository.DepartmentRepository;
@@ -34,6 +35,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -48,18 +52,27 @@ public class JasperReportServiceImpl implements JasperReportService {
 
     @Override
     public byte[] employeeFullInformation() {
-        String path ="report/EmployeeStatus.jrxml";
-        List<Employee> employees = employeeRepository.findAllByStatus(EmploymentStatus.EMPLOYMENT.getCode());
-        Map<Long, String> departmentMap = MapperUtils.buildMap(departmentRepository.findAll(), Department::getId, Department::getDepartmentName);
-        Map<Long, String> positionMap = MapperUtils.buildMap(positionRepository.findAll(), Position::getId, Position::getPositionName);
+        String path = "report/EmployeeStatus.jrxml";
+        List<Employee> employees = employeeRepository.findAll();
         List<ReportEmployeeDTO> data = new ArrayList<>();
         for (Employee employee : employees) {
             ReportEmployeeDTO item = new ReportEmployeeDTO();
+            EmployeeInfo employeeInfo = employee.getEmployeeInfo();
             MapperUtils.map(employee, item);
-            if (employee.getDepartment() != null) {
-                item.setDepartmentName(departmentMap.get(employee.getDepartment().getId()));
+            item.setEmployeeCode(employee.getCode());
+            item.setEmployeeName(employee.getFullName());
+
+            if (employeeInfo != null) {
+                MapperUtils.map(employee.getEmployeeInfo(), item);
+                item.setGenderName(Gender.fromCode(employeeInfo.getGender()).getName());
+                item.setBirthday(employee.getEmployeeInfo().getDateOfBirth());
+                item.setYearOld(calculateAge(employee.getEmployeeInfo().getDateOfBirth())+" tuổi");
             }
-//            item.setGenderName(Gender.fromCode(item.getGender()).getName());
+            EmploymentStatus status = EmploymentStatus.findByCodeStatus(employee.getStatus());
+            if (status != null) {
+                item.setStatusName(status.getDescription());
+            }
+
             data.add(item);
         }
         try {
@@ -100,7 +113,7 @@ public class JasperReportServiceImpl implements JasperReportService {
         if (dataExport instanceof Collection) {
             Collection<?> collection = (Collection<?>) dataExport;
             if (collection.isEmpty()) {
-                throw new AppException(AppConstants.DOWNLOAD_DATA_NULL_CODE_EX01,AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01);
+                throw new AppException(AppConstants.DOWNLOAD_DATA_NULL_CODE_EX01, AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01);
             }
             return new JRBeanCollectionDataSource(collection);
         } else {
@@ -143,5 +156,13 @@ public class JasperReportServiceImpl implements JasperReportService {
         config.setCollapseRowSpan(false);
         config.setRemoveEmptySpaceBetweenRows(true); // Bỏ qua các hàng trống
         config.setWhitePageBackground(false); // Loại bỏ các trang trắng
+    }
+
+    public static int calculateAge(Date birthday) {
+        if (birthday == null) return 0;
+
+        LocalDate birthDate = birthday.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate now = LocalDate.now();
+        return Period.between(birthDate, now).getYears();
     }
 }

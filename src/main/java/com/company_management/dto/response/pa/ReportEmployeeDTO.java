@@ -16,8 +16,20 @@ public class ReportEmployeeDTO {
     private String employeeName;
     private String genderName;
     private Date birthday;
+    private String yearOld;
     private String email;
-    private String address;
+    private String placeOfBirth;
+    private String departmentCode;
     private String departmentName;
+    private String positionCode;
     private String positionName;
+    private String taxCode;
+    private String insuranceNumber;
+    private String accountNumber;
+    private String permanentAddress;
+    private String currentAddress;
+    private String identityNumber;
+    private String mobile;
+    private String nation;
+    private String statusName;
 }

@@ -36,7 +36,7 @@ public enum EmploymentStatus {
                 return employeeStatus;
             }
         }
-        throw new IllegalArgumentException("code = " + code + " isn't defined!!!");
+       return null;
     }
 
     public static EmploymentStatus fromString(final String s) {

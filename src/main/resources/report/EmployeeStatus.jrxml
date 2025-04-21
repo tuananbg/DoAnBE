@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.0.4.final using JasperReports Library version 6.0.4  -->
-<!-- 2025-04-21T13:56:56 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EmployeeInfoDetail" pageWidth="2000" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="24b9deda-9e92-4278-91ed-b358184188fd">
+<!-- 2025-04-21T16:41:25 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EmployeeInfoDetail" pageWidth="3500" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="24b9deda-9e92-4278-91ed-b358184188fd">
 	<style name="header" mode="Opaque" forecolor="#1C4587" backcolor="#E2F4F5" hTextAlign="Center" vTextAlign="Middle" fontName="Times New Roman" fontSize="11" isBold="true">
 		<pen lineColor="#E1E1E1"/>
 		<box>
@@ -55,99 +55,207 @@
 	<field name="employeeName" class="java.lang.String"/>
 	<field name="genderName" class="java.lang.String"/>
 	<field name="birthday" class="java.util.Date"/>
+	<field name="yearOld" class="java.lang.String"/>
 	<field name="email" class="java.lang.String"/>
-	<field name="address" class="java.lang.String"/>
+	<field name="placeOfBirth" class="java.lang.String"/>
+	<field name="departmentCode" class="java.lang.String"/>
 	<field name="departmentName" class="java.lang.String"/>
+	<field name="positionCode" class="java.lang.String"/>
 	<field name="positionName" class="java.lang.String"/>
+	<field name="taxCode" class="java.lang.String"/>
+	<field name="insuranceNumber" class="java.lang.String"/>
+	<field name="accountNumber" class="java.lang.String"/>
+	<field name="permanentAddress" class="java.lang.String"/>
+	<field name="currentAddress" class="java.lang.String"/>
+	<field name="identityNumber" class="java.lang.String"/>
+	<field name="mobile" class="java.lang.String"/>
+	<field name="nation" class="java.lang.String"/>
+	<field name="statusName" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
 		<band height="50" splitType="Stretch">
 			<staticText>
-				<reportElement style="Title" x="-20" y="0" width="1970" height="50" uuid="ff69098b-9e1d-4457-bb29-470a1f3f714e"/>
-				<text><![CDATA[Thông tin CBNV																												]]></text>
+				<reportElement style="Title" x="-20" y="0" width="3480" height="50" uuid="ff69098b-9e1d-4457-bb29-470a1f3f714e"/>
+				<text><![CDATA[Danh sách cán bộ nhân viên]]></text>
 			</staticText>
 		</band>
 	</title>
 	<columnHeader>
-		<band height="79" splitType="Stretch">
+		<band height="30" splitType="Stretch">
 			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
 			<staticText>
-				<reportElement x="-20" y="0" width="70" height="30" uuid="1af577d2-ba7d-47de-8d03-7f2ab0497116"/>
+				<reportElement style="header" x="-20" y="0" width="50" height="30" uuid="1af577d2-ba7d-47de-8d03-7f2ab0497116"/>
 				<text><![CDATA[STT]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="50" y="0" width="195" height="30" uuid="db4af804-a1e6-47a4-90c9-c5bd86dfd430"/>
-				<text><![CDATA[employeeCode]]></text>
+				<reportElement style="header" x="30" y="0" width="143" height="30" uuid="cf2329a6-2459-41e2-8cc8-c1564cd03a66"/>
+				<text><![CDATA[Mã CBNV]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="245" y="0" width="245" height="30" uuid="afb16fe8-0514-47b3-8a1f-85f55ab4679d"/>
-				<text><![CDATA[employeeName]]></text>
+				<reportElement style="header" x="173" y="0" width="173" height="30" uuid="ab2774f3-5691-40d9-aaca-a2fb75e0ecaa"/>
+				<text><![CDATA[Họ và Tên]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="490" y="0" width="245" height="30" uuid="0c7f4586-ffcb-4a7c-b753-0208785f2aae"/>
-				<text><![CDATA[genderName]]></text>
+				<reportElement style="header" x="346" y="0" width="173" height="30" uuid="ea8c19db-8e45-436c-8d38-25dd6b5b3f5e"/>
+				<text><![CDATA[Giới tính]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="735" y="0" width="245" height="30" uuid="0777d8d5-a979-4bb9-908b-b09ef578f2c4"/>
-				<text><![CDATA[birthday]]></text>
+				<reportElement style="header" x="519" y="0" width="173" height="30" uuid="0f3f1655-d215-4121-a5d3-2c0a505a9e54"/>
+				<text><![CDATA[Ngày sinh]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="980" y="0" width="245" height="30" uuid="e8e7ba68-b652-42ed-a199-afbb02468b9b"/>
-				<text><![CDATA[email]]></text>
+				<reportElement style="header" x="692" y="0" width="173" height="30" uuid="25f0dc23-7491-49bf-a5b2-6b4fd618ca2e"/>
+				<text><![CDATA[Tuổi]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1225" y="0" width="245" height="30" uuid="baf298f5-1f9a-4153-90af-32393b68cb36"/>
-				<text><![CDATA[address]]></text>
+				<reportElement style="header" x="1038" y="0" width="173" height="30" uuid="8a9dc08f-0eaa-42fe-9cb0-4bcb774e888a"/>
+				<text><![CDATA[Email]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1470" y="0" width="245" height="30" uuid="b3cad84c-b1e8-4907-951a-6b2c887b0d75"/>
-				<text><![CDATA[departmentName]]></text>
+				<reportElement style="header" x="865" y="0" width="173" height="30" uuid="a0e50e7b-0c7b-40f1-85f9-a866e9322834"/>
+				<text><![CDATA[Nơi sinh]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1715" y="0" width="245" height="30" uuid="3a7fb664-5010-4359-855d-2e32423c7078"/>
-				<text><![CDATA[positionName]]></text>
+				<reportElement style="header" x="1211" y="0" width="173" height="30" uuid="474aea38-bc73-4c4c-b622-a0049e8381f2"/>
+				<text><![CDATA[Mã phòng ban]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="1384" y="0" width="173" height="30" uuid="22dae01e-0287-447f-b216-c9182093a87e"/>
+				<text><![CDATA[Tên phòng ban]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="1557" y="0" width="173" height="30" uuid="702b3fac-6192-41f2-ac9c-5962304949ea"/>
+				<text><![CDATA[Mã chức danh]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="1730" y="0" width="173" height="30" uuid="4e94555f-300c-4d0a-a575-4799337be64f"/>
+				<text><![CDATA[Tên chức danh]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="1903" y="0" width="173" height="30" uuid="a7e0bf86-97ee-403e-b5e4-8bebe0848532"/>
+				<text><![CDATA[Mã số thuế]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="2076" y="0" width="173" height="30" uuid="f00cd34d-0f09-4d97-9c3c-fb6ff584f864"/>
+				<text><![CDATA[Số BHXH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="2249" y="0" width="173" height="30" uuid="68fe6235-5bc8-4bb0-88ed-38e1d2cedc9f"/>
+				<text><![CDATA[Số tài khoản]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="2422" y="0" width="173" height="30" uuid="e14a2697-834a-43f8-914a-a00b93e39000"/>
+				<text><![CDATA[Địa chỉ thường trú]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="2595" y="0" width="173" height="30" uuid="106d9b88-92c7-4c6f-ba6f-1f6ce673b001"/>
+				<text><![CDATA[Địa chỉ hiện tại]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="2768" y="0" width="173" height="30" uuid="285a4ab8-022b-4cae-b707-061f99a873d8"/>
+				<text><![CDATA[Số CMND/CCCD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="2941" y="0" width="173" height="30" uuid="6d9fa7aa-c5c7-4b9f-8a97-f9d060d53649"/>
+				<text><![CDATA[Số điện thoại]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="3114" y="0" width="173" height="30" uuid="286a6b3e-0de2-4a53-b15f-27372d4d7a0c"/>
+				<text><![CDATA[Quốc gia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="3287" y="0" width="173" height="30" uuid="2b2f6692-0c5c-4e08-8b7f-8a1bc8d3d437"/>
+				<text><![CDATA[Trạng thái]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="64" splitType="Stretch">
+		<band height="30" splitType="Stretch">
 			<textField>
-				<reportElement x="-20" y="0" width="70" height="30" uuid="ce9cb385-f681-4e2b-a107-3e78225a5bd0"/>
+				<reportElement key="" style="stt" x="-20" y="0" width="50" height="30" uuid="ce9cb385-f681-4e2b-a107-3e78225a5bd0"/>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="50" y="0" width="195" height="30" uuid="77f58686-9309-4621-a9d5-d04fc07f49af"/>
-				<textFieldExpression><![CDATA[$F{employeeCode}]]></textFieldExpression>
+				<reportElement style="text" x="30" y="0" width="143" height="30" uuid="3fe404c2-11ec-4315-9469-9922f598176b"/>
+				<textFieldExpression><![CDATA[$F{employeeCode} == null ? "" : $F{employeeCode}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="245" y="0" width="245" height="30" uuid="0ff391f9-86bd-4c8e-aa32-aba680baac6e"/>
-				<textFieldExpression><![CDATA[$F{employeeName}]]></textFieldExpression>
+				<reportElement style="text" x="173" y="0" width="173" height="30" uuid="00de5c55-08eb-46c8-938d-08f7b8092257"/>
+				<textFieldExpression><![CDATA[$F{employeeName} == null ? "" : $F{employeeName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="490" y="0" width="245" height="30" uuid="dc24ad6f-9eb5-4d32-82bf-55c570eb7baa"/>
-				<textFieldExpression><![CDATA[$F{genderName}]]></textFieldExpression>
+				<reportElement style="text" x="346" y="0" width="173" height="30" uuid="3a0fc615-4146-48f6-b08d-a3b4c8b3b6e2"/>
+				<textFieldExpression><![CDATA[$F{genderName} == null ? "" : $F{genderName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="735" y="0" width="245" height="30" uuid="d66e8f67-dccd-4c13-8fa3-20a862d8ad7e"/>
-				<textFieldExpression><![CDATA[$F{birthday}]]></textFieldExpression>
+				<reportElement style="text" x="519" y="0" width="173" height="30" uuid="fc827a21-5e42-4cb6-ab43-cf842dc64485"/>
+				<textFieldExpression><![CDATA[$F{birthday} != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{birthday}) : ""]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="980" y="0" width="245" height="30" uuid="fe3d005a-6e22-4b2a-a841-93079780d564"/>
-				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+				<reportElement style="text" x="692" y="0" width="173" height="30" uuid="524f496e-3b8d-4f00-8831-b6641dae3133"/>
+				<textFieldExpression><![CDATA[$F{yearOld} == null ? "" : $F{yearOld}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="1225" y="0" width="245" height="30" uuid="8f55f6b2-faed-4850-b635-68c3f1766930"/>
-				<textFieldExpression><![CDATA[$F{address}]]></textFieldExpression>
+				<reportElement style="text" x="1038" y="0" width="173" height="30" uuid="9017895b-38a6-45b4-a3c3-5dc32cabb32e"/>
+				<textFieldExpression><![CDATA[$F{email} == null ? "" : $F{email}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="1470" y="0" width="245" height="30" uuid="6e485f31-ba11-424c-a6ca-2dfcc0780399"/>
-				<textFieldExpression><![CDATA[$F{departmentName}]]></textFieldExpression>
+				<reportElement style="text" x="865" y="0" width="173" height="30" uuid="2f155295-de52-4cda-a579-b7af64bd6d1d"/>
+				<textFieldExpression><![CDATA[$F{placeOfBirth} == null ? "" : $F{placeOfBirth}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="1715" y="0" width="245" height="30" uuid="f9c978cf-bfcd-4140-a2cd-5330873d4069"/>
-				<textFieldExpression><![CDATA[$F{positionName}]]></textFieldExpression>
+				<reportElement style="number" x="1211" y="0" width="173" height="30" uuid="5fce8ab0-de87-45fd-81ca-d00c935111dd"/>
+				<textFieldExpression><![CDATA[$F{departmentCode} == null ? "" : $F{departmentCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="1384" y="0" width="173" height="30" uuid="4c1b23b2-8af6-4e0e-95c5-5f671a4120f6"/>
+				<textFieldExpression><![CDATA[$F{departmentName} == null ? "" : $F{departmentName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="number" x="1557" y="0" width="173" height="30" uuid="f935aad6-f749-405b-ba19-1e2d2a258fe6"/>
+				<textFieldExpression><![CDATA[$F{positionCode} == null ? "" : $F{positionCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="1730" y="0" width="173" height="30" uuid="4397d61d-2993-4107-bf56-3d6df3b70205"/>
+				<textFieldExpression><![CDATA[$F{positionName} == null ? "" : $F{positionName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="number" x="1903" y="0" width="173" height="30" uuid="7b1365e6-eebc-4836-9bc1-16b56146b7dc"/>
+				<textFieldExpression><![CDATA[$F{taxCode} == null ? "" : $F{taxCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="number" x="2076" y="0" width="173" height="30" uuid="efca5d05-417f-42dc-a85d-ae750be5638d"/>
+				<textFieldExpression><![CDATA[$F{insuranceNumber} == null ? "" : $F{insuranceNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="number" x="2249" y="0" width="173" height="30" uuid="120990ae-12a4-47d3-ac2a-beaa5409d432"/>
+				<textFieldExpression><![CDATA[$F{accountNumber} == null ? "" : $F{accountNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="2422" y="0" width="173" height="30" uuid="7919ea9a-0efb-42d5-b043-8c13552e4627"/>
+				<textFieldExpression><![CDATA[$F{permanentAddress} == null ? "" : $F{permanentAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="2595" y="0" width="173" height="30" uuid="4ab43387-bd8c-46d7-af2a-143a837df781"/>
+				<textFieldExpression><![CDATA[$F{currentAddress} == null ? "" : $F{currentAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="2768" y="0" width="173" height="30" uuid="01f9614b-0bd9-4371-b5f2-73f66dbf2aab"/>
+				<textFieldExpression><![CDATA[$F{identityNumber} == null ? "" : $F{identityNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="2941" y="0" width="173" height="30" uuid="61a2c214-fa86-43d4-9bec-e07db5bb4539"/>
+				<textFieldExpression><![CDATA[$F{mobile} == null ? "" : $F{mobile}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="3114" y="0" width="173" height="30" uuid="fdf5a4f5-d6a0-4162-9f00-878ce6737809"/>
+				<textFieldExpression><![CDATA[$F{nation} == null ? "" : $F{nation}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="3287" y="0" width="173" height="30" uuid="449c1d90-1362-4316-92b4-7f74c24b675d"/>
+				<textFieldExpression><![CDATA[$F{statusName} == null ? "" : $F{statusName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

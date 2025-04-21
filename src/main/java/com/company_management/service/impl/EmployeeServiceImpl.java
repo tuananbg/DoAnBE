@@ -56,7 +56,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final PositionRepository positionRepository;
     private final EmployeeInfoRepository employeeInfoRepository;
     private final EmployeeContractsRepository employeeContractsRepository;
-    private final SeatRepository seatRepository;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -71,8 +70,11 @@ public class EmployeeServiceImpl implements EmployeeService {
                     response.setId(item.getId());
                     response.setEmployeeCode(item.getCode());
                     response.setEmployeeName(item.getFullName());
-                    response.setDepartmentName(item.getDepartmentName());
-                    response.setPositionName(item.getPositionName());
+                    if (item.getDepartment() != null) {
+                        response.setDepartmentName(item.getDepartment().getDepartmentName());
+                    }
+
+//                    response.setPositionName(item.getPositionName());
                     if (item.getEmployeeInfo() != null) {
                         EmployeeInfo employeeInfo = employeeInfoRepository.findById(item.getEmployeeInfo().getId()).orElse(null);
                         if (employeeInfo != null) {
@@ -142,12 +144,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (request.getDepartmentCode() != null) {
             Department department = departmentRepository.findByCode(request.getDepartmentCode()).orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
             employee.setDepartment(department);
-            employee.setDepartmentName(department.getDepartmentName());
-            employee.setDepartmentCode(department.getDepartmentCode());
         }
         if (request.getPositionCode() != null) {
             Position position = positionRepository.findByPositionCode(request.getPositionCode()).orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
-            employee.setPositionName(position.getPositionName());
             employee.setPositionCode(position.getPositionCode());
         }
 

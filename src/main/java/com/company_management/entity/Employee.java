@@ -34,29 +34,14 @@ public class Employee extends BaseEntity {
     @JoinColumn(name = "DEPARTMENT_ID")
     private Department department;
 
-    @Column(name = "DEPARTMENT_CODE")
-    private String departmentCode;
-
-    @Column(name = "DEPARTMENT_NAME")
-    private String departmentName;
-
     @Column(name ="POSITION_CODE")
     private String positionCode;
-
-    @Column(name = "POSITION_NAME")
-    private String positionName;
-
-    @Column(name = "SEAT_CODE")
-    private String seatCode;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<EmployeeContracts> employeeContractsList;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Qualification> qualifications;
-
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Seat> seats;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "employee_role_mapping", joinColumns = @JoinColumn(name = "employee_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))

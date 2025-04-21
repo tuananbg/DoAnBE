@@ -7,7 +7,6 @@ import com.company_management.dto.au.EmployeeInfo;
 import com.company_management.dto.au.RoleDTO;
 import com.company_management.entity.Account;
 import com.company_management.entity.Employee;
-import com.company_management.entity.Permission;
 import com.company_management.entity.Role;
 import com.company_management.exception.AppException;
 import com.company_management.repository.AccountRepository;
@@ -61,10 +60,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         // hard code admin permission
 //        roles.addAll(roleRepository.findAllByActive(true));
 
-        Set<Permission> permission = new HashSet<>();
-        if (!roles.isEmpty()) {
-            roles.forEach(r -> permission.addAll(r.getPermission()));
-        }
+//        Set<Permission> permission = new HashSet<>();
+//        if (!roles.isEmpty()) {
+//            roles.forEach(r -> permission.addAll(r.getPermission()));
+//        }
         return new EmployeeInfo(account.getEmployee(), roles, account.getEmployee().getEmployeeInfo().getEmail(), positionRoleDepartment,account);
     }
 

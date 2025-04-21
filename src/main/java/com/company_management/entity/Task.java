@@ -42,7 +42,7 @@ public class Task extends BaseEntity {
     private Project project;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "FOLLOW_ID", referencedColumnName = "id")
+    @JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "id")
     private Employee employee;
 
     @Column(name = "PRIORITY")

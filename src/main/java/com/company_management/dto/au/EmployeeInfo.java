@@ -2,15 +2,11 @@ package com.company_management.dto.au;
 
 import com.company_management.entity.Employee;
 import com.company_management.entity.Account;
-import com.company_management.entity.Permission;
 import com.company_management.entity.Role;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -87,14 +83,15 @@ public class EmployeeInfo implements UserDetails {
         List<GrantedAuthority> authorities = new ArrayList<>();
         if (account.getCode().equals(SUPER_ADMIN)) {
             authorities.add(new SimpleGrantedAuthority(SUPER_ADMIN_AUTH));
-        } else {
-
-            for (Role role : roles) {
-                for (Permission permission : role.getPermission()) {
-                    authorities.add(new SimpleGrantedAuthority(permission.getService().getCode()));
-                }
-            }
         }
+//        else {
+//
+//            for (Role role : roles) {
+//                for (Permission permission : role.getPermission()) {
+//                    authorities.add(new SimpleGrantedAuthority(permission.getService().getCode()));
+//                }
+//            }
+//        }
         return authorities;
     }
 

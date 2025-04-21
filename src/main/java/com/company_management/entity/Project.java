@@ -49,13 +49,5 @@ public class Project extends BaseEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date endDay;  // han ket thuc
 
-    @Basic
-    @Column(name = "ESTIMATE")
-    private Double estimate;  // so gio du kien
-
-    @Basic
-    @Column(name = "TIMESHEET")
-    private Double timesheet;  // so gio thuc hien dang đc khai bao
-
 
 }

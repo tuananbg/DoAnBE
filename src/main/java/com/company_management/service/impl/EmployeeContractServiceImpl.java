@@ -160,7 +160,6 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
             EmployeeContracts contract = new EmployeeContracts();
             MapperUtils.map(request, contract);
             contract.setEmployee(employee);
-            contract.setEmployeeName(employee.getFullName());
             contract.setContractTypeDisplay(ContractType.fromCode(request.getContractType()).getName());
             String termValue = termValueDisplay(request.getContractEffectiveDate(),request.getContractEndDate());
             contract.setContractTypeDisplay(termValue);

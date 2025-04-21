@@ -47,12 +47,6 @@ public class Role {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Permission> permission;
-
-    @ManyToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
-    @JoinTable(name = "menu_role_mapping", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "menu_id"))
-    private Set<Menu> menus;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "employee_role_mapping", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "employee_id"))

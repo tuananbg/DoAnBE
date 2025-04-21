@@ -23,9 +23,6 @@ public class EmployeeContracts extends BaseEntity {
     @Column(name = "EMPLOYEE_CODE") // Mã CBNV
     private String employeeCode;
 
-    @Column(name = "EMPLOYEE_NAME") // Tên CBNV
-    private String employeeName;
-
     @Column(name = "CONTRACT_TYPE") // ID loai HD
     private String contractType;
 
@@ -46,12 +43,6 @@ public class EmployeeContracts extends BaseEntity {
     @Column(name = "CONTRACT_END_DATE") // Ngày hết hiệu lực
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date contractEndDate;
-
-    @Column(name = "CONTRACT_TERM") // Thời hạn HD
-    private Integer contractTerm;
-
-    @Column(name = "CONTRACT_TERM_VALUE") // Giá trị thời hạn
-    private String contractTermValue;
 
     @Column(name = "CONTRACT_TERM_DISPLAY") // Thời hạn HD hiển thị
     private String contractTermDisplay;

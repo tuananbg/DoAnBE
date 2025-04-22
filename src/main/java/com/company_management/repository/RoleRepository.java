@@ -18,8 +18,8 @@ public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificat
     Optional<Role> findByCode(String code);
 
     @Query("SELECT r FROM role r WHERE " +
-            "(:keyword IS NULL OR LOWER(r.code) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(r.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
+            "(:keyword IS NULL OR LOWER(r.code) LIKE LOWER(CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) OR " +
+            "LOWER(r.name) LIKE LOWER(CONCAT('%', UPPER(COALESCE(:keyword, '')), '%'))) AND " +
             "(:active IS NULL OR r.active = :active) " +
             "ORDER BY UPPER(r.name)")
     Page<Role> searchRoles(@Param("keyword") String keyword, @Param("active") Boolean active, Pageable pageable);

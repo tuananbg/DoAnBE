@@ -22,8 +22,8 @@ public interface EmployeeContractsRepository extends JpaRepository<EmployeeContr
 
     @Query(value = "SELECT ec FROM EmployeeContracts ec  WHERE " +
             "(:keyword IS NULL OR " +
-            "UPPER(ec.contractType) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
-            "UPPER(ec.contractTypeDisplay) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
+            "UPPER(ec.contractType) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
+            "UPPER(ec.contractTypeDisplay) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
             "AND ec.status = :status " +
             "ORDER BY ec.createdDate ASC")
     Page<EmployeeContracts> findAllByIsActive(@Param("status") Integer isActive, @Param("keyword") String keyword, Pageable pageable);

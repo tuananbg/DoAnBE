@@ -27,8 +27,8 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
     @Query(value = "SELECT d FROM Department d  WHERE " +
             "(:keyword IS NULL OR " +
-            "UPPER(d.departmentCode) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
-            "UPPER(d.departmentName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
+            "UPPER(d.departmentCode) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
+            "UPPER(d.departmentName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
             "AND d.status = :status " +
             "ORDER BY d.createdDate ASC")
     Page<Department> findAllByIsActive(@Param("status") Integer status, @Param("keyword") String keyword, Pageable pageable);

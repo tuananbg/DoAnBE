@@ -36,8 +36,9 @@ public class AttendanceOt extends BaseEntity {
     @JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "id")
     private Employee employee;
 
-    @Column(name = "FOLLOW_ID")
-    private Long followId;  // người theo dõi
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "FOLLOW_ID", referencedColumnName = "id")
+    private Employee employeeFollow;  // người theo dõi
 
     @Column(name = "DESCRIPTION_OT")
     private String descriptionOt;  //mô tả công việc cần ot

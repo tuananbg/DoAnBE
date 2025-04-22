@@ -2,6 +2,9 @@ package com.company_management.common;
 
 public class Constants {
 
+    public static final String ADMIN = "ADMIN";
+    public static final String ADMIN_NAME="Quản trị hệ thống";
+
     public static final Integer STATUS_ACTIVE_INT = 1;
     public static final Integer STATUS_INACTIVE_INT = 0;
 

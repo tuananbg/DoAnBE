@@ -18,8 +18,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     @Query(value = "SELECT pr FROM Project pr  WHERE " +
             "(:keyword IS NULL OR " +
-            "UPPER(pr.projectCode) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
-            "UPPER(pr.projectName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
+            "UPPER(pr.projectCode) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
+            "UPPER(pr.projectName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
             "AND pr.status = :status " +
             "ORDER BY pr.createdDate ASC")
     Page<Project> findAllByIsActiveAndKeyword(@Param("status") Integer isActive,@Param("keyword") String keyword, Pageable pageable);

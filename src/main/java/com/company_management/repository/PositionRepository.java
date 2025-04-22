@@ -27,9 +27,9 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
 
     @Query(value = "SELECT p FROM Position p  WHERE " +
             "(:keyword IS NULL  OR " +
-            "UPPER(p.positionCode) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
+            "UPPER(p.positionCode) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
 //            "UPPER(p.positionCategory.name) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
-            "UPPER(p.positionName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
+            "UPPER(p.positionName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
             "AND p.status = :status " +
             "ORDER BY p.createdDate ASC")
     Page<Position> findAllByKeyword(@Param("status") Integer isActive,@Param("keyword") String keyword, Pageable pageable);

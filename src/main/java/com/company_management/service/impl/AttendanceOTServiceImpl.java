@@ -1,20 +1,32 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.Constants;
+import com.company_management.common.enums.TableTabType;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
+import com.company_management.dto.request.attendace.RequestAttendanceOTDTO;
+import com.company_management.dto.response.attendance.ResponseAttendanceOTDTO;
+import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;
 import com.company_management.dto.AttendanceOTDTO;
 import com.company_management.entity.AttendanceOt;
 import com.company_management.dto.request.pa.SearchAttendanceOTRequest;
 import com.company_management.dto.common.DataPage;
 import com.company_management.repository.AttendanceOTRepository;
+import com.company_management.repository.EmployeeRepository;
 import com.company_management.service.AttendanceOTService;
 import com.company_management.utils.CommonUtils;
+import com.company_management.utils.mapper.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +34,31 @@ import java.io.ByteArrayInputStream;
 public class AttendanceOTServiceImpl implements AttendanceOTService {
 
     private final AttendanceOTRepository attendanceOTRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Override
-    public DataPage<AttendanceOTDTO> search(SearchAttendanceOTRequest searchOTRequest, Pageable pageable) {
-//        return attendanceOTRepository.search(searchOTRequest, pageable);
-        return null;
+    public ResponsePage<ResponseAttendanceOTDTO> getList(String keyword, RequestPage page) {
+
+        Page<AttendanceOt> attendanceOtPage = attendanceOTRepository.findAllByKeyword(keyword,page.toPageable());
+        List<ResponseAttendanceOTDTO> data = attendanceOtPage.getContent().stream()
+                .map(item -> {
+                    ResponseAttendanceOTDTO response = new ResponseAttendanceOTDTO();
+                    MapperUtils.map(item, response);
+                    if (item.getEmployee() != null) {
+                        response.setEmployeeName(item.getEmployee().getFullName());
+                    }
+                    else {
+                        response.setEmployeeName(Constants.ADMIN_NAME);
+                    }
+                    if (item.getEmployeeFollow() != null) {
+                        response.setFollowName(item.getEmployeeFollow().getFullName());
+                    }
+                    response.setTotalTime(item.getTotalTime());
+
+                    return response;
+                }).toList();
+
+        return new ResponsePage<>(data,page,attendanceOtPage.getTotalElements());
     }
 
     @Override
@@ -40,40 +72,21 @@ public class AttendanceOTServiceImpl implements AttendanceOTService {
 
     @Override
     @Transactional
-    public void createOrUpdate(AttendanceOTDTO attendanceOTDTO) {
-//        AttendanceOt attendanceOT;
-//        if (attendanceOTDTO.getAttendanceOtID() == null) {
-//            log.debug("// Them moi đơn ot");
-//            attendanceOT = new AttendanceOt();
-//            attendanceOT = attendanceOTMapper.toEntity(attendanceOTDTO);
-//            attendanceOT.setIsActive(2);
-//        } else {
-//            attendanceOT = attendanceOTRepository.findById(attendanceOTDTO.getAttendanceOtID())
-//                    .orElseThrow(() -> new AppException("ERO01", "Đơn đăng ký lịch ot không tồn tại"));
-//            log.debug("// Cap nhat đơn ot");
-//            if(!DataUtils.isNullOrEmpty(attendanceOTDTO.getStartDay())){
-//                attendanceOT.setStartDay(attendanceOTDTO.getStartDay());
-//            }
-//            if(!DataUtils.isNullOrEmpty(attendanceOTDTO.getStartTime())){
-//                attendanceOT.setStartTime(attendanceOTDTO.getStartTime());
-//            }
-//            if(!DataUtils.isNullOrEmpty(attendanceOTDTO.getEndTime())){
-//                attendanceOT.setEndTime(attendanceOTDTO.getEndTime());
-//            }
-//            if(!DataUtils.isNullOrEmpty(attendanceOTDTO.getDescriptionOt())){
-//                attendanceOT.setDescriptionOt(attendanceOTDTO.getDescriptionOt());
-//            }
-//            if(!DataUtils.isNullOrEmpty(attendanceOTDTO.getTotalTime())){
-//                attendanceOT.setTotalTime(attendanceOTDTO.getTotalTime());
-//            }
-//            if(!DataUtils.isNullOrEmpty(attendanceOTDTO.getFollowId())){
-//                attendanceOT.setFollowId(attendanceOTDTO.getFollowId());
-//            }
-//            if(!DataUtils.isNullOrEmpty(attendanceOTDTO.getIsActive())){
-//                attendanceOT.setIsActive(attendanceOTDTO.getIsActive());
-//            }
-//        }
-//        attendanceOTRepository.save(attendanceOT);
+    public void createOrUpdate(RequestAttendanceOTDTO request) {
+        AttendanceOt attendanceOT;
+        log.debug("// Them moi don OT");
+        attendanceOT = new AttendanceOt();
+        MapperUtils.map(request, attendanceOT);
+        if (request.getEmployeeCode() != null && !Constants.ADMIN.equalsIgnoreCase(request.getEmployeeCode()) ) {
+            Employee employee= employeeRepository.findByCode(request.getEmployeeCode()).orElseThrow(()-> new AppException("ERR1","Mã CBNV không tồn tại trong hệ thống"));
+            attendanceOT.setEmployee(employee);
+        }
+        if (request.getFollowCode() != null){
+            Employee follow= employeeRepository.findByCode(request.getFollowCode()).orElseThrow(()-> new AppException("ERR1","Mã CBNV không tồn tại trong hệ thống"));
+            attendanceOT.setEmployeeFollow(follow);
+        }
+        attendanceOT.setStatus(TableTabType.TODO.getCode());
+        attendanceOTRepository.save(attendanceOT);
     }
 
     @Override

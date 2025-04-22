@@ -1,4 +1,4 @@
-package com.company_management.dto.request;
+package com.company_management.dto.common;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

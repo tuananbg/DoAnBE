@@ -21,8 +21,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query(value = "SELECT t FROM Task t  WHERE " +
             "(:keyword IS NULL OR " +
-            "UPPER(t.taskCode) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
-            "UPPER(t.taskName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
+            "UPPER(t.taskCode) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
+            "UPPER(t.taskName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
             "AND t.status = :status " +
             "ORDER BY t.priority ASC")
     Page<Task> findByStatus(@Param("status") Integer status,@Param("keyword") String keyword, Pageable pageable);

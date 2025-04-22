@@ -1,9 +1,16 @@
 package com.company_management.controller.quanlychamcong;
 
+import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
+import com.company_management.common.enums.ContractStatusEnum;
 import com.company_management.dto.AttendanceOTDTO;
+import com.company_management.dto.common.BaseResponse;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
+import com.company_management.dto.request.attendace.RequestAttendanceOTDTO;
 import com.company_management.dto.request.pa.SearchAttendanceOTRequest;
+import com.company_management.dto.response.attendance.ResponseAttendanceOTDTO;
 import com.company_management.service.AttendanceOTService;
 import com.company_management.utils.CommonUtils;
 import jakarta.validation.Valid;
@@ -20,21 +27,20 @@ import java.io.ByteArrayInputStream;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${apiPrefix}/attendanceOt")
+@RequestMapping("${apiPrefix}/attendance-ot")
 public class AttendanceOTController {
 
     private final AttendanceOTService attendanceOTService;
 
-    @PostMapping("/search")
-    public ResultResp<Object> searchOT(@RequestBody SearchAttendanceOTRequest searchAttendanceOTRequest,
-                                             Pageable pageable) {
-        return ResultResp.success(attendanceOTService.search(searchAttendanceOTRequest, pageable));
+    @GetMapping("/list")
+    public BaseResponse<ResponsePage<ResponseAttendanceOTDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword, RequestPage page) {
+        return BaseResponse.ok(attendanceOTService.getList(keyword, page));
     }
 
-    @PostMapping
-    public ResultResp<Object> createOT(@Valid @RequestBody AttendanceOTDTO attendanceOTDTO) {
-        attendanceOTService.createOrUpdate(attendanceOTDTO);
-        return ResultResp.success(ErrorCode.CREATED_OK, null);
+    @PostMapping("/create")
+    public BaseResponse<Object> createOT(@Valid @RequestBody RequestAttendanceOTDTO request) {
+        attendanceOTService.createOrUpdate(request);
+        return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201,AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
     @GetMapping("/detail/{id}")
@@ -43,7 +49,7 @@ public class AttendanceOTController {
     }
 
     @PutMapping
-    public ResultResp<Object> updateOT(@Valid @RequestBody AttendanceOTDTO leaveDTO) {
+    public ResultResp<Object> updateOT(@Valid @RequestBody RequestAttendanceOTDTO leaveDTO) {
         attendanceOTService.createOrUpdate(leaveDTO);
         return ResultResp.success(ErrorCode.UPDATED_OK, null);
     }

@@ -45,5 +45,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "AND e.status = :status")
     Long countActiveEmployeesWithBirthdayInCurrentMonth(Integer status);
 
+    Optional<Employee> findByEmployeeInfoEmail(String employeeInfoEmail);
+
 
 }

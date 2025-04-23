@@ -1,7 +1,6 @@
 package com.company_management.repository;
 
 import com.company_management.entity.Account;
-import com.company_management.entity.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,8 +23,16 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Account findByAccountIgnoreCase(String account);
 
 
-//    @Query(value = "SELECT acc FROM account acc JOIN Employee e on acc.employee.id = e.id"
-//            + " WHERE (acc.status = :status) AND (e.authorStatus = :authorStatus) " +
-//            "ORDER BY UPPER(e.code)")
-//    List<Account> findAuthenticByStatus(@Param("authorStatus") Integer authorStatus, @Param("status") Integer status);
+    @Query(value = "SELECT acc FROM account acc JOIN Employee e on acc.employee.id = e.id"
+            + " WHERE ((:keyword IS NULL OR UPPER(e.code) LIKE CONCAT('%', UPPER(:keyword), '%') ESCAPE '\\' ) "
+            + " OR (:keyword IS NULL OR UPPER(e.fullName) LIKE CONCAT('%', UPPER(:keyword), '%') ESCAPE '\\' ) "
+            + " OR (:keyword IS NULL OR UPPER(e.employeeInfo.mobile) LIKE CONCAT('%', UPPER(:keyword), '%') ESCAPE '\\' ) "
+            + " OR (:keyword IS NULL OR UPPER(e.employeeInfo.email) LIKE CONCAT('%', UPPER(:keyword), '%') ESCAPE '\\' )) "
+            + " AND (acc.status = :status)"
+            + " ORDER BY UPPER(e.code) ASC")
+    Page<Account> findAllByKeywordAndStatus(@Param("keyword") String keyword, @Param("status") Integer status, Pageable pageable);
+
+    @Query(value = "SELECT acc FROM account acc Join Employee e on acc.employee.id = e.id " +
+            "WHERE e.code = :employeeCode ")
+    Optional<Account> findByEmployeeCode(@Param("employeeCode") String employeeCode);
 }

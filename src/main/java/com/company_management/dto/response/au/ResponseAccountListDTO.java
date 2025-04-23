@@ -6,18 +6,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountSearchResponse {
+public class ResponseAccountListDTO {
     private Long id;
+    private String employeeCode;
+    private String departmentName;
+    private String positionName;
     private String fullName;
     private String email;
     private Integer status;
-    private Integer active;
-    private String roles;
-    private Date createdDate;
-    private Date updatedDate;
+    // Vai tro
+    private List<AdminRoleDTO> role;
 }

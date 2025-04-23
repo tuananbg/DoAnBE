@@ -8,9 +8,16 @@ import lombok.Setter;
 public class AppException extends RuntimeException {
 
     private final String code;
+    private Object data;
 
     public AppException(String code, String message) {
         super(message);
         this.code = code;
+    }
+
+    public AppException(String code, String message, Object data) {
+        super(message);
+        this.code = code;
+        this.data = data;
     }
 }

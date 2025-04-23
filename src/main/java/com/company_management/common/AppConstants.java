@@ -4,6 +4,8 @@ public class AppConstants {
     private AppConstants() {
     }
 
+    public static final String DEFAULT_PASSWORD = "Abc@1234";
+
     /* common controller */
     public static final String GET_CODE_200 = "200";
     public static final String GET_MESSAGE_200 = "Request processed successfully";
@@ -11,6 +13,7 @@ public class AppConstants {
     public static final String CREATE_SUCCESS_MESS_201 = "Created successfully";
     public static final String UPDATE_SUCCESS_CODE_202 = "202";
     public static final String CODE_400 = "400";
+    public static final String MESS_400 = "Không thể tải dữ liệu";
     public static final String UPDATE_SUCCESS_MESS_202 = "Update successfully";
     public static final String EMPLOYEE_CREATE_SUCCESS = "Thêm mới nhân viên thành công !";
     ///  CBNV
@@ -45,6 +48,10 @@ public class AppConstants {
     //Download
     public static final String DOWNLOAD_DATA_NULL_CODE_EX01 = "EX01";
     public static final String DOWNLOAD_DATA_NULL_MESS_EX01 = "Không có dữ liệu phù hợp để tải xuống.";
+
+    /* Email Exists */
+    public static final String VALIDATE_EMAILEXISTS_CODE = "EX01";
+    public static final String VALIDATE_EMAILEXISTS_MESS = "Email đã tồn tại trên hệ thống HRM";
 
 
 }

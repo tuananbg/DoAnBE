@@ -187,4 +187,12 @@ public class CommonUtils {
         }
     }
 
+    public static String escapeLike(String keyword) {
+        if (keyword == null) return null;
+        return keyword
+                .replace("\\", "\\\\") // escape backslash trước
+                .replace("_", "\\_")   // escape underscore
+                .replace("%", "\\%");  // escape phần trăm
+    }
+
 }

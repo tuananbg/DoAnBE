@@ -38,7 +38,8 @@ public class AttendanceLeave extends BaseEntity {
     @JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "id")
     private Employee employee;
 
-    @Column(name = "REVIEWER_ID")
-    private Long reviewerId;  //người phe duyệt
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "REVIEWER_ID", referencedColumnName = "id")
+    private Employee reviewer;  //người phe duyệt
 
 }

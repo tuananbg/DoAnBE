@@ -16,11 +16,13 @@ import com.company_management.repository.EmployeeRepository;
 import com.company_management.repository.ProjectRepository;
 import com.company_management.repository.TaskRepository;
 import com.company_management.service.TaskService;
+import com.company_management.utils.CommonUtils;
 import com.company_management.utils.mapper.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,7 @@ public class TaskServiceImpl implements TaskService {
     private final ProjectRepository projectRepository;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void createTask(RequestCreateTaskDTO request) {
         checkTaskCode(request.getTaskCode());
         Task task = new Task();
@@ -51,6 +54,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public ResponsePage<ResponseListTaskDTO> getTasks(TaskStatusEnum status, String keyword, RequestPage page) {
+        keyword = CommonUtils.escapeLike(keyword);
         Page<Task> taskPage = taskRepository.findByStatus(status.getCode(),keyword,page.toPageable());
         List<ResponseListTaskDTO> data = taskPage.getContent()
                 .stream()

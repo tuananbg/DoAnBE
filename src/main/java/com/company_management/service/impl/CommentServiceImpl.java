@@ -10,6 +10,7 @@ import com.company_management.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class CommentServiceImpl implements CommentService {
     private final EmployeeRepository employeeRepository;
     private static final String ADMIN_NAME="Quản trị hệ thống";
     @Override
+    @Transactional
     public void createComment(RequestCreateCommentDTO request) {
         Comment comment = new Comment();
         comment.setTaskCode(request.getTaskCode());

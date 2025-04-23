@@ -55,6 +55,7 @@ public class WageServiceImpl implements WageService {
 
     @Override
     public ResponsePage<ResponseWageListDTO> getList(ObjectStatus status, String keyword, RequestPage page) {
+        keyword = CommonUtils.escapeLike(keyword);
         Page<Wage> wages = wageRepository.findAllByIsActive(status.getCode(), keyword, page.toPageable());
         List<ResponseWageListDTO> responseWageListDTOS = wages.getContent().stream().map(item -> {
             ResponseWageListDTO dto = new ResponseWageListDTO();

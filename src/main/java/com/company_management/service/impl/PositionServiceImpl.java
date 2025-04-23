@@ -72,6 +72,7 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public ResponsePage<ResponsePositionDTO> getListByStatus(ObjectStatus status,String keyword, RequestPage page) {
+        keyword = CommonUtils.escapeLike(keyword);
         Page<Position> positions = positionRepository.findAllByKeyword(status.getCode(),keyword,page.toPageable());
         List<ResponsePositionDTO> responsePositionDTOS = positions.getContent()
                 .stream()

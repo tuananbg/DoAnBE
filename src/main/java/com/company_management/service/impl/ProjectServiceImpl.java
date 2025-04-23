@@ -15,6 +15,7 @@ import com.company_management.utils.mapper.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final TaskRepository taskRepository;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void create(RequestProjectDTO request) {
         checkProjectCode(request.getProjectCode());
         Project project = new Project();
@@ -37,6 +39,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public List<ResponseListProjectDTO> getList() {
         List<Project> projectPage = projectRepository.findAll();
         List<ResponseListProjectDTO> data = new ArrayList<>();

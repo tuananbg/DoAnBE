@@ -62,6 +62,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResponsePage<ResponseListEmployeeDTO> findAllByKeywordAndStatus(String keyword, EmploymentStatus status, RequestPage page) {
+        keyword = CommonUtils.escapeLike(keyword);
         Page<Employee> employees = employeeRepository.findAllByKeywordAndStatus(keyword, status.getCode(), page.toPageable());
         List<ResponseListEmployeeDTO> responseEmployeeDTOList = employees.getContent()
                 .stream()

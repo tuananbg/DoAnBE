@@ -28,8 +28,13 @@ public class ResponseAttendanceLeaveDTO {
     //Nội dung
     private String description;
 
-
     private String employeeCode;
 
-    private String reviewerCode;  //người phe duyệt
+    private String employeeName;
+
+    private String reviewerCode;//người phe duyệt
+
+    private String reviewerName;
+
+    private Integer status;
 }

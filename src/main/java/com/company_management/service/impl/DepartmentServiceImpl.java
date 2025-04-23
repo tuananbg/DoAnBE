@@ -37,6 +37,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public ResponsePage<ResponseDepartmentDTO> findAllPage(ObjectStatus status, String keyword, RequestPage page) {
+        keyword = CommonUtils.escapeLike(keyword);
         Page<Department> departments = departmentRepository.findAllByIsActive(status.getCode(), keyword, page.toPageable());
         List<ResponseDepartmentDTO> departmentDTOSList = departments
                 .getContent()

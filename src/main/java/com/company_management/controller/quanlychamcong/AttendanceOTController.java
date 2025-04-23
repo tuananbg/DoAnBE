@@ -4,11 +4,13 @@ import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.common.enums.ContractStatusEnum;
+import com.company_management.common.enums.TableTabType;
 import com.company_management.dto.AttendanceOTDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.attendace.RequestAttendanceOTDTO;
+import com.company_management.dto.request.attendace.RequestUpdateAttendanceOTDTO;
 import com.company_management.dto.request.pa.SearchAttendanceOTRequest;
 import com.company_management.dto.response.attendance.ResponseAttendanceOTDTO;
 import com.company_management.service.AttendanceOTService;
@@ -32,14 +34,16 @@ public class AttendanceOTController {
 
     private final AttendanceOTService attendanceOTService;
 
-    @GetMapping("/list")
-    public BaseResponse<ResponsePage<ResponseAttendanceOTDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword, RequestPage page) {
-        return BaseResponse.ok(attendanceOTService.getList(keyword, page));
+    @GetMapping("/list/{status}")
+    public BaseResponse<ResponsePage<ResponseAttendanceOTDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword,
+                                                                       @PathVariable("status") TableTabType status,
+                                                                       RequestPage page) {
+        return BaseResponse.ok(attendanceOTService.getList(status,keyword, page));
     }
 
     @PostMapping("/create")
     public BaseResponse<Object> createOT(@Valid @RequestBody RequestAttendanceOTDTO request) {
-        attendanceOTService.createOrUpdate(request);
+        attendanceOTService.create(request);
         return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201,AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
@@ -48,19 +52,19 @@ public class AttendanceOTController {
         return ResultResp.success(ErrorCode.CREATED_OK, attendanceOTService.detailOT(id));
     }
 
-    @PutMapping
-    public ResultResp<Object> updateOT(@Valid @RequestBody RequestAttendanceOTDTO leaveDTO) {
-        attendanceOTService.createOrUpdate(leaveDTO);
+    @PutMapping("/update")
+    public ResultResp<Object> updateOT(@Valid @RequestBody RequestUpdateAttendanceOTDTO request) {
+        attendanceOTService.update(request);
         return ResultResp.success(ErrorCode.UPDATED_OK, null);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResultResp<Object> deleteOT(@PathVariable("id") Long id) {
-        attendanceOTService.deleteOT(id);
-        return ResultResp.success(ErrorCode.DELETED_OK, null);
+    @PutMapping("/complete")
+    public ResultResp<Object> complete(@Valid @RequestBody RequestUpdateAttendanceOTDTO request) {
+        attendanceOTService.complete(request);
+        return ResultResp.success(ErrorCode.UPDATED_OK, null);
     }
 
-    @PostMapping(value = "/export")
+    @PostMapping(value = "/download")
     public ResponseEntity<Object> exportExcel(@RequestBody SearchAttendanceOTRequest searchAttendanceOTRequest, Pageable pageable) {
         ByteArrayInputStream result = attendanceOTService.exportExcel(searchAttendanceOTRequest, pageable);
         HttpHeaders headers = new HttpHeaders();
@@ -69,5 +73,13 @@ public class AttendanceOTController {
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
         return new ResponseEntity<>(new InputStreamResource(result), headers, HttpStatus.OK);
     }
+
+//    @DeleteMapping("/delete/{id}")
+//    public ResultResp<Object> deleteOT(@PathVariable("id") Long id) {
+//        attendanceOTService.deleteOT(id);
+//        return ResultResp.success(ErrorCode.DELETED_OK, null);
+//    }
+
+
 
 }

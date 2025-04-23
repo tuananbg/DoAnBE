@@ -5,6 +5,7 @@ import com.company_management.common.enums.ContractType;
 import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
+import com.company_management.utils.CommonUtils;
 import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.request.RequestEmployeeContractDTO;
 import com.company_management.dto.response.pa.ResponseContractListDTO;
@@ -61,6 +62,7 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
 
     @Override
     public ResponsePage<ResponseContractListDTO> getList(ContractStatusEnum status, String keyword, RequestPage page) {
+        keyword = CommonUtils.escapeLike(keyword);
         Page<EmployeeContracts> employeeContracts = employeeContractRepository.findAllByIsActive(status.getValue(), keyword, page.toPageable());
         List<ResponseContractListDTO> responseContractListDTOS = employeeContracts
                 .getContent()

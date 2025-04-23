@@ -4,10 +4,12 @@ import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.common.enums.AttendanceLeaveStatus;
 import com.company_management.common.enums.EmploymentStatus;
+import com.company_management.common.enums.TableTabType;
 import com.company_management.dto.AttendanceLeaveDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
+import com.company_management.dto.request.attendace.RequestAttendanceLeaveDTO;
 import com.company_management.dto.request.attendace.SearchLeaveRequest;
 import com.company_management.dto.response.attendance.ResponseAttendanceLeaveDTO;
 import com.company_management.service.AttendanceLeaveService;
@@ -27,21 +29,21 @@ import java.io.ByteArrayInputStream;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${apiPrefix}/leave")
+@RequestMapping("${apiPrefix}/attendance-leave")
 public class AttendanceLeaveController {
 
     private final AttendanceLeaveService attendanceLeaveService;
 
     @GetMapping("/list/{status}")
     public BaseResponse<ResponsePage<ResponseAttendanceLeaveDTO>>  searchLeave(@RequestParam(name = "keyword", required = false) String keyword,
-                                                                               @PathVariable("status") AttendanceLeaveStatus status,
+                                                                               @PathVariable("status") TableTabType status,
                                                                                @ModelAttribute @Valid RequestPage page) {
         return BaseResponse.ok(attendanceLeaveService.search(status,keyword, page));
     }
 
-    @PostMapping
-    public ResultResp<Object> createLeave(@Valid @RequestBody AttendanceLeaveDTO leaveDTO) {
-        attendanceLeaveService.createOrUpdate(leaveDTO);
+    @PostMapping("/create")
+    public ResultResp<Object> createLeave(@Valid @RequestBody RequestAttendanceLeaveDTO leaveDTO) {
+        attendanceLeaveService.create(leaveDTO);
         return ResultResp.success(ErrorCode.CREATED_OK, null);
     }
 
@@ -50,11 +52,11 @@ public class AttendanceLeaveController {
         return ResultResp.success(ErrorCode.CREATED_OK, attendanceLeaveService.detailLeave(id));
     }
 
-    @PutMapping
-    public ResultResp<Object> updateLeave(@Valid @RequestBody AttendanceLeaveDTO leaveDTO) {
-        attendanceLeaveService.createOrUpdate(leaveDTO);
-        return ResultResp.success(ErrorCode.UPDATED_OK, null);
-    }
+//    @PutMapping
+//    public ResultResp<Object> updateLeave(@Valid @RequestBody AttendanceLeaveDTO leaveDTO) {
+//        attendanceLeaveService.update(leaveDTO);
+//        return ResultResp.success(ErrorCode.UPDATED_OK, null);
+//    }
 
     @DeleteMapping("/delete/{id}")
     public ResultResp<Object> deleteLeave(@PathVariable("id") Long id) {

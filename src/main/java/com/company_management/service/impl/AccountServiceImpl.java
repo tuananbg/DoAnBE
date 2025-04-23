@@ -22,6 +22,7 @@ import com.company_management.dto.request.pa.UserDetailRequest;
 import com.company_management.dto.request.pa.UserSearchRequest;
 import com.company_management.repository.*;
 import com.company_management.service.AccountService;
+import com.company_management.utils.CommonUtils;
 import com.company_management.utils.mapper.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -203,6 +204,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ResponsePage<ResponseAccountListDTO> getList(AccountStatusEnum status, String keyword, RequestPage page) {
+        keyword = CommonUtils.escapeLike(keyword);
         Page<Account> accountPage= accountRepository.findAllByKeywordAndStatus(keyword,status.getCode(),page.toPageable());
         List<ResponseAccountListDTO> data = accountPage.getContent().stream().map(
                 item -> {

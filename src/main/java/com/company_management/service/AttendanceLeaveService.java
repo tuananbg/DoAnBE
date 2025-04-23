@@ -1,9 +1,11 @@
 package com.company_management.service;
 
 import com.company_management.common.enums.AttendanceLeaveStatus;
+import com.company_management.common.enums.TableTabType;
 import com.company_management.dto.AttendanceLeaveDTO;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
+import com.company_management.dto.request.attendace.RequestAttendanceLeaveDTO;
 import com.company_management.dto.request.attendace.SearchLeaveRequest;
 import com.company_management.dto.common.DataPage;
 import com.company_management.dto.response.attendance.ResponseAttendanceLeaveDTO;
@@ -13,11 +15,11 @@ import java.io.ByteArrayInputStream;
 
 public interface AttendanceLeaveService {
 
-    ResponsePage<ResponseAttendanceLeaveDTO> search(AttendanceLeaveStatus status, String keyword, RequestPage page);
+    ResponsePage<ResponseAttendanceLeaveDTO> search(TableTabType status, String keyword, RequestPage page);
 
     AttendanceLeaveDTO detailLeave(Long id);
 
-    void createOrUpdate(AttendanceLeaveDTO leaveDTO);
+    void create(RequestAttendanceLeaveDTO request);
 
     void deleteLeave(Long id);
 

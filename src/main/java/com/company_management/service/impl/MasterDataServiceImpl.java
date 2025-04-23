@@ -12,6 +12,7 @@ import com.company_management.service.MasterDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class MasterDataServiceImpl implements MasterDataService {
     private final PositionCategoryRepository positionCategoryRepository;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void createJobGroup(RequestMasterDataDTO request) {
         if (jobGroupRepository.existsByCode(request.getCode())) {
             throw new AppException("400","Mã đã tồn tại");
@@ -45,6 +47,7 @@ public class MasterDataServiceImpl implements MasterDataService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void createPositionCategory(RequestMasterDataDTO request) {
         if (positionCategoryRepository.existsByCode(request.getCode())) {
             throw new AppException("400","Mã đã tồn tại");

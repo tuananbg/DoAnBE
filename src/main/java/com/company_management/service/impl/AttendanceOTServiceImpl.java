@@ -5,6 +5,7 @@ import com.company_management.common.enums.TableTabType;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.attendace.RequestAttendanceOTDTO;
+import com.company_management.dto.request.attendace.RequestUpdateAttendanceOTDTO;
 import com.company_management.dto.response.attendance.ResponseAttendanceOTDTO;
 import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;
@@ -37,18 +38,20 @@ public class AttendanceOTServiceImpl implements AttendanceOTService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public ResponsePage<ResponseAttendanceOTDTO> getList(String keyword, RequestPage page) {
-
-        Page<AttendanceOt> attendanceOtPage = attendanceOTRepository.findAllByKeyword(keyword,page.toPageable());
+    public ResponsePage<ResponseAttendanceOTDTO> getList(TableTabType status,String keyword, RequestPage page) {
+        keyword = CommonUtils.escapeLike(keyword);
+        Page<AttendanceOt> attendanceOtPage = attendanceOTRepository.findAllByKeyword(status.getCode(),keyword,page.toPageable());
         List<ResponseAttendanceOTDTO> data = attendanceOtPage.getContent().stream()
                 .map(item -> {
                     ResponseAttendanceOTDTO response = new ResponseAttendanceOTDTO();
                     MapperUtils.map(item, response);
                     if (item.getEmployee() != null) {
                         response.setEmployeeName(item.getEmployee().getFullName());
+                        response.setEmployeeCode(item.getEmployee().getCode());
                     }
                     else {
                         response.setEmployeeName(Constants.ADMIN_NAME);
+                        response.setEmployeeCode(Constants.ADMIN);
                     }
                     if (item.getEmployeeFollow() != null) {
                         response.setFollowName(item.getEmployeeFollow().getFullName());
@@ -72,7 +75,7 @@ public class AttendanceOTServiceImpl implements AttendanceOTService {
 
     @Override
     @Transactional
-    public void createOrUpdate(RequestAttendanceOTDTO request) {
+    public void create(RequestAttendanceOTDTO request) {
         AttendanceOt attendanceOT;
         log.debug("// Them moi don OT");
         attendanceOT = new AttendanceOt();
@@ -87,6 +90,20 @@ public class AttendanceOTServiceImpl implements AttendanceOTService {
         }
         attendanceOT.setStatus(TableTabType.TODO.getCode());
         attendanceOTRepository.save(attendanceOT);
+    }
+
+    @Override
+    public void update(RequestUpdateAttendanceOTDTO request) {
+        AttendanceOt attendanceOt = attendanceOTRepository.findById(request.getId()).orElseThrow(()->new AppException("ERR01","Đơn xin tăng ca không tồn tại."));
+        MapperUtils.mapOnlyNotNullProperty(request,attendanceOt);
+        attendanceOTRepository.save(attendanceOt);
+    }
+
+    @Override
+    public void complete(RequestUpdateAttendanceOTDTO request) {
+        AttendanceOt attendanceOt = attendanceOTRepository.findById(request.getId()).orElseThrow(()->new AppException("ERR01","Đơn xin tăng ca không tồn tại."));
+        attendanceOt.setStatus(request.getStatus());
+        attendanceOTRepository.save(attendanceOt);
     }
 
     @Override

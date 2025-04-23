@@ -1,9 +1,14 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.AppConstants;
+import com.company_management.common.Constants;
 import com.company_management.common.enums.AttendanceLeaveStatus;
+import com.company_management.common.enums.TableTabType;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
+import com.company_management.dto.request.attendace.RequestAttendanceLeaveDTO;
 import com.company_management.dto.response.attendance.ResponseAttendanceLeaveDTO;
+import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;
 import com.company_management.dto.AttendanceLeaveDTO;
 import com.company_management.entity.AttendanceLeave;
@@ -11,17 +16,21 @@ import com.company_management.dto.request.attendace.SearchLeaveRequest;
 import com.company_management.repository.AttendanceLeaveRepository;
 import com.company_management.repository.AccountRepository;
 import com.company_management.repository.EmployeeInfoRepository;
+import com.company_management.repository.EmployeeRepository;
 import com.company_management.service.AttendanceLeaveService;
 import com.company_management.service.EmailService;
 import com.company_management.utils.CommonUtils;
+import com.company_management.utils.mapper.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.ITemplateEngine;
 
 import java.io.ByteArrayInputStream;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,19 +38,32 @@ import java.io.ByteArrayInputStream;
 public class AttendanceLeaveServiceImpl implements AttendanceLeaveService {
 
     private final AttendanceLeaveRepository attendanceLeaveRepository;
-
-    private final AccountRepository accountRepository;
-
-    private final EmployeeInfoRepository employeeInfoRepository;
-
-    private final EmailService emailService;
-
-    private final ITemplateEngine templateEngine;
+    private final EmployeeRepository employeeRepository;
 
 
     @Override
-    public ResponsePage<ResponseAttendanceLeaveDTO> search(AttendanceLeaveStatus status, String keyword, RequestPage page) {
-        return null;
+    public ResponsePage<ResponseAttendanceLeaveDTO> search(TableTabType status, String keyword, RequestPage page) {
+        keyword = CommonUtils.escapeLike(keyword);
+        Page<AttendanceLeave> attendanceLeaveDTOPage = attendanceLeaveRepository.findAllByKeyword(status.getCode(),keyword,page.toPageable());
+        List<ResponseAttendanceLeaveDTO> data = attendanceLeaveDTOPage.getContent().stream().map(item-> {
+            ResponseAttendanceLeaveDTO dto = new ResponseAttendanceLeaveDTO();
+            MapperUtils.map(item,dto);
+            if (item.getEmployee() != null) {
+                dto.setEmployeeName(item.getEmployee().getFullName());
+                dto.setEmployeeCode(item.getEmployee().getCode());
+            }
+            else {
+                dto.setEmployeeName(Constants.ADMIN_NAME);
+                dto.setEmployeeCode(Constants.ADMIN);
+            }
+            if (item.getReviewer() != null) {
+                dto.setReviewerName(item.getReviewer().getFullName());
+                dto.setReviewerCode(item.getReviewer().getCode());
+            }
+            dto.setTotalTime(item.getTotalTime());
+            return dto;
+        }).toList();
+        return new ResponsePage<>(data,page,attendanceLeaveDTOPage.getTotalElements());
     }
 
     @Override
@@ -55,69 +77,20 @@ public class AttendanceLeaveServiceImpl implements AttendanceLeaveService {
 
     @Override
     @Transactional
-    public void createOrUpdate(AttendanceLeaveDTO attendanceLeaveDTO) {
-//        AttendanceLeave attendanceLeave;
-//        if (attendanceLeaveDTO.getLeaveID() == null) {
-//            log.debug("// Them moi đơn nghỉ phép");
-//            attendanceLeave = new AttendanceLeave();
-//            attendanceLeave = attendanceLeaveMapper.toEntity(attendanceLeaveDTO);
-//            attendanceLeave.setIsActive(2);
-//            //gửi mail
-//            UserCustom userCustom = userCustomRepository.findByUserDetailId(attendanceLeaveDTO.getReviewerId()).orElseThrow(
-//                    () -> new AppException("ERR01", "Không tìm thấy tài khoản người phê duyệt!")
-//            );
-//            AttendanceLeaveDTO dto = attendanceLeaveMapper.toDto(attendanceLeave);
-//            UserDetail userDetail = employeeInfoRepository.findById(attendanceLeave.getReviewerId()).orElseThrow(
-//                    () -> new AppException("ERR01", "Không tìm thấy tài khoản người phê duyệt!")
-//            );
-//            UserDetail userDetail2 = employeeInfoRepository.findById(attendanceLeave.getTrackerId()).orElseThrow(
-//                    () -> new AppException("ERR01", "Không tìm thấy tài khoản người theo dõi!")
-//            );
-//            UserDetail userDetail3 = employeeInfoRepository.findById(attendanceLeave.getEmployeeId()).orElseThrow(
-//                    () -> new AppException("ERR01", "Không tìm thấy tài khoản người gửi đơn!")
-//            );
-//            dto.setReviewerName(userDetail.getEmployeeName());
-//            dto.setTrackerName(userDetail2.getEmployeeName());
-//            dto.setEmployeeName(userDetail3.getEmployeeName());
-//            dto.setStartDayConvert(DateTimeUtils.convertDateTimeToString(dto.getStartDay(), "dd/MM/yyyy"));
-//            dto.setEndDayConvert(DateTimeUtils.convertDateTimeToString(dto.getEndDay(), "dd/MM/yyyy"));
-//            Map<String, Object> params = LogisticsMailUtils.sendMailToAttendanceLeave(dto);
-//            Context context = new Context();
-//            context.setVariables(params);
-//            MailRequest mailRequest = MailRequest.builder()
-//                    .toMail(userCustom.getEmail())
-//                    .html(true)
-//                    .title("Công ty cổ phần truyền thông và dịch vụ Nodo")
-//                    .content(templateEngine.process(MailRequest.ATTENDANCE_LEAVE_PROVIDER_TEMPLATE, context))
-//                    .build();
-//            emailService.send(mailRequest);
-//        } else {
-//            attendanceLeave = attendanceLeaveRepository.findById(attendanceLeaveDTO.getLeaveID())
-//                    .orElseThrow(() -> new AppException("ERO01", "Đơn nghỉ phép không tồn tại"));
-//            log.debug("// Cap nhat đơn nghỉ phép");
-//            if(!DataUtils.isNullOrEmpty(attendanceLeaveDTO.getLeaveCategory())){
-//                attendanceLeave.setLeaveCategory(attendanceLeaveDTO.getLeaveCategory());
-//            }
-//            if(!DataUtils.isNullOrEmpty(attendanceLeaveDTO.getTrackerId())){
-//                attendanceLeave.setTrackerId(attendanceLeaveDTO.getTrackerId());
-//            }
-//            if(!DataUtils.isNullOrEmpty(attendanceLeaveDTO.getReviewerId())){
-//                attendanceLeave.setReviewerId(attendanceLeaveDTO.getReviewerId());
-//            }
-//            if(!DataUtils.isNullOrEmpty(attendanceLeaveDTO.getDescription())){
-//                attendanceLeave.setDescription(attendanceLeaveDTO.getDescription());
-//            }
-//            if(!DataUtils.isNullOrEmpty(attendanceLeaveDTO.getStartDay())){
-//                attendanceLeave.setStartDay(attendanceLeaveDTO.getStartDay());
-//            }
-//            if(!DataUtils.isNullOrEmpty(attendanceLeaveDTO.getEndDay())){
-//                attendanceLeave.setEndDay(attendanceLeaveDTO.getEndDay());
-//            }
-//            if(!DataUtils.isNullOrEmpty(attendanceLeaveDTO.getIsActive())){
-//                attendanceLeave.setIsActive(attendanceLeaveDTO.getIsActive());
-//            }
-//        }
-//        attendanceLeaveRepository.save(attendanceLeave);
+    public void create(RequestAttendanceLeaveDTO request) {
+        AttendanceLeave attendanceLeave = new AttendanceLeave();
+        log.debug("// Them moi đơn nghỉ phép");
+        MapperUtils.map(request, attendanceLeave);
+        if (!Constants.ADMIN.equalsIgnoreCase(request.getEmployeeCode())) {
+            Employee employee = employeeRepository.findByCode(request.getEmployeeCode())
+                    .orElseThrow(()->new AppException(AppConstants.EMPLOYEE_CODE_001,AppConstants.EMPLOYEE_MESS_001));
+            attendanceLeave.setEmployee(employee);
+        }
+        Employee reviewer = employeeRepository.findByCode(request.getReviewerCode())
+                .orElseThrow(()->new AppException(AppConstants.EMPLOYEE_CODE_001,AppConstants.EMPLOYEE_MESS_001));
+        attendanceLeave.setReviewer(reviewer);
+        attendanceLeave.setStatus(TableTabType.TODO.getCode());
+        attendanceLeaveRepository.save(attendanceLeave);
     }
 
     @Override

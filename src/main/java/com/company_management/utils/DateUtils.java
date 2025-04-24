@@ -13,7 +13,7 @@ import java.util.List;
 
 @UtilityClass
 public class DateUtils {
-    private static ZoneId localZoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+    private static final ZoneId localZoneId = ZoneId.of("Asia/Ho_Chi_Minh");
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d/M/yyyy");
     private static final SimpleDateFormat INPUT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 

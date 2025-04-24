@@ -13,7 +13,6 @@ import com.company_management.exception.AppException;
 import com.company_management.dto.AttendanceOTDTO;
 import com.company_management.entity.AttendanceOt;
 import com.company_management.dto.request.pa.SearchAttendanceOTRequest;
-import com.company_management.dto.common.DataPage;
 import com.company_management.repository.AttendanceOTRepository;
 import com.company_management.repository.EmployeeRepository;
 import com.company_management.service.AttendanceOTService;
@@ -28,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

@@ -20,8 +20,4 @@ public enum EmailTemplate {
         return this.subjects;
     }
 
-    public String getTemplate() {
-        return this.template;
-    }
-
 }

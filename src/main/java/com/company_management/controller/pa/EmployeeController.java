@@ -18,7 +18,6 @@ import com.company_management.dto.response.pa.employee.ResponseListEmployeeDTO;
 import com.company_management.service.EmployeeService;
 import com.company_management.service.common.JasperReportService;
 import com.company_management.utils.CommonUtils;
-import com.company_management.utils.LogisticsMailUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -154,12 +153,13 @@ public class EmployeeController {
 //        TemplateEngine templateEngine = new TemplateEngine();
 //        templateEngine.setTemplateResolver(templateResolver);
 
-        Map<String, Object> params = LogisticsMailUtils.sendExportPdfEmployee(employeeService.exportPdf(userDetailId));
-
-        Context context = new Context();
-        context.setVariables(params);
-        return templateEngine.process("export_pdf_employee.html", context);
+//        Map<String, Object> params = LogisticsMailUtils.sendExportPdfEmployee(employeeService.exportPdf(userDetailId));
+//
+//        Context context = new Context();
+//        context.setVariables(params);
+//        return templateEngine.process("export_pdf_employee.html", context);
 //        return templateEngine.process("export_pdf_employee", context);
+        return null;
     }
 
     @GetMapping("total/{code}")

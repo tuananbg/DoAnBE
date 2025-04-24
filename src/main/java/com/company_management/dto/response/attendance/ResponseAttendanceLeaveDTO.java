@@ -14,6 +14,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class ResponseAttendanceLeaveDTO {
 
+    private long id;
+
     private String leaveCategory; // loại nghỉ phép nghỉ tính phép, nghỉ không tính phép)
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")

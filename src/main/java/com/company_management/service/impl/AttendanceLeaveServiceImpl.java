@@ -2,7 +2,6 @@ package com.company_management.service.impl;
 
 import com.company_management.common.AppConstants;
 import com.company_management.common.Constants;
-import com.company_management.common.enums.AttendanceLeaveStatus;
 import com.company_management.common.enums.EmailTemplate;
 import com.company_management.common.enums.TableTabType;
 import com.company_management.dto.common.RequestPage;
@@ -15,11 +14,8 @@ import com.company_management.dto.AttendanceLeaveDTO;
 import com.company_management.entity.AttendanceLeave;
 import com.company_management.dto.request.attendace.SearchLeaveRequest;
 import com.company_management.repository.AttendanceLeaveRepository;
-import com.company_management.repository.AccountRepository;
-import com.company_management.repository.EmployeeInfoRepository;
 import com.company_management.repository.EmployeeRepository;
 import com.company_management.service.AttendanceLeaveService;
-import com.company_management.service.EmailService;
 import com.company_management.service.common.SendEmailService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.mapper.MapperUtils;
@@ -29,7 +25,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.ITemplateEngine;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;

@@ -1,6 +1,7 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.Constants;
+import com.company_management.common.enums.EmailTemplate;
 import com.company_management.common.enums.TableTabType;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
@@ -16,6 +17,7 @@ import com.company_management.dto.common.DataPage;
 import com.company_management.repository.AttendanceOTRepository;
 import com.company_management.repository.EmployeeRepository;
 import com.company_management.service.AttendanceOTService;
+import com.company_management.service.common.SendEmailService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.mapper.MapperUtils;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,7 @@ public class AttendanceOTServiceImpl implements AttendanceOTService {
 
     private final AttendanceOTRepository attendanceOTRepository;
     private final EmployeeRepository employeeRepository;
+    private final SendEmailService sendEmailService;
 
     @Override
     public ResponsePage<ResponseAttendanceOTDTO> getList(TableTabType status,String keyword, RequestPage page) {
@@ -90,6 +93,8 @@ public class AttendanceOTServiceImpl implements AttendanceOTService {
         }
         attendanceOT.setStatus(TableTabType.TODO.getCode());
         attendanceOTRepository.save(attendanceOT);
+
+        sendEmailService.sendEmail(request.getFollowCode(), EmailTemplate.TEMPLATE_ATTENDANCE_OT,attendanceOT.getId() );
     }
 
     @Override

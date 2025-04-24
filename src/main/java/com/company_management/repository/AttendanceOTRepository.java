@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface AttendanceOTRepository extends JpaRepository<AttendanceOt, Long> {
 
@@ -23,9 +25,5 @@ public interface AttendanceOTRepository extends JpaRepository<AttendanceOt, Long
             + "AND (aot.status = :status)"+
             "ORDER BY aot.createdDate ASC")
     Page<AttendanceOt> findAllByKeyword(@Param("status") Integer status,@Param("keyword") String keyword, Pageable pageable);
-
-
-
-
 
 }

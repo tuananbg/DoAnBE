@@ -48,6 +48,12 @@ public class DateUtils {
         return Date.from(localDateTime.atStartOfDay(localZoneId).toInstant());
     }
 
+    public static String getTime(Date date) {
+        if (date == null) return "";
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        return formatter.format(date);
+    }
+
     public static Date plusMonths(Date input, long month) {
         LocalDateTime localIn = convertToLocalDateTime(input);
         return convertToDate(localIn.plusMonths(month));

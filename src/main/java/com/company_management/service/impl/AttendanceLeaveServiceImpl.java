@@ -3,6 +3,7 @@ package com.company_management.service.impl;
 import com.company_management.common.AppConstants;
 import com.company_management.common.Constants;
 import com.company_management.common.enums.AttendanceLeaveStatus;
+import com.company_management.common.enums.EmailTemplate;
 import com.company_management.common.enums.TableTabType;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
@@ -19,6 +20,7 @@ import com.company_management.repository.EmployeeInfoRepository;
 import com.company_management.repository.EmployeeRepository;
 import com.company_management.service.AttendanceLeaveService;
 import com.company_management.service.EmailService;
+import com.company_management.service.common.SendEmailService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.mapper.MapperUtils;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +41,7 @@ public class AttendanceLeaveServiceImpl implements AttendanceLeaveService {
 
     private final AttendanceLeaveRepository attendanceLeaveRepository;
     private final EmployeeRepository employeeRepository;
+    private final SendEmailService sendEmailService;
 
 
     @Override
@@ -91,6 +94,9 @@ public class AttendanceLeaveServiceImpl implements AttendanceLeaveService {
         attendanceLeave.setReviewer(reviewer);
         attendanceLeave.setStatus(TableTabType.TODO.getCode());
         attendanceLeaveRepository.save(attendanceLeave);
+
+        //gửi mail
+        sendEmailService.sendEmail(reviewer.getCode(), EmailTemplate.TEMPLATE_ATTENDANCE_LEAVE,attendanceLeave.getId());
     }
 
     @Override

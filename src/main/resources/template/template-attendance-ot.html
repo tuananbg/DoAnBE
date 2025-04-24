@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            background-color: #4a90e2;
+            padding: 12px 20px;
+            border-radius: 5px 5px 0 0;
+        }
+
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 0 0 5px 5px;
+            overflow: hidden;
+        }
+
+        td {
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f6fc;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<p class="title">Thông báo đơn xin OT</p>
+<p th:text="'Kính gửi: ' + ${followerName}"></p>
+
+<table>
+    <tr>
+        <td>Người gửi đơn</td>
+        <td th:text="${employeeName}"></td>
+    </tr>
+    <tr>
+        <td>Mã người gửi đơn</td>
+        <td th:text="${employeeCode}"></td>
+    </tr>
+    <tr>
+        <td>Ngày chấm công OT</td>
+        <td th:text="${startDay}"></td>
+    </tr>
+    <tr>
+        <td>Thời gian bắt đầu</td>
+        <td th:text="${startTime}"></td>
+    </tr>
+    <tr>
+        <td>Thời gian kết thúc</td>
+        <td th:text="${endTime}"></td>
+    </tr>
+    <tr>
+        <td>Trạng thái</td>
+        <td>Chờ duyệt</td>
+    </tr>
+    <tr>
+        <td>Nội dung OT</td>
+        <td th:text="${descriptionOt}"></td>
+    </tr>
+</table>
+
+<p class="footer">Trân trọng cảm ơn!</p>
+
+</body>
+</html>

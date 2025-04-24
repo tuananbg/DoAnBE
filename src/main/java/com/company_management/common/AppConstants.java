@@ -53,5 +53,8 @@ public class AppConstants {
     public static final String VALIDATE_EMAILEXISTS_CODE = "EX01";
     public static final String VALIDATE_EMAILEXISTS_MESS = "Email đã tồn tại trên hệ thống HRM";
 
+    public static final String EMAIL_SEND_CODE_FL1 = "FE1";
+    public static final String EMAIL_SEND_MESS_FL1 = "Gửi email thất bại. Yêu cầu kiểm tra lại dữ liệu đầu vào!";
+
 
 }

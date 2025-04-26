@@ -22,6 +22,7 @@ import com.company_management.dto.request.pa.UserDetailRequest;
 import com.company_management.dto.request.pa.UserSearchRequest;
 import com.company_management.repository.*;
 import com.company_management.service.AccountService;
+import com.company_management.service.EmployeeService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.mapper.MapperUtils;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,7 @@ public class AccountServiceImpl implements AccountService {
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final EmployeeService employeeService;
 
     private static final String USER_CODE ="USER";
 
@@ -159,8 +161,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<String> addEmployeeRole(RequestAddRoleDTO request) {
         List<String> result = new ArrayList<>();
-        Employee employee = employeeRepository.findByCode(request.getEmployeeCode())
-                .orElseThrow(() -> new AppException("ERR01","Nhân viên không tồn tại"));
+        Employee employee = employeeService.getEmployee(request.getEmployeeCode());
         employee.getRoles().forEach(r -> result.add(r.getCode()));
         if (request.getRoleCodes() == null || request.getRoleCodes().isEmpty()) {
             throw new AppException("ERR03","Vui lòng chọn ít nhất 1 vai trò !");
@@ -178,8 +179,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Boolean removeEmployeeRole(String employeeCode, String RoleCode) {
 
-        Employee employee = employeeRepository.findByCode(employeeCode).orElseThrow(() -> new AppException("ERR01","Nhân viên không tồn tại"));
-
+        Employee employee = employeeService.getEmployee(employeeCode);
         Role role = roleRepository.findByCode(RoleCode).orElseThrow(() -> new AppException("ERR04","Vai trò không tồn tại"));
         Set<Role> roleList = employee.getRoles();
 

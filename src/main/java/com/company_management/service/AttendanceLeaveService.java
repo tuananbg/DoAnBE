@@ -6,6 +6,8 @@ import com.company_management.dto.AttendanceLeaveDTO;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.attendace.RequestAttendanceLeaveDTO;
+import com.company_management.dto.request.attendace.RequestUpdateAttendanceLeaveDTO;
+import com.company_management.dto.request.attendace.RequestUpdateAttendanceOTDTO;
 import com.company_management.dto.request.attendace.SearchLeaveRequest;
 import com.company_management.dto.common.DataPage;
 import com.company_management.dto.response.attendance.ResponseAttendanceLeaveDTO;
@@ -21,9 +23,9 @@ public interface AttendanceLeaveService {
 
     void create(RequestAttendanceLeaveDTO request);
 
-    void deleteLeave(Long id);
+    void update(RequestUpdateAttendanceLeaveDTO request);
 
     ByteArrayInputStream exportExcel(SearchLeaveRequest searchLeaveRequest, Pageable pageable);
 
-
+    void complete(RequestUpdateAttendanceLeaveDTO request);
 }

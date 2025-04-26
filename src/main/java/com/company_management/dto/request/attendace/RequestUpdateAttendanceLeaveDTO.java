@@ -7,21 +7,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestUpdateAttendanceOTDTO {
+public class RequestUpdateAttendanceLeaveDTO {
     private long id;
+    // loại nghỉ phép nghỉ tính phép, nghỉ không tính phép)
+    private String leaveCategory;
+    private String employeeCode;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-    private Date startDay;  // ngày chấm công ot
+    private Date startDay; // tu ngày
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-    private Date startTime; //thời gian bắt đầu
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-    private Date endTime; //thời gian kết thúc
-    private Double totalTime;
-    private String followCode;
-    private String descriptionOt;
-    private Integer status;
+    private Date endDay;  //đến ngày
+    private String description; //Nội dung
+    private String reviewerCode;
+    private Integer status;  // trạng thái đã duyệt, chờ duyệt, từ chối
 }

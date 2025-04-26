@@ -15,6 +15,7 @@ import com.company_management.exception.AppException;
 import com.company_management.repository.EmployeeRepository;
 import com.company_management.repository.ProjectRepository;
 import com.company_management.repository.TaskRepository;
+import com.company_management.service.EmployeeService;
 import com.company_management.service.TaskService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.mapper.MapperUtils;
@@ -34,6 +35,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final EmployeeRepository employeeRepository;
     private final ProjectRepository projectRepository;
+    private final EmployeeService employeeService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -41,8 +43,7 @@ public class TaskServiceImpl implements TaskService {
         checkTaskCode(request.getTaskCode());
         Task task = new Task();
         MapperUtils.map(request,task);
-        Employee employee = employeeRepository.findByCode(request.getEmployeeCode())
-                .orElseThrow(()-> new AppException("ER001","Cán bộ nhân viên không tồn tại trong hệ thống!"));
+        Employee employee = employeeService.getEmployee(request.getEmployeeCode());
         task.setEmployee(employee);
 
         Project project = projectRepository.findByProjectCode(request.getProjectCode())

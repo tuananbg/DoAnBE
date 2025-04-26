@@ -11,6 +11,7 @@ import com.company_management.dto.response.TotalEmployeeDTO;
 import com.company_management.dto.response.pa.employee.ResponseEmployeeDetailDTO;
 import com.company_management.dto.response.pa.employee.ResponseEmployeeSelectDTO;
 import com.company_management.dto.response.pa.employee.ResponseListEmployeeDTO;
+import com.company_management.entity.Employee;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,4 +44,6 @@ public interface EmployeeService {
     TotalEmployeeDTO totalEmployee(String code);
 
     List<ResponseEmployeeSelectDTO> selectEmployee();
+
+    Employee getEmployee(String code);
 }

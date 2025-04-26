@@ -57,12 +57,12 @@ public class AttendanceOTController {
         attendanceOTService.update(request);
         return ResultResp.success(ErrorCode.UPDATED_OK, null);
     }
-
     @PutMapping("/complete")
     public ResultResp<Object> complete(@Valid @RequestBody RequestUpdateAttendanceOTDTO request) {
         attendanceOTService.complete(request);
         return ResultResp.success(ErrorCode.UPDATED_OK, null);
     }
+
 
     @PostMapping(value = "/download")
     public ResponseEntity<Object> exportExcel(@RequestBody SearchAttendanceOTRequest searchAttendanceOTRequest, Pageable pageable) {

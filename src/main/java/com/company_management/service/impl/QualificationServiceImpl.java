@@ -6,6 +6,7 @@ import com.company_management.dto.request.pa.RequestQualificationDTO;
 import com.company_management.dto.response.pa.ResponseQualificationDTO;
 import com.company_management.entity.Employee;
 import com.company_management.repository.EmployeeRepository;
+import com.company_management.service.EmployeeService;
 import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.response.pa.ResponseQualificationEmployeeDetailDTO;
 import com.company_management.exception.AppException;
@@ -30,6 +31,7 @@ public class QualificationServiceImpl implements QualificationService {
 
     private final QualificationRepository qualificationRepository;
     private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
 
     @Override
     @Transactional(readOnly = true)
@@ -58,7 +60,7 @@ public class QualificationServiceImpl implements QualificationService {
         if (request.getEmployeeCode() == null){
             throw new AppException("ERR01", "MÃ CBNV khong đuược để trống");
         }
-        Employee employee = employeeRepository.findByCode(request.getEmployeeCode()).orElseThrow(()->new AppException("ERR02","Mã CBNV không tồn tại trong hệ thộng"));
+        Employee employee = employeeService.getEmployee(request.getEmployeeCode());
         Qualification qualification = new Qualification();
         MapperUtils.map(request, qualification);
         qualification.setEmployee(employee);

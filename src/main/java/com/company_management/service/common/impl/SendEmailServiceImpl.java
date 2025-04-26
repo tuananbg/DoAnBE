@@ -11,6 +11,7 @@ import com.company_management.exception.AppException;
 import com.company_management.repository.AttendanceLeaveRepository;
 import com.company_management.repository.AttendanceOTRepository;
 import com.company_management.repository.EmployeeRepository;
+import com.company_management.service.EmployeeService;
 import com.company_management.service.common.SendEmailService;
 import com.company_management.utils.DateUtils;
 import jakarta.mail.internet.MimeMessage;
@@ -35,6 +36,7 @@ public class SendEmailServiceImpl implements SendEmailService {
     private final JavaMailSender emailSender;
     private final AttendanceLeaveRepository attendanceLeaveRepository;
     private final AttendanceOTRepository attendanceOTRepository;
+    private final EmployeeService employeeService;
 
     @Override
     public void sendEmail(String code, EmailTemplate emailTemplate, long id) {

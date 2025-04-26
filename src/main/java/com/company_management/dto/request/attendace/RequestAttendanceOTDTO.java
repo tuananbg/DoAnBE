@@ -1,5 +1,6 @@
 package com.company_management.dto.request.attendace;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.util.Date;
@@ -10,8 +11,11 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class RequestAttendanceOTDTO {
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date startDay;  // ngày chấm công ot
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date startTime; //thời gian bắt đầu
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date endTime; //thời gian kết thúc
     private Double totalTime;
     private String employeeCode;

@@ -117,8 +117,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResponseEmployeeDetailDTO detailEmployeeCode(String code) {
-        Employee employee = employeeRepository.findByCode(code)
-                .orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
+        Employee employee = getEmployee(code);
         ResponseEmployeeDetailDTO detailDTO = new ResponseEmployeeDetailDTO();
         MapperUtils.map(employee, detailDTO);
         detailDTO.setEmployeeCode(employee.getCode());
@@ -184,10 +183,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 () -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
         MapperUtils.map(userDetailDTO, employee);
         if (userDetailDTO.getEmployeeCode() != null && !userDetailDTO.getEmployeeCode().equals(employee.getCode())) {
-            Employee byEmployeeCode = employeeRepository.findByCode(userDetailDTO.getEmployeeCode()).orElse(null);
-            if (byEmployeeCode != null) {
-                throw new AppException(AppConstants.EMPLOYEE_CODE_002, AppConstants.EMPLOYEE_MESS_002);
-            }
+            Employee byEmployeeCode = getEmployee(userDetailDTO.getEmployeeCode());
             employee.setCode(userDetailDTO.getEmployeeCode());
         }
         if (userDetailDTO.getDepartmentId() != null) {
@@ -325,5 +321,11 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeSelectDTOS.add(dto);
         }
         return employeeSelectDTOS;
+    }
+
+    @Override
+    public Employee getEmployee(String code) {
+        return employeeRepository.findByCode(code)
+                .orElseThrow(()->new AppException(AppConstants.EMPLOYEE_CODE_001,AppConstants.EMPLOYEE_MESS_001));
     }
 }

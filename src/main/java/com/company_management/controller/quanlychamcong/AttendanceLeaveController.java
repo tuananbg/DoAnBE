@@ -10,6 +10,8 @@ import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.attendace.RequestAttendanceLeaveDTO;
+import com.company_management.dto.request.attendace.RequestUpdateAttendanceLeaveDTO;
+import com.company_management.dto.request.attendace.RequestUpdateAttendanceOTDTO;
 import com.company_management.dto.request.attendace.SearchLeaveRequest;
 import com.company_management.dto.response.attendance.ResponseAttendanceLeaveDTO;
 import com.company_management.service.AttendanceLeaveService;
@@ -52,16 +54,16 @@ public class AttendanceLeaveController {
         return ResultResp.success(ErrorCode.CREATED_OK, attendanceLeaveService.detailLeave(id));
     }
 
-//    @PutMapping
-//    public ResultResp<Object> updateLeave(@Valid @RequestBody AttendanceLeaveDTO leaveDTO) {
-//        attendanceLeaveService.update(leaveDTO);
-//        return ResultResp.success(ErrorCode.UPDATED_OK, null);
-//    }
+    @PutMapping("/update")
+    public ResultResp<Object> updateLeave(@Valid @RequestBody RequestUpdateAttendanceLeaveDTO request) {
+        attendanceLeaveService.update(request);
+        return ResultResp.success(ErrorCode.UPDATED_OK, null);
+    }
 
-    @DeleteMapping("/delete/{id}")
-    public ResultResp<Object> deleteLeave(@PathVariable("id") Long id) {
-        attendanceLeaveService.deleteLeave(id);
-        return ResultResp.success(ErrorCode.DELETED_OK, null);
+    @PutMapping("/complete")
+    public ResultResp<Object> complete(@Valid @RequestBody RequestUpdateAttendanceLeaveDTO request) {
+        attendanceLeaveService.complete(request);
+        return ResultResp.success(ErrorCode.UPDATED_OK, null);
     }
 
     @PostMapping(value = "/export")

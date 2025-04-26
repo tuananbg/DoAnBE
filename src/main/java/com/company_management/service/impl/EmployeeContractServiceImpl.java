@@ -5,6 +5,7 @@ import com.company_management.common.enums.ContractType;
 import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
+import com.company_management.service.EmployeeService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.request.RequestEmployeeContractDTO;
@@ -49,6 +50,7 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
 
     private final EmployeeContractsRepository employeeContractRepository;
     private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -156,8 +158,7 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
     @Transactional(rollbackFor = Exception.class)
     public void create(MultipartFile file, RequestEmployeeContractDTO request) {
         if (request.getEmployeeCode() != null) {
-            Employee employee = employeeRepository.findByCode(request.getEmployeeCode()).orElseThrow(
-                    () -> new AppException("ERR01", "Không tìm thấy nhân viên này!"));
+            Employee employee = employeeService.getEmployee(request.getEmployeeCode());
 
             EmployeeContracts contract = new EmployeeContracts();
             MapperUtils.map(request, contract);

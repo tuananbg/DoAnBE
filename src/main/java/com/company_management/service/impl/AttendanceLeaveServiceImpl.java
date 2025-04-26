@@ -7,6 +7,7 @@ import com.company_management.common.enums.TableTabType;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.attendace.RequestAttendanceLeaveDTO;
+import com.company_management.dto.request.attendace.RequestUpdateAttendanceLeaveDTO;
 import com.company_management.dto.response.attendance.ResponseAttendanceLeaveDTO;
 import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;
@@ -16,6 +17,7 @@ import com.company_management.dto.request.attendace.SearchLeaveRequest;
 import com.company_management.repository.AttendanceLeaveRepository;
 import com.company_management.repository.EmployeeRepository;
 import com.company_management.service.AttendanceLeaveService;
+import com.company_management.service.EmployeeService;
 import com.company_management.service.common.SendEmailService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.mapper.MapperUtils;
@@ -37,6 +39,7 @@ public class AttendanceLeaveServiceImpl implements AttendanceLeaveService {
     private final AttendanceLeaveRepository attendanceLeaveRepository;
     private final EmployeeRepository employeeRepository;
     private final SendEmailService sendEmailService;
+    private final EmployeeService employeeService;
 
 
     @Override
@@ -80,12 +83,10 @@ public class AttendanceLeaveServiceImpl implements AttendanceLeaveService {
         log.debug("// Them moi đơn nghỉ phép");
         MapperUtils.map(request, attendanceLeave);
         if (!Constants.ADMIN.equalsIgnoreCase(request.getEmployeeCode())) {
-            Employee employee = employeeRepository.findByCode(request.getEmployeeCode())
-                    .orElseThrow(()->new AppException(AppConstants.EMPLOYEE_CODE_001,AppConstants.EMPLOYEE_MESS_001));
+            Employee employee = employeeService.getEmployee(request.getEmployeeCode());
             attendanceLeave.setEmployee(employee);
         }
-        Employee reviewer = employeeRepository.findByCode(request.getReviewerCode())
-                .orElseThrow(()->new AppException(AppConstants.EMPLOYEE_CODE_001,AppConstants.EMPLOYEE_MESS_001));
+        Employee reviewer = employeeService.getEmployee(request.getReviewerCode ());
         attendanceLeave.setReviewer(reviewer);
         attendanceLeave.setStatus(TableTabType.TODO.getCode());
         attendanceLeaveRepository.save(attendanceLeave);
@@ -96,45 +97,31 @@ public class AttendanceLeaveServiceImpl implements AttendanceLeaveService {
 
     @Override
     @Transactional
-    public void deleteLeave(Long id) {
-        log.debug("// Xóa đơn nghỉ phép: {}", id);
-        if (attendanceLeaveRepository.deleteById(id, CommonUtils.getUserLoginName()) <= 0) {
-            throw new AppException("ERR01", "Không tìm thấy đơn nghỉ phép này!");
+    public void update(RequestUpdateAttendanceLeaveDTO request) {
+        AttendanceLeave attendanceLeave = attendanceLeaveRepository.findById(request.getId()).orElseThrow(
+                ()-> new AppException("ERR01","Đơn nghỉ phép không tồn tại trong hệ thống"));
+        MapperUtils.mapOnlyNotNullProperty(request,attendanceLeave);
+        if (!Constants.ADMIN.equalsIgnoreCase(request.getEmployeeCode())) {
+            Employee employee = employeeService.getEmployee(request.getEmployeeCode());
+            attendanceLeave.setEmployee(employee);
         }
+        Employee reviewer = employeeService.getEmployee(request.getReviewerCode ());
+        attendanceLeave.setReviewer(reviewer);
+        attendanceLeaveRepository.save(attendanceLeave);
     }
+
+
 
     @Override
     public ByteArrayInputStream exportExcel(SearchLeaveRequest searchLeaveRequest, Pageable pageable) {
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        try (InputStream in = CommonUtils.getInputStreamByFileName("export-leave-template.xlsx")) {
-//            List<AttendanceLeaveDTO> attendanceLeaveDTOList = attendanceLeaveRepository.searchExport(searchLeaveRequest, pageable);
-//            AtomicInteger index = new AtomicInteger();
-//            for (AttendanceLeaveDTO item : attendanceLeaveDTOList) {
-//                item.setIndex(index.incrementAndGet());
-//                if (item.getIsActive() == 1) {
-//                    item.setIsActiveName("Đã duyệt");
-//                } else if(item.getIsActive() == 2) {
-//                    item.setIsActiveName("Chờ duyệt");
-//                }else{
-//                    item.setIsActiveName("Từ chối");
-//                }
-//                item.setStartDayConvert(DateTimeUtils.convertDateTimeToString(item.getStartDay(), "dd/MM/yyyy"));
-//                item.setEndDayConvert(DateTimeUtils.convertDateTimeToString(item.getEndDay(), "dd/MM/yyyy"));
-//            }
-//
-//            Map<String, Object> beans = new HashMap<>();
-//            beans.put("posLst", attendanceLeaveDTOList);
-//            beans.put("date", DateTimeUtils.convertDateToStringByPattern(new Date(), "dd/MM/yyyy HH:mm:ss"));
-//            beans.put("total", attendanceLeaveDTOList.size());
-//            XLSTransformer transformer = new XLSTransformer();
-//            Workbook workbook = transformer.transformXLS(in, beans);
-//            workbook.write(byteArrayOutputStream);
-//            byte[] exportInputStream = byteArrayOutputStream.toByteArray();
-//            return new ByteArrayInputStream(exportInputStream);
-//        }  catch (Exception ex) {
-//            log.error(ex.getMessage(), ex);
-//            throw new AppException("ERR01", "Xuất file excel bị lỗi");
-//        }
         return null;
+    }
+
+    @Override
+    public void complete(RequestUpdateAttendanceLeaveDTO request) {
+        AttendanceLeave attendanceLeave = attendanceLeaveRepository.findById(request.getId()).orElseThrow(
+                ()-> new AppException("ERR01","Đơn nghỉ phép không tồn tại trong hệ thống"));
+        attendanceLeave.setStatus(request.getStatus());
+        attendanceLeaveRepository.save(attendanceLeave);
     }
 }

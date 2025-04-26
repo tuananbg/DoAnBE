@@ -1,5 +1,6 @@
 package com.company_management.controller.quanlychamcong;
 
+import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.common.enums.AttendanceLeaveStatus;
@@ -44,9 +45,9 @@ public class AttendanceLeaveController {
     }
 
     @PostMapping("/create")
-    public ResultResp<Object> createLeave(@Valid @RequestBody RequestAttendanceLeaveDTO leaveDTO) {
+    public BaseResponse<Object> createLeave(@Valid @RequestBody RequestAttendanceLeaveDTO leaveDTO) {
         attendanceLeaveService.create(leaveDTO);
-        return ResultResp.success(ErrorCode.CREATED_OK, null);
+        return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201, AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
     @GetMapping("/detail/{id}")
@@ -55,15 +56,15 @@ public class AttendanceLeaveController {
     }
 
     @PutMapping("/update")
-    public ResultResp<Object> updateLeave(@Valid @RequestBody RequestUpdateAttendanceLeaveDTO request) {
+    public BaseResponse<Object> updateLeave(@Valid @RequestBody RequestUpdateAttendanceLeaveDTO request) {
         attendanceLeaveService.update(request);
-        return ResultResp.success(ErrorCode.UPDATED_OK, null);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202, AppConstants.UPDATE_SUCCESS_MESS_202);
     }
 
     @PutMapping("/complete")
-    public ResultResp<Object> complete(@Valid @RequestBody RequestUpdateAttendanceLeaveDTO request) {
+    public BaseResponse<Object> complete(@Valid @RequestBody RequestUpdateAttendanceLeaveDTO request) {
         attendanceLeaveService.complete(request);
-        return ResultResp.success(ErrorCode.UPDATED_OK, null);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202, AppConstants.UPDATE_SUCCESS_MESS_202);
     }
 
     @PostMapping(value = "/export")

@@ -53,14 +53,14 @@ public class AttendanceOTController {
     }
 
     @PutMapping("/update")
-    public ResultResp<Object> updateOT(@Valid @RequestBody RequestUpdateAttendanceOTDTO request) {
+    public BaseResponse<Object> updateOT(@Valid @RequestBody RequestUpdateAttendanceOTDTO request) {
         attendanceOTService.update(request);
-        return ResultResp.success(ErrorCode.UPDATED_OK, null);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202, AppConstants.UPDATE_SUCCESS_MESS_202);
     }
     @PutMapping("/complete")
-    public ResultResp<Object> complete(@Valid @RequestBody RequestUpdateAttendanceOTDTO request) {
+    public BaseResponse<Object> complete(@Valid @RequestBody RequestUpdateAttendanceOTDTO request) {
         attendanceOTService.complete(request);
-        return ResultResp.success(ErrorCode.UPDATED_OK, null);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202, AppConstants.UPDATE_SUCCESS_MESS_202);
     }
 
 

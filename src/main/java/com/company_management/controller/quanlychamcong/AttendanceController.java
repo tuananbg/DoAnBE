@@ -1,19 +1,18 @@
 package com.company_management.controller.quanlychamcong;
 
 import com.company_management.common.AppConstants;
-import com.company_management.common.ErrorCode;
-import com.company_management.common.ResultResp;
-import com.company_management.dto.AttendanceDTO;
 import com.company_management.dto.common.BaseResponse;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.attendace.RequestAttendanceDTO;
 import com.company_management.dto.request.pa.SearchAttendanceRequest;
+import com.company_management.dto.response.attendance.ResponseAttendanceDTO;
+import com.company_management.dto.response.attendance.ResponseAttendanceStatusDTO;
 import com.company_management.service.AttendanceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
 
 @RestController
 @RequestMapping("${apiPrefix}/attendance")
@@ -22,10 +21,9 @@ import java.util.Date;
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
-    @PostMapping("/search")
-    public ResultResp<Object> searchAttendance(@RequestBody SearchAttendanceRequest searchAttendanceRequest,
-                                             Pageable pageable) {
-        return ResultResp.success(attendanceService.search(searchAttendanceRequest, pageable));
+    @PostMapping("/list")
+    public BaseResponse<ResponsePage<ResponseAttendanceDTO>> getList(RequestPage page, @RequestBody SearchAttendanceRequest search) {
+        return BaseResponse.ok(attendanceService.getList(page,search));
     }
 
     @PostMapping("/create")
@@ -35,14 +33,14 @@ public class AttendanceController {
     }
 
     @PostMapping("/update")
-    public ResultResp<Object> updateAttendance(@RequestBody  AttendanceDTO attendanceDTO) {
-        attendanceService.createOrUpdate(attendanceDTO);
-        return ResultResp.success(ErrorCode.UPDATED_OK, null);
+    public BaseResponse<Object> updateAttendance(@RequestBody RequestAttendanceDTO request) {
+        attendanceService.update(request);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202,AppConstants.UPDATE_SUCCESS_MESS_202);
     }
 
     @GetMapping("/getId/{employeeCode}")
-    public BaseResponse<Object> getDetailAttendanceId(@PathVariable("employeeCode") String employeeCode) {
-        return BaseResponse.ok(attendanceService.detailAttendanceId(employeeCode));
+    public BaseResponse<ResponseAttendanceStatusDTO> getDetailAttendanceId(@PathVariable("employeeCode") String employeeCode) {
+        return BaseResponse.ok(attendanceService.getAttendanceId(employeeCode));
     }
 
 }

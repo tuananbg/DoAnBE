@@ -13,19 +13,14 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Builder
-public class AttendanceResponse {
-
-    private Long attendanceId;
-    private Long employeeId;
+public class ResponseAttendanceDTO {
+    private Long id;
     private String employeeCode;
     private String employeeName;
-    private String departmentName;
     private Date workingDay;
     private Date checkInTime;
     private Date checkOutTime;
     private Double workingTime;
     private Double workingPoint;
     private Long totalPenalty;
-    private Integer status;
-
 }

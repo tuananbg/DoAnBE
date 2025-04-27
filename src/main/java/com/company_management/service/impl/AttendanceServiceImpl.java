@@ -3,24 +3,24 @@ package com.company_management.service.impl;
 import com.company_management.common.Constants;
 import com.company_management.common.enums.AttendanceStatusEnum;
 import com.company_management.controller.auth.BaseController;
+import com.company_management.dto.common.RequestPage;
+import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.attendace.RequestAttendanceDTO;
-import com.company_management.entity.Account;
+import com.company_management.dto.response.attendance.ResponseAttendanceStatusDTO;
 import com.company_management.entity.Employee;
-import com.company_management.exception.AppException;
-import com.company_management.dto.AttendanceDTO;
 import com.company_management.entity.Attendance;
 import com.company_management.dto.request.pa.SearchAttendanceRequest;
-import com.company_management.dto.response.attendance.AttendanceResponse;
+import com.company_management.dto.response.attendance.ResponseAttendanceDTO;
 import com.company_management.dto.common.DataPage;
+import com.company_management.exception.AppException;
 import com.company_management.repository.AttendanceRepository;
-import com.company_management.repository.AccountRepository;
-import com.company_management.repository.EmployeeInfoRepository;
 import com.company_management.service.AttendanceService;
 import com.company_management.service.EmployeeService;
-import com.company_management.utils.CommonUtils;
 import com.company_management.utils.DateUtils;
+import com.company_management.utils.mapper.MapperUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayInputStream;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,111 +39,74 @@ public class AttendanceServiceImpl extends BaseController implements AttendanceS
 
     private final AttendanceRepository attendanceRepository;
 
-    private final AccountRepository accountRepository;
-
-    private final EmployeeInfoRepository employeeInfoRepository;
-
     private final EmployeeService employeeService;
 
     @Override
     @Transactional(readOnly = true)
-    public DataPage<AttendanceResponse> search(SearchAttendanceRequest searchAttendanceRequest, Pageable pageable) {
-//        return attendanceRepository.search(searchAttendanceRequest, pageable);
-        return null;
+    public ResponsePage<ResponseAttendanceDTO> getList(RequestPage page, SearchAttendanceRequest search) {
+        Page<Attendance> responsePage = attendanceRepository.findAllAttendanceByWorkingDay(search.getWorkingDay(),page.toPageable());
+        List<ResponseAttendanceDTO> data = responsePage.getContent().stream().map(item->{
+            ResponseAttendanceDTO dto = new ResponseAttendanceDTO();
+            MapperUtils.map(item,dto);
+            Employee employee = item.getEmployee();
+            dto.setEmployeeCode(employee.getCode());
+            dto.setEmployeeName(employee.getFullName());
+            return dto;
+        }).toList();
+        return new ResponsePage<>(data,page,responsePage.getTotalElements());
     }
 
+    //Check in
     @Override
     @Transactional
     public void create(RequestAttendanceDTO request) {
         log.debug("Bắt đầu chấm công");
         Attendance attendance = new Attendance();
         String userCode = getCurrentUserCode();
+        Date now = DateUtils.getNow();
         if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
             log.debug("Admin");
             Employee employee = employeeService.getEmployee(request.getEmployeeCode());
             attendance.setEmployee(employee);
-            attendance.setWorkingDay(request.getWorkingDay());
-            attendance.setCheckInTime(request.getCheckInTime());
+
+            attendance.setWorkingDay(now);
+            attendance.setCheckInTime(now);
             attendance.setStatus(AttendanceStatusEnum.CHECKIN.getValue());
-            attendance.setTotalPenalty(totalPenalty(request.getCheckInTime()));
-        }
-        else {
+            attendance.setTotalPenalty(totalPenaltyCheckIn(now));
+        } else {
             Employee employee = employeeService.getEmployee(userCode);
             attendance.setEmployee(employee);
-            attendance.setWorkingDay(request.getWorkingDay());
-            attendance.setCheckInTime(request.getCheckInTime());
+            attendance.setWorkingDay(now);
+            attendance.setCheckInTime(now);
             attendance.setStatus(AttendanceStatusEnum.CHECKIN.getValue());
-            attendance.setTotalPenalty(totalPenalty(request.getCheckInTime()));
+            attendance.setTotalPenalty(totalPenaltyCheckIn(now));
         }
         attendanceRepository.save(attendance);
     }
 
+    //Check out
     @Override
     @Transactional
-    public void createOrUpdate(AttendanceDTO attendanceDTO) {
-//        Attendance attendance;
-//        if (attendanceDTO.getId() == null) {
-//            log.debug("// Bắt đầu chấm công");
-//            attendance = new Attendance();
-//            attendance.setWorkingDay(attendanceDTO.getWorkingDay());
-//            attendance.setCheckInTime(attendanceDTO.getCheckInTime());
-//            Account account = accountRepository.findById(CommonUtils.getUserLoginName())
-//                    .orElseThrow(() -> new AppException("ERR01", "Không tìm thấy tài khoản này"));
-//            attendance.setEmployeeId(account.getEmployee().getId());
-//            attendance.setStatus(1);
-//            Calendar nineAM = Calendar.getInstance();
-//            nineAM.set(Calendar.HOUR_OF_DAY, 8);
-//            nineAM.set(Calendar.MINUTE, 30);
-//            nineAM.set(Calendar.SECOND, 0);
-//            Calendar currentTime = Calendar.getInstance();
-//            currentTime.setTime(attendanceDTO.getCheckInTime());
-//            if (currentTime.after(nineAM)) {
-//                long diffInMillis = currentTime.getTimeInMillis() - nineAM.getTimeInMillis();
-//                long diffInMinutes = diffInMillis / (60 * 1000);
-//                attendance.setTotalPenalty(diffInMinutes);
-//            } else {
-//                attendance.setTotalPenalty(0L);
-//            }
-//        } else {
-//            attendance = attendanceRepository.findById(attendanceDTO.getId())
-//                    .orElseThrow(() -> new AppException("ERO01", "Mã chấm công không tồn tại"));
-//            log.debug("// Đăng ký thời gian ra");
-//            Account account = accountRepository.findById(CommonUtils.getUserLoginName())
-//                    .orElseThrow(() -> new AppException("ERR01", "Không tìm thấy tài khoản này"));
-//            attendance.setCheckOutTime(attendanceDTO.getCheckOutTime());
-//            Date checkOutTime = attendanceDTO.getCheckOutTime();
-//            Date checkInTime = attendance.getCheckInTime();
-//            LocalDateTime checkOutLocalDateTime = LocalDateTime.ofInstant(checkOutTime.toInstant(), ZoneId.systemDefault());
-//            LocalDateTime checkInLocalDateTime = LocalDateTime.ofInstant(checkInTime.toInstant(), ZoneId.systemDefault());
-//
-//            Duration duration = Duration.between(checkInLocalDateTime, checkOutLocalDateTime);
-//            double hoursDifference = duration.toHours(); // Số giờ trả về dưới dạng double
-//            log.info("Difference in hours: " + hoursDifference);
-//            attendance.setWorkingPoint(hoursDifference);
-//            if (hoursDifference >= 7) {
-//                attendance.setWorkingPoint(1.0);
-//                attendance.setWorkingTime(8.0);
-//            } else if (hoursDifference >= 2.5) {
-//                attendance.setWorkingPoint(0.5);
-//                attendance.setWorkingTime(3.0);
-//            } else {
-//                attendance.setWorkingPoint(0.0);
-//                attendance.setWorkingTime(0.0);
-//            }
-//            Calendar sixPM = Calendar.getInstance();
-//            sixPM.set(Calendar.HOUR_OF_DAY, 18);
-//            sixPM.set(Calendar.MINUTE, 0);
-//            sixPM.set(Calendar.SECOND, 0);
-//            Calendar currentTime = Calendar.getInstance();
-//            currentTime.setTime(attendanceDTO.getCheckOutTime());
-//            if (currentTime.before(sixPM)) {
-//                long diffInMillis = sixPM.getTimeInMillis() - currentTime.getTimeInMillis();
-//                long diffInMinutes = diffInMillis / (60 * 1000);
-//                attendance.setTotalPenalty(attendance.getTotalPenalty() + diffInMinutes);
-//            }
-//
-//        }
-//        attendanceRepository.save(attendance);
+    public void update(RequestAttendanceDTO request) {
+        Date now = DateUtils.getNow();
+        Attendance attendance = attendanceRepository.findById(request.getId())
+                .orElseThrow(() -> new AppException("ERO01", "Mã chấm công không tồn tại"));
+        log.debug("// Đăng ký thời gian ra");
+
+        attendance.setCheckOutTime(now);
+        Date checkInTime = attendance.getCheckInTime();
+        LocalDateTime checkOutLocalDateTime = DateUtils.convertToLocalDateTime(now);
+        LocalDateTime checkInLocalDateTime = DateUtils.convertToLocalDateTime(checkInTime);
+        Duration duration = Duration.between(checkInLocalDateTime, checkOutLocalDateTime);
+
+        double hoursDifference = duration.toHours(); // Số giờ trả về dưới dạng double
+        log.info("Difference in hours: " + hoursDifference);
+
+        attendance.setWorkingTime(hoursDifference);
+        attendance.setWorkingPoint(processWorkingPoint(hoursDifference));
+        attendance.setTotalPenalty(attendance.getTotalPenalty() + totalPenaltyCheckOut(now));
+        attendance.setStatus(AttendanceStatusEnum.CHECKOUT.getValue());
+        attendanceRepository.save(attendance);
     }
 
     @Override
@@ -153,31 +116,26 @@ public class AttendanceServiceImpl extends BaseController implements AttendanceS
 
     @Override
     @Transactional(readOnly = true)
-    public Long detailAttendanceId(String employeeCode) {
+    public ResponseAttendanceStatusDTO getAttendanceId(String employeeCode) {
+        ResponseAttendanceStatusDTO dto = new ResponseAttendanceStatusDTO();
         String userCode = getCurrentUserCode();
-        Long id ;
         if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
             Attendance attendance = attendanceRepository.findTodayAttendanceByEmployeeCode(employeeCode).orElse(null);
             if (attendance != null) {
-                id = attendance.getId();
+                dto.setId(attendance.getId());
+                dto.setStatus(attendance.getStatus());
             }
-            else {
-                id = 0L;
-            }
-        }
-        else {
+        } else {
             Attendance attendance = attendanceRepository.findTodayAttendanceByEmployeeCode(userCode).orElse(null);
             if (attendance != null) {
-                id = attendance.getId();
-            }
-            else {
-                id = 0L;
+                dto.setId(attendance.getId());
+                dto.setStatus(attendance.getStatus());
             }
         }
-        return id;
+        return dto;
     }
 
-    public Long totalPenalty(Date checkInTime) {
+    public Long totalPenaltyCheckIn(Date checkInTime) {
         if (checkInTime != null) {
             Calendar nineAM = Calendar.getInstance();
             nineAM.set(Calendar.HOUR_OF_DAY, 8);
@@ -191,6 +149,31 @@ public class AttendanceServiceImpl extends BaseController implements AttendanceS
             }
         }
         return 0L;
+    }
+
+    public Long totalPenaltyCheckOut(Date checkOutTime) {
+        Calendar sixPM = Calendar.getInstance();
+        sixPM.set(Calendar.HOUR_OF_DAY, 18);
+        sixPM.set(Calendar.MINUTE, 0);
+        sixPM.set(Calendar.SECOND, 0);
+        Calendar currentTime = Calendar.getInstance();
+        currentTime.setTime(checkOutTime);
+        if (currentTime.before(sixPM)) {
+            long diffInMillis = sixPM.getTimeInMillis() - currentTime.getTimeInMillis();
+            return diffInMillis / (60 * 1000);
+        } else {
+            return 0L;
+        }
+    }
+
+    public Double processWorkingPoint(double hoursDifference) {
+        if (hoursDifference >= 7) {
+            return 1.0;
+        } else if (hoursDifference >= 3) {
+            return 0.5;
+        } else {
+            return 0.0;
+        }
     }
 
 }

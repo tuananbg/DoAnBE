@@ -10,11 +10,5 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SearchAttendanceRequest {
-
-    private String employeeCode;
-    private Long employeeId;
-    private String employeeName;
-    private Long departmentId;
     private Date workingDay;
-
 }

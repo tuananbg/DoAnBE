@@ -1,13 +1,8 @@
 package com.company_management.service.au.impl;
 
 import com.company_management.config.AppConfig;
-import com.company_management.dto.UserCustomDTO;
-import com.company_management.entity.Account;
 import com.company_management.service.au.JwtService;
 import com.company_management.utils.DateUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -18,8 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.function.Function;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 @Log4j2

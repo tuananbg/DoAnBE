@@ -3,9 +3,7 @@ package com.company_management.controller.quanlychamcong;
 import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
-import com.company_management.common.enums.ContractStatusEnum;
 import com.company_management.common.enums.TableTabType;
-import com.company_management.dto.AttendanceOTDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
@@ -47,10 +45,10 @@ public class AttendanceOTController {
         return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201,AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
-    @GetMapping("/detail/{id}")
-    public ResultResp<Object> getByIdOT(@PathVariable("id") Long id) {
-        return ResultResp.success(ErrorCode.CREATED_OK, attendanceOTService.detailOT(id));
-    }
+//    @GetMapping("/detail/{id}")
+//    public ResultResp<Object> getByIdOT(@PathVariable("id") Long id) {
+//        return ResultResp.success(ErrorCode.CREATED_OK, attendanceOTService.detailOT(id));
+//    }
 
     @PutMapping("/update")
     public BaseResponse<Object> updateOT(@Valid @RequestBody RequestUpdateAttendanceOTDTO request) {

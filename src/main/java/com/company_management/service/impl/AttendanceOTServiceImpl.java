@@ -10,7 +10,6 @@ import com.company_management.dto.request.attendace.RequestUpdateAttendanceOTDTO
 import com.company_management.dto.response.attendance.ResponseAttendanceOTDTO;
 import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;
-import com.company_management.dto.AttendanceOTDTO;
 import com.company_management.entity.AttendanceOt;
 import com.company_management.dto.request.pa.SearchAttendanceOTRequest;
 import com.company_management.repository.AttendanceOTRepository;
@@ -65,14 +64,6 @@ public class AttendanceOTServiceImpl implements AttendanceOTService {
         return new ResponsePage<>(data,page,attendanceOtPage.getTotalElements());
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public AttendanceOTDTO detailOT(Long id) {
-        AttendanceOt attendanceOT = attendanceOTRepository.findById(id).orElseThrow(
-                () -> new AppException("ERR01", "Không tìm thấy đơn nghỉ phép này!"));
-//        return attendanceOTMapper.toDto(attendanceOT);
-        return null;
-    }
 
     @Override
     @Transactional
@@ -110,36 +101,7 @@ public class AttendanceOTServiceImpl implements AttendanceOTService {
     }
 
     @Override
-    @Transactional
-    public void deleteOT(Long id) {
-        log.debug("// Xóa đơn nghỉ phép: {}", id);
-        if (attendanceOTRepository.deleteById(id, CommonUtils.getUserLoginName()) <= 0) {
-            throw new AppException("ERR01", "Không tìm thấy đơn nghỉ phép này!");
-        }
-    }
-
-    @Override
     public ByteArrayInputStream exportExcel(SearchAttendanceOTRequest searchOTRequest, Pageable pageable) {
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        try (InputStream in = CommonUtils.getInputStreamByFileName("export-leave-template.xlsx")) {
-//            List<AttendanceOTDTO> attendanceOTDTOList = attendanceOTRepository.searchExport(searchOTRequest, pageable);
-//            AtomicInteger index = new AtomicInteger();
-//            for (AttendanceOTDTO item : attendanceOTDTOList) {
-//                item.setIndex(index.incrementAndGet());
-//            }
-//            Map<String, Object> beans = new HashMap<>();
-//            beans.put("posLst", attendanceOTDTOList);
-//            beans.put("date", DateTimeUtils.convertDateToStringByPattern(new Date(), "dd/MM/yyyy HH:mm:ss"));
-//            beans.put("total", attendanceOTDTOList.size());
-//            XLSTransformer transformer = new XLSTransformer();
-//            Workbook workbook = transformer.transformXLS(in, beans);
-//            workbook.write(byteArrayOutputStream);
-//            byte[] exportInputStream = byteArrayOutputStream.toByteArray();
-//            return new ByteArrayInputStream(exportInputStream);
-//        }  catch (Exception ex) {
-//            log.error(ex.getMessage(), ex);
-//            throw new AppException("ERR01", "Xuất file excel bị lỗi");
-//        }
         return null;
     }
 }

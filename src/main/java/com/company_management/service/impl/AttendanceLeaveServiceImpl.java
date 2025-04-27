@@ -1,6 +1,5 @@
 package com.company_management.service.impl;
 
-import com.company_management.common.AppConstants;
 import com.company_management.common.Constants;
 import com.company_management.common.enums.EmailTemplate;
 import com.company_management.common.enums.TableTabType;
@@ -11,7 +10,6 @@ import com.company_management.dto.request.attendace.RequestUpdateAttendanceLeave
 import com.company_management.dto.response.attendance.ResponseAttendanceLeaveDTO;
 import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;
-import com.company_management.dto.AttendanceLeaveDTO;
 import com.company_management.entity.AttendanceLeave;
 import com.company_management.dto.request.attendace.SearchLeaveRequest;
 import com.company_management.repository.AttendanceLeaveRepository;
@@ -67,14 +65,6 @@ public class AttendanceLeaveServiceImpl implements AttendanceLeaveService {
         return new ResponsePage<>(data,page,attendanceLeaveDTOPage.getTotalElements());
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public AttendanceLeaveDTO detailLeave(Long id) {
-        AttendanceLeave attendanceLeave = attendanceLeaveRepository.findById(id).orElseThrow(
-                () -> new AppException("ERR01", "Không tìm thấy đơn nghỉ phép này!"));
-//        return attendanceLeaveMapper.toDto(attendanceLeave);
-        return null;
-    }
 
     @Override
     @Transactional

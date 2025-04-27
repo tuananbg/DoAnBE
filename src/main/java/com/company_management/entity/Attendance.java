@@ -21,9 +21,10 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Attendance extends BaseEntity {
-    //mã nhân viên
-    @Column(name = "EMPLOYEE_ID")
-    private Long employeeId;
+    // nhân viên
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "id")
+    private Employee employee;
 
     //ngày làm
     @Column(name = "WORKING_DAY")
@@ -51,7 +52,4 @@ public class Attendance extends BaseEntity {
     //tổng phút phạt
     @Column(name = "TOTAL_PENALTY")
     private Long totalPenalty;
-
-    @Column(name = "STATUS")
-    private Integer status;
 }

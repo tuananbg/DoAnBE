@@ -79,7 +79,10 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
                     response.setExpiredDate(item.getContractEndDate());
                     ContractStatusEnum contractStatusEnum = ContractStatusEnum.fromValue(item.getStatus());
                     if (contractStatusEnum != null) {
-                        response.setContractStatus(ContractStatusEnum.fromValue(item.getStatus()).getName());
+                        response.setContractStatus(contractStatusEnum.getName());
+                    }
+                    if (item.getEmployee() != null) {
+                        response.setEmployeeName(item.getEmployee().getFullName());
                     }
                     return response;
                 }).toList();
@@ -165,7 +168,7 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
             contract.setEmployee(employee);
             contract.setContractTypeDisplay(ContractType.fromCode(request.getContractType()).getName());
             String termValue = termValueDisplay(request.getContractEffectiveDate(),request.getContractEndDate());
-            contract.setContractTypeDisplay(termValue);
+            contract.setContractTermDisplay(termValue);
             if (checkContractEndDateForNextMonth(contract.getContractEndDate())) {
                 contract.setStatus(ContractStatusEnum.ABOUT_TO_EXPIRE.getValue());
             } else {

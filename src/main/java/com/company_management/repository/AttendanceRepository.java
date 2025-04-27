@@ -8,19 +8,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
-    String sqlSearch = "select ATTENDANCE.ID\n" +
-            "from ATTENDANCE\n" +
-            "where 1 = 1\n" +
-            "and EMPLOYEE_ID = :employeeId\n" +
-            "and DATE(WORKING_DAY) = DATE(:workingDay) ";
-    @Query(nativeQuery = true, value = sqlSearch, countQuery = "select count(*) from ( " + sqlSearch + " ) tmp" )
-    Long findIdAllWithEmployeeId(@Param("employeeId") Long employeeId, @Param("workingDay") Date workingDay);
+    @Query("SELECT a FROM Attendance a JOIN a.employee e " +
+            "WHERE e.code = :employeeCode AND FUNCTION('DATE', a.workingDay) = FUNCTION('DATE', CURRENT_DATE)")
+    Optional<Attendance> findTodayAttendanceByEmployeeCode(@Param("employeeCode") String employeeCode);
 
-    @Modifying
-    @Query(value = "update Attendance c set c.status = 0, c.updatedDate = now(), c.updatedBy = :user where c.id = :id and c.status = 1 or c.status = 2 ")
-    int updateById(Long id, Long user);
 }

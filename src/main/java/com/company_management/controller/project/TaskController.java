@@ -38,6 +38,12 @@ public class TaskController {
         return BaseResponse.ok(taskService.getTasks(status, keyword, page));
     }
 
+    @GetMapping(value = "/list/person/{status}")
+    public BaseResponse<ResponsePage<ResponseListTaskDTO>> getListPerson(@RequestParam(name = "keyword", required = false) String keyword,
+                                                                   @PathVariable("status") TaskStatusEnum status, RequestPage page) {
+        return BaseResponse.ok(taskService.getListPerson(status, keyword, page));
+    }
+
     @GetMapping(value = "/dashboard")
     public BaseResponse<List<ResponseProjectDashboardTO>> getListDashboard() {
         return BaseResponse.ok(taskService.getListDashboard());

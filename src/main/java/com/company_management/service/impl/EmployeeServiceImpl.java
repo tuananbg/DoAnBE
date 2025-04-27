@@ -74,6 +74,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     if (item.getDepartment() != null) {
                         response.setDepartmentName(item.getDepartment().getDepartmentName());
                     }
+                    positionRepository.findByPositionCode(item.getPositionCode()).ifPresent(position -> response.setPositionName(position.getPositionName()));
 
 //                    response.setPositionName(item.getPositionName());
                     if (item.getEmployeeInfo() != null) {
@@ -121,14 +122,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         ResponseEmployeeDetailDTO detailDTO = new ResponseEmployeeDetailDTO();
         MapperUtils.map(employee, detailDTO);
         detailDTO.setEmployeeCode(employee.getCode());
-
-        if (employee.getEmployeeInfo() != null) {
-            ResponseEmployeeInfoDTO employeeInfoDTO = new ResponseEmployeeInfoDTO();
-            EmployeeInfo employeeInfo = employeeInfoRepository.findById(employee.getEmployeeInfo().getId()).orElse(null);
-            MapperUtils.map(employeeInfo, employeeInfoDTO);
-            detailDTO.setEmployeeInfo(employeeInfoDTO);
+        detailDTO.setEmployeeName(employee.getFullName());
+        if (employee.getDepartment() != null) {
+            detailDTO.setDepartmentName(employee.getDepartment().getDepartmentName());
         }
+        positionRepository.findByPositionCode(employee.getPositionCode()).ifPresent(position -> detailDTO.setPositionName(position.getPositionName()));
 
+        EmployeeInfo employeeInfo = employee.getEmployeeInfo();
+        if (employeeInfo != null) {
+            MapperUtils.map(employeeInfo, detailDTO);
+        }
 
         return detailDTO;
     }

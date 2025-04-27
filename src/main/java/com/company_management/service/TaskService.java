@@ -16,6 +16,8 @@ public interface TaskService {
 
     ResponsePage<ResponseListTaskDTO> getTasks(TaskStatusEnum status, String keyword, RequestPage page);
 
+    ResponsePage<ResponseListTaskDTO> getListPerson(TaskStatusEnum status, String keyword, RequestPage page);
+
     List<ResponseProjectDashboardTO> getListDashboard();
 
     ResponseDetailTaskDTO getDetailTask(String code);

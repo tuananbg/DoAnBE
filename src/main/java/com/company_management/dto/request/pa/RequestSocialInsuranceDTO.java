@@ -10,6 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class RequestSocialInsuranceDTO {
+    private long socialInsuranceId;
     private String socialInsuranceCode; // ma so BHXH
     private Double initialPayment;  //mức dong ban dau
     private Double percent;

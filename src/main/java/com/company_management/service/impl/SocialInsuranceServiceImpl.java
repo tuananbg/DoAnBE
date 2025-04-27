@@ -51,33 +51,28 @@ public class SocialInsuranceServiceImpl implements SocialInsuranceService {
         return new ResponsePage<>(socialInsuranceDTOS, pageable, socialInsurances.getTotalElements());
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public SocialInsuranceDTO detail(Long id) {
-        SocialInsurance socialInsurance = socialInsuranceRepository.findById(id).orElseThrow(
-                () -> new AppException("ERR01", "Mã bảo hiểm xã hội không tồn tại"));
-        return SocialInsuranceDTO.builder()
-                .socialInsuranceId(socialInsurance.getId())
-                .socialInsuranceCode(socialInsurance.getSocialInsuranceCode())
-                .initialPayment(socialInsurance.getInitialPayment())
-                .percent(socialInsurance.getPercent())
-                .actualPayment(socialInsurance.getActualPayment())
-                .expiredDate(socialInsurance.getExpiredDate())
-                .licenseDate(socialInsurance.getLicenseDate())
-                .build();
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public SocialInsuranceDTO detail(Long id) {
+//        SocialInsurance socialInsurance = socialInsuranceRepository.findById(id).orElseThrow(
+//                () -> new AppException("ERR01", "Mã bảo hiểm xã hội không tồn tại"));
+//        return SocialInsuranceDTO.builder()
+//                .socialInsuranceId(socialInsurance.getId())
+//                .socialInsuranceCode(socialInsurance.getSocialInsuranceCode())
+//                .initialPayment(socialInsurance.getInitialPayment())
+//                .percent(socialInsurance.getPercent())
+//                .actualPayment(socialInsurance.getActualPayment())
+//                .expiredDate(socialInsurance.getExpiredDate())
+//                .licenseDate(socialInsurance.getLicenseDate())
+//                .build();
+//    }
 
     @Override
     @Transactional
-    public void update(SocialInsuranceDTO socialInsuranceDTO) {
-        SocialInsurance socialInsurance = socialInsuranceRepository.findById(socialInsuranceDTO.getSocialInsuranceId())
+    public void update(RequestSocialInsuranceDTO request) {
+        SocialInsurance socialInsurance = socialInsuranceRepository.findById(request.getSocialInsuranceId())
                 .orElseThrow(() -> new AppException("ERR01", "Mã bảo hiểm xã hội không tồn tại"));
-        socialInsurance.setSocialInsuranceCode(socialInsuranceDTO.getSocialInsuranceCode());
-        socialInsurance.setActualPayment(socialInsuranceDTO.getActualPayment());
-        socialInsurance.setPercent(socialInsuranceDTO.getPercent());
-        socialInsurance.setInitialPayment(socialInsuranceDTO.getInitialPayment());
-        socialInsurance.setExpiredDate(socialInsuranceDTO.getExpiredDate());
-        socialInsurance.setLicenseDate(socialInsuranceDTO.getLicenseDate());
+        MapperUtils.mapOnlyNotNullProperty(request, socialInsurance);
         socialInsuranceRepository.save(socialInsurance);
     }
 

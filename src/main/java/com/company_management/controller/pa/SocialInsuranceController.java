@@ -31,15 +31,15 @@ public class SocialInsuranceController {
         return ResultResp.success(socialInsuranceService.getListEmployee(employeeCode, pageable));
     }
 
-    @GetMapping(value = "/detail/{id}")
-    public ResultResp<Object> detail(@PathVariable Long id) {
-        return ResultResp.success(socialInsuranceService.detail(id));
-    }
+//    @GetMapping(value = "/detail/{id}")
+//    public ResultResp<Object> detail(@PathVariable Long id) {
+//        return ResultResp.success(socialInsuranceService.detail(id));
+//    }
 
-    @PutMapping
-    public ResultResp<Object> update(@RequestBody @Valid SocialInsuranceDTO socialInsuranceDTO) {
-        socialInsuranceService.update(socialInsuranceDTO);
-        return ResultResp.success(null);
+    @PutMapping("/update")
+    public BaseResponse<Object> update(@RequestBody @Valid RequestSocialInsuranceDTO request) {
+        socialInsuranceService.update(request);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202,AppConstants.UPDATE_SUCCESS_MESS_202);
     }
 
     @DeleteMapping("/{id}")

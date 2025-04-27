@@ -22,10 +22,20 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query(value = "SELECT t FROM Task t  WHERE " +
             "(:keyword IS NULL OR " +
             "UPPER(t.taskCode) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
-            "UPPER(t.taskName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
+            "UPPER(t.taskName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
+            "UPPER(t.employee.code) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
+            "UPPER(t.employee.fullName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
             "AND t.status = :status " +
             "ORDER BY t.priority ASC")
     Page<Task> findByStatus(@Param("status") Integer status,@Param("keyword") String keyword, Pageable pageable);
+
+    @Query(value = "SELECT t FROM Task t JOIN t.employee e WHERE " +
+            "(:keyword IS NULL OR " +
+            "UPPER(t.taskCode) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
+            "UPPER(t.taskName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
+            "AND t.status = :status AND e.code = :employeeCode " +
+            "ORDER BY t.priority ASC")
+    Page<Task> findByStatusAndEmployeeCode(@Param("status") Integer status,@Param("employeeCode") String employeeCode, @Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT " +
             "COUNT(t) AS totalCount, " +

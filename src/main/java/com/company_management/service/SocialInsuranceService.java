@@ -9,9 +9,9 @@ import org.springframework.data.domain.Page;
 public interface SocialInsuranceService {
     Page<ResponseSocialInsuranceDTO> getListEmployee(String employeeCode, RequestPage pageable);
 
-    SocialInsuranceDTO detail(Long id);
+//    SocialInsuranceDTO detail(Long id);
 
-    void update(SocialInsuranceDTO socialInsuranceDTO);
+    void update(RequestSocialInsuranceDTO request);
 
     void create(RequestSocialInsuranceDTO request);
 

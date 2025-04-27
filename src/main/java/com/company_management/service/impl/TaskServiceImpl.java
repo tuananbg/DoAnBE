@@ -1,6 +1,8 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.Constants;
 import com.company_management.common.enums.TaskStatusEnum;
+import com.company_management.controller.auth.BaseController;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.projcet.RequestCreateTaskDTO;
@@ -31,7 +33,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TaskServiceImpl implements TaskService {
+public class TaskServiceImpl extends BaseController implements TaskService {
     private final TaskRepository taskRepository;
     private final EmployeeRepository employeeRepository;
     private final ProjectRepository projectRepository;
@@ -57,23 +59,22 @@ public class TaskServiceImpl implements TaskService {
     public ResponsePage<ResponseListTaskDTO> getTasks(TaskStatusEnum status, String keyword, RequestPage page) {
         keyword = CommonUtils.escapeLike(keyword);
         Page<Task> taskPage = taskRepository.findByStatus(status.getCode(),keyword,page.toPageable());
-        List<ResponseListTaskDTO> data = taskPage.getContent()
-                .stream()
-                .map(item ->{
-                    ResponseListTaskDTO dto = new ResponseListTaskDTO();
-                    Project project = item.getProject();
-                    if(project != null) {
-                        dto.setProjectName(project.getProjectName());
-                    }
-                    Employee employee = item.getEmployee();
-                    if(employee != null) {
-                        dto.setEmployeeName(employee.getFullName());
-                    }
-                    employeeRepository.findByCode(item.getManagerCode())
-                            .ifPresent(empManager -> dto.setManagerName(empManager.getFullName()));
-                    MapperUtils.map(item,dto);
-                    return dto;
-                }).toList();
+        List<ResponseListTaskDTO> data = getDataTask(taskPage);
+        return new ResponsePage<>(data,page,taskPage.getTotalElements());
+    }
+
+    @Override
+    public ResponsePage<ResponseListTaskDTO> getListPerson(TaskStatusEnum status, String keyword, RequestPage page) {
+        String useCode = getCurrentUserCode();
+        keyword = CommonUtils.escapeLike(keyword);
+        Page<Task> taskPage;
+        if (Constants.ADMIN.equalsIgnoreCase(useCode)) {
+            taskPage = taskRepository.findByStatus(status.getCode(),keyword,page.toPageable());
+        }
+        else {
+            taskPage = taskRepository.findByStatusAndEmployeeCode(status.getCode(),useCode,keyword,page.toPageable());
+        }
+        List<ResponseListTaskDTO> data = getDataTask(taskPage);
         return new ResponsePage<>(data,page,taskPage.getTotalElements());
     }
 
@@ -131,6 +132,26 @@ public class TaskServiceImpl implements TaskService {
         task.setEmployee(employee);
         task.setStatus(request.getTaskStatus());
         taskRepository.save(task);
+    }
+
+    public  List<ResponseListTaskDTO> getDataTask(Page<Task> taskPage){
+        return taskPage.getContent()
+                .stream()
+                .map(item ->{
+                    ResponseListTaskDTO dto = new ResponseListTaskDTO();
+                    Project project = item.getProject();
+                    if(project != null) {
+                        dto.setProjectName(project.getProjectName());
+                    }
+                    Employee employee = item.getEmployee();
+                    if(employee != null) {
+                        dto.setEmployeeName(employee.getFullName());
+                    }
+                    employeeRepository.findByCode(item.getManagerCode())
+                            .ifPresent(empManager -> dto.setManagerName(empManager.getFullName()));
+                    MapperUtils.map(item,dto);
+                    return dto;
+                }).toList();
     }
 
 

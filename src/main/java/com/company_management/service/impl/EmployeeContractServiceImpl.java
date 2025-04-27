@@ -98,6 +98,11 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
                 .map(item -> {
                     ResponseContractListDTO response = new ResponseContractListDTO();
                     MapperUtils.map(item, response);
+                    response.setEffectiveDate(item.getContractEffectiveDate());
+                    response.setContractType(item.getContractTypeDisplay());
+                    response.setExpiredDate(item.getContractSignDate());
+                    response.setContractTerm(item.getContractTermDisplay());
+                    response.setSignDate(item.getContractSignDate());
                     return response;
                 }).toList();
         return new ResponsePage<>(responseContractListDTOS, page, employeeContracts.getTotalElements());

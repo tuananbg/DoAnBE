@@ -6,6 +6,7 @@ import com.company_management.common.ObjectError;
 import com.company_management.common.ResultResp;
 import com.company_management.common.enums.ContractStatusEnum;
 import com.company_management.common.enums.ObjectStatus;
+import com.company_management.common.enums.ReportType;
 import com.company_management.dto.ContractDTO;
 import com.company_management.dto.UserDetailContractDTO;
 import com.company_management.dto.common.BaseResponse;
@@ -15,11 +16,14 @@ import com.company_management.dto.request.RequestEmployeeContractDTO;
 import com.company_management.dto.response.pa.ResponseContractListDTO;
 import com.company_management.dto.response.ResponseTotalDTO;
 import com.company_management.service.EmployeeContractService;
+import com.company_management.service.common.JasperReportService;
+import com.company_management.utils.CommonUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -39,7 +43,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ContractController {
 
-    final EmployeeContractService contractService;
+    private final EmployeeContractService contractService;
+    private final JasperReportService jasperReportService;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -67,6 +72,13 @@ public class ContractController {
     @GetMapping(value = "/list/employee-detail/{employeeCode}")
     public BaseResponse<ResponsePage<ResponseContractListDTO>> getListEmployeeCode(@PathVariable("employeeCode") String employeeCode, RequestPage page) {
         return BaseResponse.ok(contractService.getListEmployeeCode(employeeCode, page));
+    }
+
+    @GetMapping(value = "/download/{status}")
+    public ResponseEntity<Resource> download(ContractStatusEnum status) {
+        byte[] bytes = jasperReportService.contractStatus(status);
+        String fileName = "[DTDI] HRM_Danh sach hop dong_" + CommonUtils.getCurrentDate("ddMMyyyy") + "." + ReportType.XLSX.getCode();
+        return jasperReportService.baseDownload(bytes,fileName);
     }
 
     @PostMapping(value = "/searchForEmployee")
@@ -104,28 +116,28 @@ public class ContractController {
         return ResultResp.success(null);
     }
 
-    @PostMapping("/download")
-    public ResponseEntity<Object> downloadWordFile(@RequestParam("fileName") String fileName) {
-        try {
-            // Đọc tệp Word từ máy
-            Path filePath = Paths.get(this.fileUpload + fileName);
-            byte[] fileContent = Files.readAllBytes(filePath);
-            ByteArrayResource resource = new ByteArrayResource(fileContent);
-
-            // Thiết lập các header cho phản hồi
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .contentLength(fileContent.length)
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .body(resource);
-        } catch (IOException ex) {
-            log.error("{Error export file}: " + ex.getMessage());
-            return ResultResp.badRequest(new ObjectError(ErrorCode.SELECT_FAIL.getCode(), ex.getMessage()));
-        }
-    }
+//    @PostMapping("/download")
+//    public ResponseEntity<Object> downloadWordFile(@RequestParam("fileName") String fileName) {
+//        try {
+//            // Đọc tệp Word từ máy
+//            Path filePath = Paths.get(this.fileUpload + fileName);
+//            byte[] fileContent = Files.readAllBytes(filePath);
+//            ByteArrayResource resource = new ByteArrayResource(fileContent);
+//
+//            // Thiết lập các header cho phản hồi
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+//
+//            return ResponseEntity.ok()
+//                    .headers(headers)
+//                    .contentLength(fileContent.length)
+//                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+//                    .body(resource);
+//        } catch (IOException ex) {
+//            log.error("{Error export file}: " + ex.getMessage());
+//            return ResultResp.badRequest(new ObjectError(ErrorCode.SELECT_FAIL.getCode(), ex.getMessage()));
+//        }
+//    }
 
     @GetMapping("/statistical")
     private BaseResponse<List<ResponseTotalDTO>> getDepartmentTotal() {

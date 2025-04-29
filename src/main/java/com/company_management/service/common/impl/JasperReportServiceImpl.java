@@ -1,17 +1,17 @@
 package com.company_management.service.common.impl;
 
 import com.company_management.common.AppConstants;
-import com.company_management.common.enums.EmploymentStatus;
-import com.company_management.common.enums.Gender;
-import com.company_management.common.enums.ReportType;
-import com.company_management.dto.response.UserDetailExcelResponse;
-import com.company_management.dto.response.pa.ReportEmployeeDTO;
+import com.company_management.common.enums.*;
+import com.company_management.dto.report.ReportDepartmentDTO;
+import com.company_management.dto.report.ReportEmployeeContractDTO;
+import com.company_management.dto.report.ReportEmployeeDTO;
 import com.company_management.entity.Department;
 import com.company_management.entity.Employee;
+import com.company_management.entity.EmployeeContracts;
 import com.company_management.entity.EmployeeInfo;
-import com.company_management.entity.Position;
 import com.company_management.exception.AppException;
 import com.company_management.repository.DepartmentRepository;
+import com.company_management.repository.EmployeeContractsRepository;
 import com.company_management.repository.EmployeeRepository;
 import com.company_management.repository.PositionRepository;
 import com.company_management.service.common.JasperReportService;
@@ -39,7 +39,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Slf4j
@@ -49,6 +48,7 @@ public class JasperReportServiceImpl implements JasperReportService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
     private final PositionRepository positionRepository;
+    private final EmployeeContractsRepository employeeContractsRepository;
 
     @Override
     public byte[] employeeFullInformation() {
@@ -66,7 +66,7 @@ public class JasperReportServiceImpl implements JasperReportService {
                 MapperUtils.map(employee.getEmployeeInfo(), item);
                 item.setGenderName(Gender.fromCode(employeeInfo.getGender()).getName());
                 item.setBirthday(employee.getEmployeeInfo().getDateOfBirth());
-                item.setYearOld(calculateAge(employee.getEmployeeInfo().getDateOfBirth())+" tuổi");
+                item.setYearOld(calculateAge(employee.getEmployeeInfo().getDateOfBirth()) + " tuổi");
             }
             EmploymentStatus status = EmploymentStatus.findByCodeStatus(employee.getStatus());
             if (status != null) {
@@ -80,6 +80,41 @@ public class JasperReportServiceImpl implements JasperReportService {
         } catch (Exception e) {
             throw new RuntimeException(AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01, e);
         }
+    }
+
+    @Override
+    public byte[] contractStatus(ContractStatusEnum status) {
+        List<EmployeeContracts> employeeContractsList = employeeContractsRepository.findAllByStatus(status.getValue());
+        String path = "report/EmployeeContractStatus.jrxml";
+        List<ReportEmployeeContractDTO> data = new ArrayList<>();
+        for (EmployeeContracts employeeContracts : employeeContractsList) {
+            ReportEmployeeContractDTO dto = new ReportEmployeeContractDTO();
+            MapperUtils.map(employeeContracts, dto);
+            data.add(dto);
+        }
+        try {
+            return exportReport(ReportType.XLSX, path, data, null);
+        } catch (Exception e) {
+            throw new RuntimeException(AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01, e);
+        }
+    }
+
+    @Override
+    public byte[] department(ObjectStatus status) {
+        List<Department> departments = departmentRepository.findAllByStatus(status.getCode());
+        String path = "report/Department.jrxml";
+        List<ReportDepartmentDTO> data = new ArrayList<>();
+        for (Department department : departments) {
+            ReportDepartmentDTO dto = new ReportDepartmentDTO();
+            MapperUtils.map(department, dto);
+            data.add(dto);
+        }
+        try {
+            return exportReport(ReportType.XLSX, path, data, null);
+        } catch (Exception e) {
+            throw new RuntimeException(AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01, e);
+        }
+
     }
 
     @Override

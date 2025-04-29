@@ -82,7 +82,7 @@ public class AttendanceLeaveServiceImpl implements AttendanceLeaveService {
         attendanceLeaveRepository.save(attendanceLeave);
 
         //gửi mail
-        sendEmailService.sendEmail(reviewer.getCode(), EmailTemplate.TEMPLATE_ATTENDANCE_LEAVE,attendanceLeave.getId());
+        sendEmailService.sendEmailAttendance(reviewer.getCode(), EmailTemplate.TEMPLATE_ATTENDANCE_LEAVE,attendanceLeave.getId());
     }
 
     @Override

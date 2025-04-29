@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.0.4.final using JasperReports Library version 6.0.4  -->
+<!-- 2025-04-28T08:36:10 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EmployeeInfoDetail" pageWidth="2000" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="24b9deda-9e92-4278-91ed-b358184188fd">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="header" mode="Opaque" forecolor="#1C4587" backcolor="#E2F4F5" hTextAlign="Center" vTextAlign="Middle" fontName="Times New Roman" fontSize="11" isBold="true">
+		<pen lineColor="#E1E1E1"/>
+		<box>
+			<topPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<leftPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<bottomPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<rightPen lineWidth="0.5" lineColor="#E1E1E1"/>
+		</box>
+	</style>
+	<style name="Title" mode="Opaque" forecolor="#FFFFFF" backcolor="#4285F4" hTextAlign="Left" vTextAlign="Middle" fontName="Times New Roman" fontSize="18" isBold="true">
+		<pen lineColor="#E1E1E1"/>
+		<box>
+			<topPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<leftPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<bottomPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<rightPen lineWidth="0.5" lineColor="#E1E1E1"/>
+		</box>
+	</style>
+	<style name="text" mode="Transparent" hTextAlign="Left" vTextAlign="Middle" fontName="Times New Roman" fontSize="11">
+		<pen lineColor="#E1E1E1"/>
+		<box>
+			<topPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<leftPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<bottomPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<rightPen lineWidth="0.5" lineColor="#E1E1E1"/>
+		</box>
+	</style>
+	<style name="number" hTextAlign="Right" vTextAlign="Middle" fontName="Times New Roman" fontSize="11">
+		<pen lineColor="#E1E1E1"/>
+		<box>
+			<topPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<leftPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<bottomPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<rightPen lineWidth="0.5" lineColor="#E1E1E1"/>
+		</box>
+	</style>
+	<style name="stt" hTextAlign="Center" vTextAlign="Middle" fontName="Times New Roman" fontSize="11">
+		<pen lineColor="#E1E1E1"/>
+		<box>
+			<topPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<leftPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<bottomPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<rightPen lineWidth="0.5" lineColor="#E1E1E1"/>
+		</box>
+	</style>
+	<style name="date" style="number" hTextAlign="Center" vTextAlign="Middle"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="employeeCode" class="java.lang.String"/>
+	<field name="fullName" class="java.lang.String"/>
+	<field name="contractNumber" class="java.lang.String"/>
+	<field name="contractType" class="java.lang.String"/>
+	<field name="description" class="java.lang.String"/>
+	<field name="contractSignDate" class="java.util.Date"/>
+	<field name="contractEffectiveDate" class="java.util.Date"/>
+	<field name="contractEndDate" class="java.util.Date"/>
+	<field name="salaryRate" class="java.math.BigDecimal"/>
+	<field name="basicSalaryInsurance" class="java.math.BigDecimal"/>
+	<field name="basicSalary" class="java.math.BigDecimal"/>
+	<field name="statusName" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="50" splitType="Stretch">
+			<staticText>
+				<reportElement style="Title" x="-20" y="0" width="2000" height="50" uuid="ff69098b-9e1d-4457-bb29-470a1f3f714e"/>
+				<text><![CDATA[Danh sách cán bộ nhân viên]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
+			<staticText>
+				<reportElement style="header" x="-20" y="0" width="50" height="30" uuid="1af577d2-ba7d-47de-8d03-7f2ab0497116"/>
+				<text><![CDATA[STT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="30" y="0" width="137" height="30" uuid="d358e6ed-c404-4d4b-a797-51f5749a4d06"/>
+				<text><![CDATA[Mã nhân viên]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="167" y="0" width="163" height="30" uuid="5844b31f-79f8-4610-ad04-246f39bfdc9d"/>
+				<text><![CDATA[Họ và tên]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="330" y="0" width="163" height="30" uuid="ed24922a-9f0c-4345-9333-2d6073a6cde5"/>
+				<text><![CDATA[Số hợp đồng]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="493" y="0" width="163" height="30" uuid="f9b85229-8c99-43c1-a6bf-c267eb377fcf"/>
+				<text><![CDATA[Loại hợp đồng]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="656" y="0" width="163" height="30" uuid="e369428b-eb1c-4487-ad33-5c3f3d23ded5"/>
+				<text><![CDATA[Mô tả]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="819" y="0" width="163" height="30" uuid="66ee581f-8603-4fdc-969f-1a6bfadb59aa"/>
+				<text><![CDATA[Ngày ký]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="982" y="0" width="163" height="30" uuid="2e537515-0003-4b4a-a00c-64250ce11b3f"/>
+				<text><![CDATA[Ngày hiệu lực]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="1145" y="0" width="163" height="30" uuid="625f35d6-e26b-48a1-9829-bcb203aeee4e"/>
+				<text><![CDATA[Ngày hết hiệu lực]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="1308" y="0" width="163" height="30" uuid="81ed9c82-2848-4919-bb48-a9bf1fb33518"/>
+				<text><![CDATA[Tỷ lệ hưởng lương]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="1471" y="0" width="163" height="30" uuid="fa3e421d-6437-4cb0-975b-68f5bfb94375"/>
+				<text><![CDATA[Lương tính bảo hiểm]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="1634" y="0" width="163" height="30" uuid="b0dcb07d-d6f8-4180-af01-45bdf9c64b41"/>
+				<text><![CDATA[Lương cơ bản]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="1797" y="0" width="163" height="30" uuid="71caa2ff-b899-4a3e-8d5b-e6c51c5e6b32"/>
+				<text><![CDATA[Trạng thái]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement key="" style="stt" x="-20" y="0" width="50" height="30" uuid="ce9cb385-f681-4e2b-a107-3e78225a5bd0"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="30" y="0" width="137" height="30" uuid="fd844d79-f9b6-4496-9b4f-2e82e035c45f"/>
+				<textFieldExpression><![CDATA[$F{employeeCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="167" y="0" width="163" height="30" uuid="6759bc10-cfc4-4385-89ea-ae38b915356b"/>
+				<textFieldExpression><![CDATA[$F{fullName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="330" y="0" width="163" height="30" uuid="d89c4c23-56b1-41ad-869d-9ab6ba63c3d5"/>
+				<textFieldExpression><![CDATA[$F{contractNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="493" y="0" width="163" height="30" uuid="4ff19ee8-5996-40d5-b531-9ac410b48a65"/>
+				<textFieldExpression><![CDATA[$F{contractType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="656" y="0" width="163" height="30" uuid="4a4befcb-0754-47b1-81fb-be5da32a041b"/>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="date" x="819" y="0" width="163" height="30" uuid="0a0264a0-6ba1-4c13-91ca-628ae30e1259"/>
+				<textFieldExpression><![CDATA[$F{contractSignDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="date" x="982" y="0" width="163" height="30" uuid="c90afa0c-f682-42ee-9382-8a3f59b3e182"/>
+				<textFieldExpression><![CDATA[$F{contractEffectiveDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="date" x="1145" y="0" width="163" height="30" uuid="0a7f8109-636f-436e-8c54-a566d3183241"/>
+				<textFieldExpression><![CDATA[$F{contractEndDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="1308" y="0" width="163" height="30" uuid="3c7d7975-8477-4680-9cd6-831a9be80c3d"/>
+				<textFieldExpression><![CDATA[$F{salaryRate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="number" x="1471" y="0" width="163" height="30" uuid="79b635b8-4c71-4976-90d0-1cca2c2efe51"/>
+				<textFieldExpression><![CDATA[$F{basicSalaryInsurance}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="number" x="1634" y="0" width="163" height="30" uuid="6939b4ca-f944-4d2f-82fd-cca827e36be4"/>
+				<textFieldExpression><![CDATA[$F{basicSalary}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="1797" y="0" width="163" height="30" uuid="88d34aa1-7901-4c62-9b55-b20600519dda"/>
+				<textFieldExpression><![CDATA[$F{statusName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

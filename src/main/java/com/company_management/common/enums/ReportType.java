@@ -18,7 +18,7 @@ public enum ReportType {
     private String description;
 
     public static ReportType findByCode(String code) {
-        return Arrays.asList(values()).stream()
+        return Arrays.stream(values())
                 .filter(t -> t.getCode().equalsIgnoreCase(code))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("status = " + code + " isn't defined!!!"));

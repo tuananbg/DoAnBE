@@ -8,7 +8,6 @@
             background-color: #f9f9f9;
             color: #333;
         }
-
         .title {
             font-size: 22px;
             font-weight: bold;
@@ -17,7 +16,6 @@
             padding: 12px 20px;
             border-radius: 5px 5px 0 0;
         }
-
         table {
             width: 100%;
             table-layout: fixed;
@@ -27,28 +25,29 @@
             border-radius: 0 0 5px 5px;
             overflow: hidden;
         }
-
         td {
             padding: 12px 16px;
             border: 1px solid #ddd;
             vertical-align: top;
         }
-
         tr:nth-child(even) {
             background-color: #f2f6fc;
         }
-
         .footer {
             margin-top: 20px;
             font-style: italic;
         }
+        .note {
+            font-size: 12px;
+            color: #555;
+            font-style: italic;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
-
 <p class="title">Thông báo đơn xin nghỉ phép</p>
 <p th:text="'Kính gửi: ' + ${reviewerName}"></p>
-
 <table>
     <tr>
         <td>Người gửi đơn</td>
@@ -79,8 +78,8 @@
         <td th:text="${description}"></td>
     </tr>
 </table>
-
 <p class="footer">Trân trọng cảm ơn!</p>
-
+<p class="note">Vui lòng không phản hồi email này, đây là email được gửi tự động từ hệ thống HRM.
+    Mọi thắc mắc trong quá trình thực hiện, vui lòng liên hệ đầu mối tại Phòng Nhân sự & Đào tạo để được hướng dẫn.</p>
 </body>
 </html>

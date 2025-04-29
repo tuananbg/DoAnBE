@@ -1,4 +1,4 @@
-package com.company_management.dto.response.pa;
+package com.company_management.dto.report;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

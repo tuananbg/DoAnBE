@@ -3,10 +3,7 @@ package com.company_management.service.common.impl;
 import com.company_management.common.AppConstants;
 import com.company_management.common.Constants;
 import com.company_management.common.enums.EmailTemplate;
-import com.company_management.entity.AttendanceLeave;
-import com.company_management.entity.AttendanceOt;
-import com.company_management.entity.Employee;
-import com.company_management.entity.EmployeeInfo;
+import com.company_management.entity.*;
 import com.company_management.exception.AppException;
 import com.company_management.repository.AttendanceLeaveRepository;
 import com.company_management.repository.AttendanceOTRepository;
@@ -39,7 +36,7 @@ public class SendEmailServiceImpl implements SendEmailService {
     private final EmployeeService employeeService;
 
     @Override
-    public void sendEmail(String code, EmailTemplate emailTemplate, long id) {
+    public void sendEmailAttendance(String code, EmailTemplate emailTemplate, long id) {
         Employee employee = employeeRepository.findByCode(code).orElse(null);
         boolean hasSuccess = false;
         if (employee != null) {
@@ -49,6 +46,35 @@ public class SendEmailServiceImpl implements SendEmailService {
                 if (email != null) {
                     try {
                         String processedContent = processTemplateContent(emailTemplate, id);
+                        MimeMessage message = getMimeMessage();
+                        MimeMessageHelper helper = new MimeMessageHelper(message, true, UTF_8_ENCODING);
+                        helper.setPriority(1);
+                        helper.setSubject(emailTemplate.getSubject());
+                        helper.setTo(email);
+                        helper.setText(processedContent, true);
+                        emailSender.send(message);
+                        hasSuccess = true;
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+        }
+        if (!hasSuccess){
+            throw new AppException(AppConstants.EMAIL_SEND_CODE_FL1, AppConstants.EMAIL_SEND_MESS_FL1);
+        }
+    }
+
+    @Override
+    public void sendEmailForAccount(Account account,EmailTemplate emailTemplate) {
+        Employee employee = account.getEmployee();
+        boolean hasSuccess = false;
+        if (employee != null) {
+            EmployeeInfo employeeInfo = employee.getEmployeeInfo();
+            if (employeeInfo != null) {
+                String email = employeeInfo.getEmail();
+                if (email != null) {
+                    try {
+                        String processedContent = processTemplateCreateAccountSuccess(account,emailTemplate);
                         MimeMessage message = getMimeMessage();
                         MimeMessageHelper helper = new MimeMessageHelper(message, true, UTF_8_ENCODING);
                         helper.setPriority(1);
@@ -133,5 +159,37 @@ public class SendEmailServiceImpl implements SendEmailService {
             params.put("descriptionOt",attendanceOt.getDescriptionOt());
         }
         return params;
+    }
+
+    public String processTemplateCreateAccountSuccess(Account account,EmailTemplate emailTemplate) {
+        Context context = new Context();
+        Map<String, Object> value;
+        switch (emailTemplate) {
+            case TEMPLATE_CREATE_ACCOUNT_SUCCESS -> value = processValueTemplateCreateAccountSuccess(account);
+            case CODE_REGISTER_PROVIDER -> value = processValueTemplateResetPassword(account);
+            default -> value = null;
+        }
+
+        context.setVariables(value);
+        return templateEngine.process(emailTemplate.getTemplate(), context);
+    }
+
+    private Map<String, Object> processValueTemplateCreateAccountSuccess(Account account) {
+        Map<String, Object> value = new HashMap<>();
+        Employee employee = account.getEmployee();
+        if (employee != null) {
+            value.put("fullName", employee.getFullName());
+            value.put("code", employee.getCode());
+        }
+        value.put("account",account.getAccount());
+        value.put("password",AppConstants.DEFAULT_PASSWORD);
+        return value;
+    }
+
+    private Map<String, Object> processValueTemplateResetPassword(Account account) {
+        Map<String,Object> value = new HashMap<>();
+        value.put("otp",account.getOtp());
+        return value;
+
     }
 }

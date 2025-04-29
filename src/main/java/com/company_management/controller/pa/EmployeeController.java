@@ -116,7 +116,7 @@ public class EmployeeController {
     @GetMapping(value = "/download-xlsx")
     public ResponseEntity<Resource> exportExcel() {
         byte[] bytes = jasperReportService.employeeFullInformation();
-        String fileName = "DTDI HRM_Danh sach CBNV_ " + CommonUtils.getCurrentDate("ddMMyyyy") + "." + ReportType.XLSX.getCode();
+        String fileName = "[DTDI] HRM_Danh sach CBNV_ " + CommonUtils.getCurrentDate("ddMMyyyy") + "." + ReportType.XLSX.getCode();
         return jasperReportService.baseDownload(bytes,fileName);
     }
 

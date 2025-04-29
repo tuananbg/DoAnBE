@@ -83,7 +83,7 @@ public class AttendanceOTServiceImpl implements AttendanceOTService {
         attendanceOT.setStatus(TableTabType.TODO.getCode());
         attendanceOTRepository.save(attendanceOT);
 
-        sendEmailService.sendEmail(request.getFollowCode(), EmailTemplate.TEMPLATE_ATTENDANCE_OT,attendanceOT.getId() );
+        sendEmailService.sendEmailAttendance(request.getFollowCode(), EmailTemplate.TEMPLATE_ATTENDANCE_OT,attendanceOT.getId() );
     }
 
     @Override

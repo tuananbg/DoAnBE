@@ -45,16 +45,16 @@ public class PositionController {
         return BaseResponse.ok(positionService.getListByStatus(status,keyword,page));
     }
 
-//    @PutMapping
-//    public ResultResp<Object> updatePosition(@Valid @RequestBody PositionDTO positionDTO) {
-//        positionService.createOrUpdate(positionDTO);
-//        return ResultResp.success(ErrorCode.UPDATED_OK, null);
-//    }
+    @PutMapping("/update")
+    public BaseResponse<Object> updatePosition(@Valid @RequestBody RequestPositionDTO request) {
+        positionService.update(request);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202, AppConstants.UPDATE_SUCCESS_MESS_202);
+    }
 
-    @DeleteMapping("/delete/{id}")
-    public ResultResp<Object> deletePosition(@PathVariable("id") Long id) {
-        positionService.deletePosition(id);
-        return ResultResp.success(ErrorCode.DELETED_OK, null);
+    @PostMapping("/disable/{positionCode}")
+    public BaseResponse<Object> disable(@PathVariable("positionCode") String positionCode) {
+        positionService.disable(positionCode);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202, AppConstants.UPDATE_SUCCESS_MESS_202);
     }
 //
 //    @PostMapping(value = "/export")

@@ -52,7 +52,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void createAccount(EmployeeAccountRequestDTO requestDTO) throws UnsupportedEncodingException {
-        Employee employee = getEmployeeByCode(requestDTO.getCode());
+        Employee employee = getEmployeeByCode(requestDTO.getEmployeeCode());
 
         Employee employeePrivateEmail = employeeRepository.findByEmployeeInfoEmail(requestDTO.getEmail()).orElse(null);
         if (employeePrivateEmail != null) {
@@ -104,7 +104,7 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
-    public void createNewAccount(String code, Employee emp) {
+    public void createNewAccount(String userName, Employee emp) {
         //get config password expired date
         int config = ConfigDataCode.SYSTEM_EXPIRED_PASSWORD;
         Calendar cal = Calendar.getInstance();
@@ -112,7 +112,8 @@ public class AccountServiceImpl implements AccountService {
         cal.set(Calendar.DATE, config);
 
         Account acc = new Account();
-        acc.setCode(code);
+        acc.setCode(emp.getCode());
+        acc.setAccount(userName);
         acc.setPassword(passwordEncoder.encode(AppConstants.DEFAULT_PASSWORD));
         acc.setEmployee(emp);
         acc.setStatus(EMPLOYMENT.getCode());
@@ -121,7 +122,7 @@ public class AccountServiceImpl implements AccountService {
 
         accountRepository.save(acc);
 
-        sendEmailService.sendEmailForAccount(acc, EmailTemplate.TEMPLATE_EMPLOYEE_CREATE_ACCOUNT);
+        sendEmailService.sendEmailForAccount(acc, EmailTemplate.TEMPLATE_CREATE_ACCOUNT_SUCCESS);
 
     }
 

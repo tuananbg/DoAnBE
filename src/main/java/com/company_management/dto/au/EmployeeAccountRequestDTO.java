@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class EmployeeAccountRequestDTO implements Serializable {
 
     @NotNull
-    private String code;
+    private String employeeCode;
 
     @NotNull
     private String email;

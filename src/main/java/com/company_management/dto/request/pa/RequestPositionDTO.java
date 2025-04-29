@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestPositionDTO {
+    private Long id;
 
     //Tên chức danh
     private String positionName;

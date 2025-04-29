@@ -20,5 +20,9 @@ public class ResponsePositionDTO {
 
     private String departmentName;
 
+    private String positionCategoryName;
+
+    private String jobGroupName;
+
     private Integer status;
 }

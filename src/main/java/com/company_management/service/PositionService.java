@@ -16,7 +16,9 @@ public interface PositionService {
 
     void create(RequestPositionDTO positionDTO);
 
-    void deletePosition(Long id);
+    void update(RequestPositionDTO positionDTO);
+
+    void disable(String positionCode);
 
     ResponsePage<ResponsePositionDTO> getListByStatus(ObjectStatus status,String keyword, RequestPage page);
 

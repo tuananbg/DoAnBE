@@ -4,7 +4,10 @@ import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.entity.Department;
+import com.company_management.entity.PositionCategory;
 import com.company_management.repository.DepartmentRepository;
+import com.company_management.repository.JobGroupRepository;
+import com.company_management.repository.PositionCategoryRepository;
 import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.request.pa.RequestPositionDTO;
 import com.company_management.dto.response.pa.ResponsePositionDTO;
@@ -28,11 +31,13 @@ public class PositionServiceImpl implements PositionService {
 
     private final PositionRepository positionRepository;
     private final DepartmentRepository departmentRepository;
+    private final PositionCategoryRepository positionCategoryRepository;
+    private final JobGroupRepository jobGroupRepository;
 
     @Override
     @Transactional(readOnly = true)
     public List<ResponsePositionDTO> getAllPositionSelection() {
-        List<Position> positions = positionRepository.findAll();
+        List<Position> positions = positionRepository.findByStatus(ObjectStatus.ACTIVE.getCode());
         return positions.stream()
                 .map(item -> MapperUtils.map(item, ResponsePositionDTO.class))
                 .toList();
@@ -59,15 +64,28 @@ public class PositionServiceImpl implements PositionService {
         Department department = departmentRepository.findByCode(request.getDepartmentCode())
                 .orElseThrow(()-> new AppException("ERR1","Mã chức danh không tồn tại trong hệ thống!") );
         position.setDepartment(department);
+        positionCategoryRepository.findByCode(request.getPositionCategory()).ifPresent(position::setPositionCategory);
+        jobGroupRepository.findByCode(request.getJobGroup()).ifPresent(position::setJobGroup);
+        positionRepository.save(position);
+    }
+
+    @Override
+    public void update(RequestPositionDTO request) {
+        Position position = positionRepository.findById(request.getId()).orElseThrow(()-> new RuntimeException("Chức danh không tồn tại trong hệ thống"));
+        MapperUtils.mapOnlyNotNullProperty(request, position);
+        Department department = departmentRepository.findByCode(request.getDepartmentCode())
+                .orElseThrow(()-> new AppException("ERR1","Mã chức danh không tồn tại trong hệ thống!") );
+        position.setDepartment(department);
+        positionCategoryRepository.findByCode(request.getPositionCategory()).ifPresent(position::setPositionCategory);
+        jobGroupRepository.findByCode(request.getJobGroup()).ifPresent(position::setJobGroup);
         positionRepository.save(position);
     }
 
     @Transactional
-    public void deletePosition(Long id) {
-        log.debug("// Xóa chức vụ: {}", id);
-        if (positionRepository.deleteById(id, CommonUtils.getUserLoginName()) <= 0) {
-            throw new AppException("ERR01", "Không tìm thấy chức vụ!");
-        }
+    public void disable(String positionCode) {
+        Position position = positionRepository.findByPositionCode(positionCode).orElseThrow(()-> new RuntimeException("Chức danh không tồn tại trong hệ thống"));
+        position.setStatus(ObjectStatus.INACTIVE.getCode());
+        positionRepository.save(position);
     }
 
     @Override
@@ -84,6 +102,8 @@ public class PositionServiceImpl implements PositionService {
                             if (department != null) {
                                 response.setDepartmentName(department.getDepartmentName());
                             }
+                            response.setJobGroupName(item.getJobGroup()!= null ? item.getJobGroup().getName() : null);
+                            response.setPositionCategoryName(item.getPositionCategory() != null ? item.getPositionCategory().getName() : null);
                             return response;
                         }
                 ).toList();

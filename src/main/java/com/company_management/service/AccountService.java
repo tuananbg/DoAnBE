@@ -9,7 +9,6 @@ import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.pa.UserCustomEmployeeRequest;
 import com.company_management.dto.response.*;
 import com.company_management.dto.response.au.ResponseAccountListDTO;
-import com.company_management.dto.response.au.ResponseLoginDTO;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;

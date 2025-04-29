@@ -287,26 +287,6 @@ CREATE TABLE `EMPLOYEE_CONTRACTS` (
 -- Thêm COMMENT cho các cột trong MySQL
 ALTER TABLE `EMPLOYEE_CONTRACTS` COMMENT 'Bảng lưu thông tin hợp đồng của nhân viên';
 
-CREATE TABLE `MENU` (
-  `ID`          BIGINT NOT NULL AUTO_INCREMENT,
-  `CODE`        VARCHAR(255) UNIQUE COMMENT 'Mã menu (duy nhất)',
-  `NAME`        VARCHAR(255) COMMENT 'Tên hiển thị của menu',
-  `ICON`        VARCHAR(255) COMMENT 'Tên icon',
-  `PARENT_ID`   BIGINT DEFAULT NULL COMMENT 'ID menu cha',
-  `MENU_LEVEL`  INT DEFAULT 1 COMMENT 'Cấp độ menu (1: menu chính, 2: menu con)',
-  `ACTIVE`      TINYINT(1) DEFAULT 1 COMMENT '1: hiển thị, 0: ẩn',
-  `ORDER_BY`    INT DEFAULT 0 COMMENT 'Thứ tự sắp xếp',
-  `TYPE`        VARCHAR(255) COMMENT 'Loại menu: MODULE, LINK, ACTION,...',
-  `URL`         VARCHAR(255) COMMENT 'Đường dẫn tương ứng',
-  PRIMARY KEY (`ID`),
-  FOREIGN KEY (`PARENT_ID`) REFERENCES `MENU`(`ID`) ON DELETE SET NULL
-) ENGINE=InnoDB 
-  DEFAULT CHARSET=utf8mb4 
-  COLLATE=utf8mb4_unicode_ci 
-  COMMENT='Bảng lưu cấu trúc menu hệ thống';
-
-
-
 DROP TABLE IF EXISTS `PROJECT`;
 
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -496,29 +476,6 @@ CREATE TABLE `QUALIFICATION` (
 
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-
-CREATE TABLE `HISTORY_SM` (
-  `ID`             BIGINT NOT NULL AUTO_INCREMENT,
-  `IP`             VARCHAR(255) COMMENT 'Địa chỉ IP thực hiện hành động',
-  `ACTION`         VARCHAR(255) COMMENT 'Hành động thực hiện',
-  `CONTENT`        TEXT COMMENT 'Nội dung chi tiết (chuyển từ CLOB)',
-  `TYPE`           INT COMMENT 'Loại hành động',
-  `YMD`            INT COMMENT 'Ngày định dạng YYYMMDD',
-  `SOURCE_SYSTEM`  VARCHAR(255) COMMENT 'Nguồn hệ thống gọi ghi log',
-  `CREATED_BY`     VARCHAR(255) COMMENT 'Người tạo log',
-  `CREATED_DATE`   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `MODIFIED_BY`    VARCHAR(255) DEFAULT NULL,
-  `MODIFIED_DATE`  TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `EMPLOYEE_ID`    BIGINT DEFAULT NULL,
-  `REF_ID`         BIGINT DEFAULT NULL,
-  `ROLE_ID`        BIGINT DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  CONSTRAINT `FK_HISTORY_EMPLOYEE` FOREIGN KEY (`EMPLOYEE_ID`) REFERENCES `EMPLOYEE`(`ID`) ON DELETE SET NULL,
-  CONSTRAINT `FK_HISTORY_ROLE` FOREIGN KEY (`ROLE_ID`) REFERENCES `ROLE`(`ID`) ON DELETE SET NULL
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4 
-  COLLATE=utf8mb4_unicode_ci 
-  COMMENT='Lưu lịch sử thao tác hệ thống (System Management)';
 
 
 DROP TABLE IF EXISTS `WAGE`;

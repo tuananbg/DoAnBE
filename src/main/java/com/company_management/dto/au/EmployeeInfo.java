@@ -26,11 +26,11 @@ public class EmployeeInfo implements UserDetails {
 
     private transient Account account;
 
-    private transient List<RoleDTO> positionRoleDepartment;
+    private transient List<ResponseRoleDTO> positionRoleDepartment;
 
     private String token;
 
-    public EmployeeInfo(Employee employee, Set<Role> role, String email, List<RoleDTO> positionRoleDepartment,
+    public EmployeeInfo(Employee employee, Set<Role> role, String email, List<ResponseRoleDTO> positionRoleDepartment,
                         Account account) {
         this.employee = employee;
         this.roles = role;
@@ -115,7 +115,7 @@ public class EmployeeInfo implements UserDetails {
         return this.email;
     }
 
-    public List<RoleDTO> getPositionRole() {
+    public List<ResponseRoleDTO> getPositionRole() {
         return this.positionRoleDepartment;
     }
 

@@ -135,8 +135,8 @@ public class AccountServiceImpl implements AccountService {
     public void lockEmployee(String employeeCode) {
         Account account = accountRepository.findByEmployeeCode(employeeCode).orElseThrow(() -> new AppException("ERR01", "Người dùng không tồn tại"));
 
-        if (EMPLOYMENT.getCode().equals(account.getStatus())) {
-            account.setStatus(EmploymentStatus.LOCK.getCode());
+        if (AccountStatusEnum.ACTIVE.getCode().equals(account.getStatus())) {
+            account.setStatus(AccountStatusEnum.LOCK.getCode());
             accountRepository.save(account);
         } else {
             throw new AppException("ERR02", "Người dùng không ở trạng thái có thể bị khóa");
@@ -148,8 +148,8 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = accountRepository.findByEmployeeCode(employeeCode).orElseThrow(() -> new AppException("ERR01", "Người dùng không tồn tại"));
 
-        if (EmploymentStatus.LOCK.getCode().equals(account.getStatus())) {
-            account.setStatus(EMPLOYMENT.getCode());
+        if (AccountStatusEnum.LOCK.getCode().equals(account.getStatus())) {
+            account.setStatus(AccountStatusEnum.ACTIVE.getCode());
 
             accountRepository.save(account);
         } else {

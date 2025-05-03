@@ -4,7 +4,7 @@ import com.company_management.common.enums.AuthorMessage;
 import com.company_management.common.enums.ConfigDataCode;
 import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.dto.au.EmployeeInfo;
-import com.company_management.dto.au.RoleDTO;
+import com.company_management.dto.au.ResponseRoleDTO;
 import com.company_management.entity.Account;
 import com.company_management.entity.Employee;
 import com.company_management.entity.Role;
@@ -50,7 +50,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         Set<Role> roles = new HashSet<>();
-        List<RoleDTO> positionRoleDepartment = new ArrayList<>();
+        List<ResponseRoleDTO> positionRoleDepartment = new ArrayList<>();
 
         if (!account.getEmployee().getRoles().isEmpty()) {
             roles.addAll(account.getEmployee().getRoles().stream().filter(r -> Boolean.TRUE.equals(r.getActive()))

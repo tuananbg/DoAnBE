@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum AccountStatusEnum {
-    LOCK(0, "LOCK", "Khóa"),
     ACTIVE(1, "ACTIVE", "Hoạt động"),
+    LOCK(2, "LOCK", "Khóa"),
     ;
 
     @JsonValue

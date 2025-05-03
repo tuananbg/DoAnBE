@@ -13,5 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class RequestAddRoleDTO {
     private String employeeCode;
+    private String email;
     private List<String> roleCodes;
 }

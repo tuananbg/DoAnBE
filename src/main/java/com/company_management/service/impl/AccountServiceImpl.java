@@ -5,7 +5,6 @@ import com.company_management.common.enums.AccountStatusEnum;
 import com.company_management.common.enums.ConfigDataCode;
 import com.company_management.common.enums.EmailTemplate;
 import com.company_management.common.enums.EmploymentStatus;
-import com.company_management.dto.au.ChangePasswordRequest;
 import com.company_management.dto.au.EmployeeAccountRequestDTO;
 import com.company_management.dto.au.RequestAddRoleDTO;
 import com.company_management.dto.common.RequestPage;
@@ -13,11 +12,9 @@ import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.response.*;
 import com.company_management.dto.response.au.AdminRoleDTO;
 import com.company_management.dto.response.au.ResponseAccountListDTO;
-import com.company_management.dto.response.au.ResponseLoginDTO;
 import com.company_management.entity.*;
 import com.company_management.exception.AppException;
 import com.company_management.exception.BadRequestException;
-import com.company_management.dto.request.pa.UserCustomEmployeeRequest;
 import com.company_management.repository.*;
 import com.company_management.service.AccountService;
 import com.company_management.service.EmployeeService;
@@ -34,7 +31,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.company_management.common.enums.EmploymentStatus.EMPLOYMENT;
 
 
 @Service
@@ -52,7 +48,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void createAccount(EmployeeAccountRequestDTO requestDTO) throws UnsupportedEncodingException {
-        Employee employee = getEmployeeByCode(requestDTO.getEmployeeCode());
+        Employee employee = employeeService.getEmployee(requestDTO.getEmployeeCode());
 
         Employee employeePrivateEmail = employeeRepository.findByEmployeeInfoEmail(requestDTO.getEmail()).orElse(null);
         if (employeePrivateEmail != null) {
@@ -89,11 +85,11 @@ public class AccountServiceImpl implements AccountService {
         if (account != null) {
             switch (Objects.requireNonNull(employmentStatus)) {
                 case EMPLOYMENT:
-                    account.setStatus(EMPLOYMENT.getCode());
+                    account.setStatus(AccountStatusEnum.ACTIVE.getCode());
                     break;
                 case LOCK:
                 case RETIRED:
-                    account.setStatus(EmploymentStatus.LOCK.getCode());
+                    account.setStatus(AccountStatusEnum.LOCK.getCode());
                     break;
                 default:
                     break;
@@ -116,7 +112,7 @@ public class AccountServiceImpl implements AccountService {
         acc.setAccount(userName);
         acc.setPassword(passwordEncoder.encode(AppConstants.DEFAULT_PASSWORD));
         acc.setEmployee(emp);
-        acc.setStatus(EMPLOYMENT.getCode());
+        acc.setStatus(AccountStatusEnum.ACTIVE.getCode());
         acc.setNumPwWrong(0);
         acc.setPwExpDate(cal.getTime());
 
@@ -158,7 +154,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<String> addEmployeeRole(RequestAddRoleDTO request) {
+    public void addEmployeeRole(RequestAddRoleDTO request) {
         List<String> result = new ArrayList<>();
         Employee employee = employeeService.getEmployee(request.getEmployeeCode());
         employee.getRoles().forEach(r -> result.add(r.getCode()));
@@ -172,34 +168,7 @@ public class AccountServiceImpl implements AccountService {
             employee.setRoles(newRoles);
             employeeRepository.save(employee);
         }
-        return result;
     }
-
-    @Override
-    public Boolean removeEmployeeRole(String employeeCode, String RoleCode) {
-
-        Employee employee = employeeService.getEmployee(employeeCode);
-        Role role = roleRepository.findByCode(RoleCode).orElseThrow(() -> new AppException("ERR04", "Vai trò không tồn tại"));
-        Set<Role> roleList = employee.getRoles();
-
-        // Kiểm tra nếu role có trong roleList thì xoa vào
-        if (roleList.contains(role)) {
-            roleList.remove(role);
-            // Cập nhật lại employee với danh sách role đã được thêm mới
-            employee.setRoles(roleList);
-            employeeRepository.save(employee);
-            // Xu ly neu nguoi dung khong con role nao
-            boolean checkRole = employee.getRoles() != null;
-
-            if (!checkRole) {
-                lockEmployee(employeeCode);
-            }
-            return true;
-        } else {
-            throw new AppException("ERR05", "Vai trò không tồn tại trong danh sách");
-        }
-    }
-
 
     @Override
     public ResponsePage<ResponseAccountListDTO> getList(AccountStatusEnum status, String keyword, RequestPage page) {
@@ -248,58 +217,6 @@ public class AccountServiceImpl implements AccountService {
         ResponseAccountRole responseAccountRole = new ResponseAccountRole();
         responseAccountRole.setId(account.getId());
         return responseAccountRole;
-    }
-
-    @Override
-    @Transactional
-    public void editUserCustom(UserCustomEmployeeRequest userCustomEmployeeRequest) {
-    }
-
-    @Override
-    public Boolean changePassword(ChangePasswordRequest request) {
-        Account account = accountRepository.findByAccount(request.getAccount()).orElseThrow(() -> new RuntimeException("Tài khoản không tồn tại trong hệ thống"));
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new RuntimeException("Confirm Password not same!!!");
-        }
-        account.setPassword(passwordEncoder.encode(request.getPassword()));
-        accountRepository.save(account);
-        return true;
-    }
-
-    private Employee getEmployeeByCode(String code) {
-        return employeeRepository.findByCode(code).orElseThrow(
-                () -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
-    }
-
-    @Override
-    public Boolean checkVerifyCode(String otp) {
-        return accountRepository.existsByOtp(otp);
-
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void resendVerifyCode(String email) {
-        if (email.contains("@")) {
-            // case login by email
-            email = email.split("@")[0];
-        }
-        Account account = accountRepository.findByAccount(email).orElseThrow(() -> new RuntimeException("Tài khoản không tồn tại!"));
-        String verifyCode = generateCode();
-        account.setOtp(verifyCode);
-        accountRepository.save(account);
-        //Todo: Gui email code
-        sendEmailService.sendEmailForAccount(account,EmailTemplate.CODE_REGISTER_PROVIDER);
-    }
-
-    public String generateCode() {
-        int targetStringLength = 6;
-        Random random = new Random();
-
-        return random.ints(48, 58) // Chỉ lấy số từ '0' (48) đến '9' (57)
-                .limit(targetStringLength)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
     }
 
 }

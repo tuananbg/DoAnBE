@@ -1,9 +1,12 @@
 package com.company_management.service.au.impl;
 
+import com.company_management.common.AppConstants;
 import com.company_management.common.enums.AuthorMessage;
 import com.company_management.common.enums.ConfigDataCode;
+import com.company_management.common.enums.EmailTemplate;
 import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.config.AppConfig;
+import com.company_management.dto.au.ChangePasswordRequest;
 import com.company_management.dto.au.EmployeeInfo;
 import com.company_management.dto.au.RequestChangePasswordDTO;
 import com.company_management.dto.au.RequestLoginDTO;
@@ -13,6 +16,7 @@ import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;
 import com.company_management.repository.AccountRepository;
 import com.company_management.service.au.AuthorService;
+import com.company_management.service.common.SendEmailService;
 import com.company_management.utils.DateUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +26,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +39,8 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthenticationManager authenticationManager;
     private final JWTServiceImpl jwtService;
     private final HttpServletRequest req;
-    private final AccountRepository accountRepo;
+    private final AccountRepository accountRepository;
+    private final SendEmailService sendEmailService;
 
     private static final String ADMIM = "ADMIN";
 
@@ -67,6 +73,15 @@ public class AuthorServiceImpl implements AuthorService {
         result.setToken(token);
         result.setFullName(em.getFullName());
         result.setEmployeeCode(em.getCode());
+        result.setEmail(em.getEmployeeInfo().getEmail());
+        if (em.getRoles() != null) {
+            List<String> roleCodes = new ArrayList<>();
+           em.getRoles().forEach(role -> {
+               roleCodes.add(role.getCode());
+           });
+            result.setRoles(roleCodes);
+        }
+
         authenticate(userDetails.getUsername(), request.getPassword(), userDetails, token);
         return result;
     }
@@ -83,7 +98,7 @@ public class AuthorServiceImpl implements AuthorService {
         result.setToken(token);
         result.setFullName(EmployeeInfo.SUPER_ADMIN);
         result.setEmployeeCode(ADMIM);
-        result.setRoles(ADMIM);
+        result.setRoles(List.of(ADMIM));
         authenticate(userDetails.getUsername(), request.getPassword(), userDetails, token);
         return result;
     }
@@ -123,7 +138,7 @@ public class AuthorServiceImpl implements AuthorService {
             }
         } else {
             // get employee
-            Account em = accountRepo.findByAccountIgnoreCase(request.getAccount());
+            Account em = accountRepository.findByAccountIgnoreCase(request.getAccount());
             if (em == null) {
                 throw new AppException("ERR","Tài khoản không tồn tại");
             }
@@ -141,7 +156,7 @@ public class AuthorServiceImpl implements AuthorService {
 
             c.add(Calendar.DATE, ConfigDataCode.SYSTEM_EXPIRED_PASSWORD);
             em.setPwExpDate(c.getTime());
-            accountRepo.save(em);
+            accountRepository.save(em);
         }
     }
 
@@ -172,7 +187,7 @@ public class AuthorServiceImpl implements AuthorService {
             } else {
                 acc.setNumPwWrong(numPassWrong);
             }
-            accountRepo.saveAndFlush(acc);
+            accountRepository.saveAndFlush(acc);
             throw new AppException(AuthorMessage.WRONG_PASSWORD.getCode(),
                     String.format(AuthorMessage.WRONG_PASSWORD.getMessage(), numPassWrong, maxNumPassWrong));
         }
@@ -182,6 +197,48 @@ public class AuthorServiceImpl implements AuthorService {
                     AuthorMessage.EXPIRE_PASSWORD.getMessage());
         }
         acc.setNumPwWrong(0);
-        accountRepo.save(acc);
+        accountRepository.save(acc);
+    }
+
+    @Override
+    public Boolean changePassword(ChangePasswordRequest request) {
+        Account account = accountRepository.findByAccount(request.getAccount()).orElseThrow(() -> new RuntimeException("Tài khoản không tồn tại trong hệ thống"));
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new RuntimeException("Confirm Password not same!!!");
+        }
+        account.setPassword(passwordEncoder.encode(request.getPassword()));
+        accountRepository.save(account);
+        return true;
+    }
+
+    @Override
+    public Boolean checkVerifyCode(String otp) {
+        return accountRepository.existsByOtp(otp);
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void resendVerifyCode(String email) {
+        if (email.contains("@")) {
+            // case login by email
+            email = email.split("@")[0];
+        }
+        Account account = accountRepository.findByAccount(email).orElseThrow(() -> new RuntimeException("Tài khoản không tồn tại!"));
+        String verifyCode = generateCode();
+        account.setOtp(verifyCode);
+        accountRepository.save(account);
+        //Todo: Gui email code
+        sendEmailService.sendEmailForAccount(account, EmailTemplate.CODE_REGISTER_PROVIDER);
+    }
+
+    public String generateCode() {
+        int targetStringLength = 6;
+        Random random = new Random();
+
+        return random.ints(48, 58) // Chỉ lấy số từ '0' (48) đến '9' (57)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 }

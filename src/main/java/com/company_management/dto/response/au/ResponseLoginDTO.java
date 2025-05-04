@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,7 +18,7 @@ public class ResponseLoginDTO {
 
     private String employeeCode;
 
-    private String roles;
+    private List<String> roles;
 
     private String email;
 }

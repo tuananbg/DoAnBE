@@ -48,10 +48,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/api/v1/auth/register").permitAll();
                     auth.requestMatchers("/api/v1/auth/login").permitAll();
-//                    auth.requestMatchers("/api/v1/department").hasAuthority("ADMIN");
-//                    auth.anyRequest().authenticated();
-                    auth.anyRequest().permitAll();
+
+                    // 💥 Thêm các API không cần xác thực
+                    auth.requestMatchers("/api/v1/auth/resend-code/**").permitAll();
+                    auth.requestMatchers("/api/v1/auth/check-verify-code/**").permitAll();
+                    auth.requestMatchers("/api/v1/auth/change-password").permitAll();
+
+                    auth.requestMatchers("/api/v1/department").hasAuthority("ADMIN");
+
+                    // 🔐 Chặn tất cả còn lại
+                    auth.anyRequest().authenticated();
                 })
+
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

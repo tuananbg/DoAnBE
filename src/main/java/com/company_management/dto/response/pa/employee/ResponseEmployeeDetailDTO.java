@@ -51,10 +51,7 @@ public class ResponseEmployeeDetailDTO {
     //Địa chỉ thường trú
     private String permanentAddress;
 
-    //Địa chỉ hiện tại
-    private String currentAddress;
 
-    //
     private String identityNumber;
 
     //Só điện thoại
@@ -62,6 +59,4 @@ public class ResponseEmployeeDetailDTO {
 
     private String email;
 
-    //
-    private String nation;
 }

@@ -25,15 +25,19 @@ public class EmployeeInfo extends BaseEntity {
     @Column(name = "GENDER")
     private int gender;
 
+    //Nơi sinh
     @Column(name= "PLACE_OF_BIRTH")
     private String placeOfBirth;
 
+    //Mã số thuế
     @Column(name="TAX_CODE")
     private String taxCode;
 
+    //Số CMND/CCCD
     @Column(name = "INSURANCE_NUMBER")
     private String insuranceNumber;
 
+    //Số tài khoản
     @Column(name = "ACCOUNT_NUMBER")
     private String accountNumber;
 
@@ -44,18 +48,13 @@ public class EmployeeInfo extends BaseEntity {
     @Column(name = "PERMANENT_ADDRESS")
     private String permanentAddress;
 
-    //Địa chị hiện tại
-    @Column(name ="CURRENT_ADDRESS")
-    private String currentAddress;
-
+    //Số bảo hiểm
     @Column(name = "IDENTITY_NUMBER")
     private String identityNumber;
 
+    //Điện thoại
     @Column(name = "MOBILE")
     private String mobile;
-
-    @Column(name = "NATION")
-    private String nation;
 
     @OneToOne(mappedBy = "employeeInfo")
     private Employee employee;

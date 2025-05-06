@@ -33,9 +33,6 @@ public interface EmployeeService {
 
     void deleteEmployee(Long id);
 
-    ByteArrayInputStream exportExcel();
-
-//    void updateEmployeeStatus();
 
     ExportPdfEmployeeResponse exportPdf(Long userDetailId);
 

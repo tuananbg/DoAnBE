@@ -31,11 +31,8 @@ public class Employee extends BaseEntity {
     private EmployeeInfo employeeInfo;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "DEPARTMENT_ID")
-    private Department department;
-
-    @Column(name ="POSITION_CODE")
-    private String positionCode;
+    @JoinColumn(name = "POSITION_ID")
+    private Position position;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<EmployeeContracts> employeeContractsList;
@@ -46,4 +43,12 @@ public class Employee extends BaseEntity {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "employee_role_mapping", joinColumns = @JoinColumn(name = "employee_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "EMPLOYEE_ALLOWANCE",
+            joinColumns = @JoinColumn(name = "EMPLOYEE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "ALLOWANCE_ID")
+    )
+    private Set<Allowance> allowances;
 }

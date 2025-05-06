@@ -25,15 +25,15 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findAllByStatus(Integer status);
 
     @Query(value = "SELECT e FROM Employee e " +
-            "join Department d on e.department.id = d.id " +
-            "where e.department.id = :departmentId")
+            "JOIN Position p ON p.id = e.position.id " +
+            "join Department d on p.department.id = d.id " +
+            "where d.id = :departmentId")
     List<Employee> findAllByDepartment(@Param("departmentId") Long departmentId);
 
     @Query(value = "SELECT e FROM Employee e LEFT JOIN e.employeeInfo ei WHERE " +
             "(:keyword IS NULL OR " +
             "UPPER(e.code) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
             "UPPER(e.fullName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
-            "UPPER(e.positionCode) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
             "UPPER(COALESCE(ei.identityNumber, '')) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
             "(:keyword IS NULL OR COALESCE(DATE_FORMAT(ei.dateOfBirth, '%d'), '') = :keyword)) " +
             "AND e.status = :status " +

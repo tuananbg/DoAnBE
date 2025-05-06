@@ -1,6 +1,7 @@
 package com.company_management.entity;
 
 
+import com.company_management.common.Constants;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -71,7 +72,7 @@ public abstract class BaseEntity implements Serializable {
     @PrePersist
     protected void prePersist() {
         if (this.createdBy == null) {
-            this.createdBy = "admin";
+            this.createdBy = Constants.ADMIN;
         }
         if (this.createdDate == null) {
             this.createdDate = new Date();

@@ -1,4 +1,4 @@
-package com.company_management.dto.response;
+package com.company_management.dto.response.pa;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,12 +11,13 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseWageListDTO {
+public class ResponseAllowanceListDTO {
     private int index;
     private Long wageId;
-    private String wageName;
-    private Double wageBase; //so tiền phu cap
-    private String wageDescription;
+    private String allowanceCode;
+    private String allowanceName;
+    private Double allowanceBase; //so tiền phu cap
+    private String allowanceDescription;
     private Integer status;
     private String attachFile;  //file thong tin phu cap
     private Date createdDate;

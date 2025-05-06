@@ -71,18 +71,17 @@ public class EmployeeServiceImpl implements EmployeeService {
                     response.setId(item.getId());
                     response.setEmployeeCode(item.getCode());
                     response.setEmployeeName(item.getFullName());
-                    if (item.getDepartment() != null) {
-                        response.setDepartmentName(item.getDepartment().getDepartmentName());
+                    Position position = item.getPosition();
+                    if (position != null) {
+                        response.setPositionName(position.getPositionName());
                     }
-                    positionRepository.findByPositionCode(item.getPositionCode()).ifPresent(position -> response.setPositionName(position.getPositionName()));
-
-//                    response.setPositionName(item.getPositionName());
                     if (item.getEmployeeInfo() != null) {
                         EmployeeInfo employeeInfo = employeeInfoRepository.findById(item.getEmployeeInfo().getId()).orElse(null);
                         if (employeeInfo != null) {
                             response.setGenderName(Gender.fromCode(employeeInfo.getGender()).getName());
                             response.setPhone(employeeInfo.getMobile());
-                            response.setAddress(employeeInfo.getCurrentAddress());
+                            response.setPlaceOfBirth(employeeInfo.getPlaceOfBirth());
+                            response.setPlaceOfBirth(employeeInfo.getPlaceOfBirth());
                         }
                     }
                     return response;
@@ -123,10 +122,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         MapperUtils.map(employee, detailDTO);
         detailDTO.setEmployeeCode(employee.getCode());
         detailDTO.setEmployeeName(employee.getFullName());
-        if (employee.getDepartment() != null) {
-            detailDTO.setDepartmentName(employee.getDepartment().getDepartmentName());
+        Position position = employee.getPosition();
+        if (position != null){
+            detailDTO.setPositionName(position.getPositionName());
+            if (position.getDepartment() != null) {
+                detailDTO.setDepartmentName(position.getDepartment().getDepartmentName());
+            }
         }
-        positionRepository.findByPositionCode(employee.getPositionCode()).ifPresent(position -> detailDTO.setPositionName(position.getPositionName()));
 
         EmployeeInfo employeeInfo = employee.getEmployeeInfo();
         if (employeeInfo != null) {
@@ -144,17 +146,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = new Employee();
         MapperUtils.mapOnlyNotNullProperty(request, employee);
         employee.setStatus(ObjectStatus.ACTIVE.getCode());
-        if (request.getDepartmentCode() != null) {
-            Department department = departmentRepository.findByCode(request.getDepartmentCode()).orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
-            employee.setDepartment(department);
-        }
         if (request.getPositionCode() != null) {
             Position position = positionRepository.findByPositionCode(request.getPositionCode()).orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
-            employee.setPositionCode(position.getPositionCode());
+            employee.setPosition(position);
         }
 
         EmployeeInfo employeeInfo = new EmployeeInfo();
-
         MapperUtils.mapOnlyNotNullProperty(request, employeeInfo);
         employeeInfo.setDateOfBirth(request.getDateOfBirth());
         employeeInfoRepository.save(employeeInfo);
@@ -188,14 +185,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (userDetailDTO.getEmployeeCode() != null && !userDetailDTO.getEmployeeCode().equals(employee.getCode())) {
             Employee byEmployeeCode = getEmployee(userDetailDTO.getEmployeeCode());
             employee.setCode(userDetailDTO.getEmployeeCode());
-        }
-        if (userDetailDTO.getDepartmentId() != null) {
-            Department department = new Department();
-            if (userDetailDTO.getDepartmentId() != null) {
-                department = departmentRepository.findById(userDetailDTO.getDepartmentId()).orElseThrow(() ->
-                        new AppException(AppConstants.DEPARTMENT_CODE_002, AppConstants.DEPARTMENT_MESS_002));
-            }
-            employee.setDepartment(department);
         }
         //upload file ảnh
         if (avatarFile != null && avatarFile.getOriginalFilename() != null) {
@@ -231,52 +220,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public ByteArrayInputStream exportExcel() {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try (InputStream in = CommonUtils.getInputStreamByFileName("export-employee-template.xlsx")) {
-
-            List<Employee> employees = employeeRepository.findAllByStatus(EmploymentStatus.EMPLOYMENT.getCode());
-            Map<Long, String> departmentMap = MapperUtils.buildMap(departmentRepository.findAll(), Department::getId, Department::getDepartmentName);
-            Map<Long, String> positionMap = MapperUtils.buildMap(positionRepository.findAll(), Position::getId, Position::getPositionName);
-
-            AtomicInteger index = new AtomicInteger();
-            List<UserDetailExcelResponse> report = new ArrayList<>();
-            for (Employee employee : employees) {
-                UserDetailExcelResponse item = new UserDetailExcelResponse();
-                MapperUtils.map(employee, item);
-                if (employee.getDepartment() != null) {
-                    item.setDepartmentName(departmentMap.get(employee.getDepartment().getId()));
-                }
-                item.setIndex(index.incrementAndGet());
-                item.setGenderName(Gender.fromCode(item.getGender()).getName());
-                report.add(item);
-            }
-            Map<String, Object> beans = new HashMap<>();
-            beans.put("posLst", report);
-            beans.put("date", DateTimeUtils.convertDateToStringByPattern(new Date(), "dd/MM/yyyy HH:mm:ss"));
-            beans.put("total", report.size());
-            XLSTransformer transformer = new XLSTransformer();
-            Workbook workbook = transformer.transformXLS(in, beans);
-            workbook.write(byteArrayOutputStream);
-            byte[] exportInputStream = byteArrayOutputStream.toByteArray();
-            return new ByteArrayInputStream(exportInputStream);
-        } catch (Exception ex) {
-            log.error(ex.getMessage(), ex);
-            throw new AppException(AppConstants.EXPORT_FILE_EXCEL_CODE_001, AppConstants.EXPORT_FILE_EXCEL_MESS_001);
-        }
-    }
-
-//    @Override
-//    @Transactional
-//    public void updateEmployeeStatus() {
-//        List<UserDetail> employees = employeeRepository.findAll();
-//        for (UserDetail employee : employees) {
-//            employee.setIsActive(1);
-//        }
-//        employeeRepository.saveAll(employees);
-//    }
 
 
     @Override
@@ -288,7 +231,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void lockEmployee(Long id) {
         Employee employee = employeeRepository.findById(id).orElse(null);
         if (employee != null) {
-            employee.setStatus(0);
+            employee.setStatus(EmploymentStatus.LOCK.getCode());
             employeeRepository.save(employee);
         }
     }

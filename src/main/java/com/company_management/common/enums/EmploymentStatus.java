@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public enum EmploymentStatus {
     RETIRED(0, "RETIRED", "Nghỉ việc"),
     EMPLOYMENT(1, "EMPLOYMENT", "Đang làm việc"),
-    LOCK(2,"LOCK","Account đang bị khoá"),
+    LOCK(2,"LOCK","Vô hiệu"),
     ;
 
     @JsonValue

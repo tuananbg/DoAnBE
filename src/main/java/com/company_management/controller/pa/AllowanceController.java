@@ -1,5 +1,6 @@
 package com.company_management.controller.pa;
 
+import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ObjectError;
 import com.company_management.common.ResultResp;
@@ -10,8 +11,9 @@ import com.company_management.dto.WageDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
-import com.company_management.dto.response.ResponseWageListDTO;
-import com.company_management.service.WageService;
+import com.company_management.dto.request.pa.RequestAllowanceCreateDTO;
+import com.company_management.dto.response.pa.ResponseAllowanceListDTO;
+import com.company_management.service.AllowanceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,69 +32,69 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
-@RequestMapping("${apiPrefix}/wage")
+@RequestMapping("${apiPrefix}/allowance")
 @Slf4j
 @RequiredArgsConstructor
-public class WageController {
+public class AllowanceController {
 
-    private final WageService wageService;
+    private final AllowanceService allowanceService;
 
     @Value("${upload.path}")
     private String fileUpload;
 
     @PostMapping(value = "/create")
-    public ResultResp<Object> create(@ModelAttribute("file") MultipartFile file,
-                                     @ModelAttribute @Valid WageDTO wageDTO
+    public BaseResponse<Object> create(@ModelAttribute("file") MultipartFile file,
+                                     @ModelAttribute @Valid RequestAllowanceCreateDTO request
     ) {
-        wageService.add(file, wageDTO);
-        return ResultResp.success(ErrorCode.CREATED_OK);
+        allowanceService.create(file, request);
+        return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201,AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
     @PostMapping(value = "/createForEmployee")
     public ResultResp<Object> createForEmployee(@RequestBody @Valid UserDetailWageDTO userDetailWageDTO
     ) {
-        wageService.addForEmployee(userDetailWageDTO);
+        allowanceService.addForEmployee(userDetailWageDTO);
         return ResultResp.success(ErrorCode.CREATED_OK);
     }
 
     @GetMapping(value = "/list/{status}")
-    public BaseResponse<ResponsePage<ResponseWageListDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword,
-                                                                   @PathVariable("status") ObjectStatus status, RequestPage page) {
-        return BaseResponse.ok(wageService.getList(status, keyword, page));
+    public BaseResponse<ResponsePage<ResponseAllowanceListDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword,
+                                                                        @PathVariable("status") ObjectStatus status, RequestPage page) {
+        return BaseResponse.ok(allowanceService.getList(status, keyword, page));
     }
 
     @PostMapping(value = "/searchForEmployee")
     public ResultResp<Object> searchForEmployee(@RequestBody WageDTO wageDTO, Pageable pageable) {
-        return ResultResp.success(wageService.searchForEmployee(wageDTO, pageable));
+        return ResultResp.success(allowanceService.searchForEmployee(wageDTO, pageable));
     }
 
     @GetMapping(value = "/detail/{id}")
     public ResultResp<Object> detail(@PathVariable Long id) {
-        return ResultResp.success(wageService.detail(id));
+        return ResultResp.success(allowanceService.detail(id));
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public ResultResp<Object> update(@ModelAttribute("file") MultipartFile file,
-                                     @ModelAttribute @Valid WageDTO wageDTO) {
-        wageService.update(file, wageDTO);
+                                     @ModelAttribute @Valid RequestAllowanceCreateDTO request) {
+        allowanceService.update(file, request);
         return ResultResp.success(null);
     }
 
     @PutMapping("/updateForEmployee")
     public ResultResp<Object> updateForEmployee(@RequestBody @Valid UserDetailWageDTO userDetailWageDTO) {
-        wageService.updateForEmployee(userDetailWageDTO);
+        allowanceService.updateForEmployee(userDetailWageDTO);
         return ResultResp.success(null);
     }
 
-    @DeleteMapping("delete/{id}")
-    public ResultResp<Object> delete(@PathVariable Long id) {
-        wageService.deleteByIds(id);
-        return ResultResp.success(null);
+    @PutMapping("lock/{allowanceCode}")
+    public BaseResponse<Object> lock(@PathVariable String allowanceCode) {
+        allowanceService.lock(allowanceCode);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202,AppConstants.UPDATE_SUCCESS_MESS_202);
     }
 
     @DeleteMapping("deleteForEmployee/{id}")
     public ResultResp<Object> deleteForEmployee(@PathVariable Long id) {
-        wageService.deleteForEmployeeByIds(id);
+        allowanceService.deleteForEmployeeByIds(id);
         return ResultResp.success(null);
     }
 
@@ -121,7 +123,7 @@ public class WageController {
 
     @GetMapping("/employee-detail/{employeeCode}")
     private BaseResponse<ResponsePage<ResponseWageEmployeeDetailDTO>> getEmployeeDetail(@PathVariable("employeeCode") String employeeCode,RequestPage page) {
-        return BaseResponse.ok(wageService.getEmployeeWageDetails(employeeCode,page));
+        return BaseResponse.ok(allowanceService.getEmployeeWageDetails(employeeCode,page));
     }
 
 }

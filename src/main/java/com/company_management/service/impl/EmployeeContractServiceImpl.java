@@ -2,9 +2,11 @@ package com.company_management.service.impl;
 
 import com.company_management.common.enums.ContractStatusEnum;
 import com.company_management.common.enums.ContractType;
+import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
+import com.company_management.service.AccountService;
 import com.company_management.service.EmployeeService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.mapper.MapperUtils;
@@ -41,6 +43,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -51,6 +54,7 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
     private final EmployeeContractsRepository employeeContractRepository;
     private final EmployeeRepository employeeRepository;
     private final EmployeeService employeeService;
+    private final AccountService accountService;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -119,48 +123,6 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
         return responseEmployeeContractsDetail;
     }
 
-    @Override
-    @Transactional
-    public void update(MultipartFile file, ContractDTO contractDTO) {
-        EmployeeContracts contract = employeeContractRepository.findById(contractDTO.getContractId()).orElseThrow(
-                () -> new AppException("ERR01", "Không tìm mã hợp đồng này!"));
-        if (!DataUtils.isNullOrEmpty(contractDTO.getContractType())) {
-            contract.setContractType(contractDTO.getContractType());
-        }
-        if (!DataUtils.isNullOrEmpty(contractDTO.getStatus())) {
-            contract.setStatus(contractDTO.getStatus());
-        }
-        //upload file word
-        if (file != null && file.getOriginalFilename() != null) {
-            try {
-                String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-                if (fileName.contains("..")) {
-                    log.debug("File upload không tồn tại!");
-                    throw new AppException("ERO01", "Tên tệp tin không hợp lệ");
-                }
-                Path filePath = Paths.get(this.fileUpload + fileName);
-                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                if (!contract.getAttachFile().equals(filePath.toString())) {
-                    contract.setAttachFile(fileName);
-                }
-            } catch (NullPointerException e) {
-                log.error("File ảnh là null.", e);
-                throw new AppException("ERO02", "File là null");
-            } catch (IOException e) {
-                log.error("Lỗi xảy ra khi xử lý file", e);
-                throw new AppException("ERO02", "Lỗi xảy ra khi xử lý file");
-            }
-        }
-        employeeContractRepository.save(contract);
-    }
-
-    @Override
-    @Transactional
-    public void updateForEmployee(UserDetailContractDTO userDetailContractDTO) {
-        EmployeeContracts userDetailContract = employeeContractRepository.findById(userDetailContractDTO.getId()).orElseThrow(
-                () -> new AppException("ERR01", "Không tìm thấy mã hợp đồng cho nhân viên này!"));
-        MapperUtils.mapOnlyNotNullProperty(userDetailContractDTO, userDetailContract);
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -172,7 +134,7 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
             MapperUtils.map(request, contract);
             contract.setEmployee(employee);
             contract.setContractTypeDisplay(ContractType.fromCode(request.getContractType()).getName());
-            String termValue = termValueDisplay(request.getContractEffectiveDate(),request.getContractEndDate());
+            String termValue = termValueDisplay(request.getContractEffectiveDate(), request.getContractEndDate());
             contract.setContractTermDisplay(termValue);
             if (checkContractEndDateForNextMonth(contract.getContractEndDate())) {
                 contract.setStatus(ContractStatusEnum.ABOUT_TO_EXPIRE.getValue());
@@ -195,13 +157,13 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
         }
 
     }
+
     public static String termValueDisplay(Date startDate, Date endDate) {
         if (startDate == null && endDate == null) {
             return "0 ngày";
-        }
-        else if (startDate != null && endDate == null) {
+        } else if (startDate != null && endDate == null) {
             return "Vô thời hạn";
-        }else {
+        } else {
             LocalDate start = DateUtils.convertToLocalDate(startDate);
             LocalDate end = DateUtils.convertToLocalDate(endDate);
 
@@ -225,39 +187,39 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
 
     }
 
-    @Override
-    @Transactional
-    public void addForEmployee(UserDetailContractDTO userDetailContractDTO) {
-//        EmployeeContracts contract = employeeContractReponsitory.findById(userDetailContractDTO.getContractId()).orElseThrow(
-//                () -> new AppException("ERR01", "Không tìm mã hợp đồng này!")
-//        );
-//        UserDetail userDetail = userDetailRepository.findById(userDetailContractDTO.getUserDetailId()).orElseThrow(
-//                () -> new AppException("ERR01", "Không tìm mã nhân viên này!")
-//        );
-//        UserDetailContract userDetailContract = new UserDetailContract();
-//        userDetailContract.setContractId(contract.getId());
-//        userDetailContract.setUserDetailId(userDetail.getId());
-//        userDetailContract.setActiveDate(userDetailContractDTO.getActiveDate());
-//        userDetailContract.setExpiredDate(userDetailContractDTO.getExpiredDate());
-//        userDetailContract.setSignDate(userDetailContractDTO.getSignDate());
-//        userDetailContractRepository.save(userDetailContract);
-    }
 
     @Override
     public List<ResponseTotalDTO> getStatistical() {
         List<ResponseTotalDTO> responseTotalDTOList = new ArrayList<>();
-//        List<EmployeeContracts> employeeContracts = employeeContractRepository.findAllByIsActive(Status.ACTIVE.getCode());
-//        for (EmployeeContracts employeeContract: employeeContracts) {
-//
-//        }
-        for (int i = 0; i < 3; i++) {
-            ResponseTotalDTO response = new ResponseTotalDTO();
-            response.setValue(5);
-            response.setName(ContractType.from(i + 1).getName());
-            responseTotalDTOList.add(response);
+        List<EmployeeContracts> employeeContracts = employeeContractRepository.findAllByStatus(ObjectStatus.ACTIVE.getCode());
+
+        // Đếm số lượng theo mã contractType
+        Map<String, Long> countMap = employeeContracts.stream()
+                .filter(e -> e.getContractType() != null)
+                .collect(Collectors.groupingBy(EmployeeContracts::getContractType, Collectors.counting()));
+
+        // Duyệt các loại hợp đồng hợp lệ để trả về kết quả
+        for (ContractType type : ContractType.values()) {
+            long count = countMap.getOrDefault(type.getCode(), 0L);
+            responseTotalDTOList.add(new ResponseTotalDTO(type.getName(), (int) count));
         }
+
         return responseTotalDTOList;
     }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void disable(Long id) {
+        EmployeeContracts employeeContracts = employeeContractRepository.findById(id).orElseThrow(() -> new RuntimeException("Mã hợp đồng không tồn tại trong hệ thống"));
+        Employee employee = employeeContracts.getEmployee();
+        employeeContracts.setStatus(ContractStatusEnum.TERMINATED.getValue());
+        if (employee != null) {
+            employeeService.lockEmployee(employee.getId());
+        }
+        employeeContractRepository.save(employeeContracts);
+    }
+
     // kiểm tra contractEndDate có rơi vào tháng sau hay không
     public boolean checkContractEndDateForNextMonth(Date contractEndDate) {
         if (contractEndDate == null) {
@@ -272,6 +234,40 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
         return !contractEndLocalDate.isBefore(today) && !contractEndLocalDate.isAfter(endOfNextMonth);
     }
 
+    @Override
+    public void updateStatusContractRenewalNextMonth() {
+        Date startDate = DateUtils.getFirstDayOfNextMonth();
+        Date endDate = DateUtils.getFirstDayOfMonthAfterNext();
+        List<EmployeeContracts> contracts = employeeContractRepository.getContractsEndingNextMonthWithEmployee(
+                startDate, endDate,
+                ContractStatusEnum.EFFECTIVE.getValue(),
+                EmploymentStatus.EMPLOYMENT.getCode()
+        );
+        if (contracts.isEmpty()) {
+            return;
+        }
+        contracts.forEach(contract -> {
+            log.info("Update status ABOUT_TO_EXPIRE with EmployeeContracts: {}", contract.getEmployee());
+            contract.setStatus(ContractStatusEnum.ABOUT_TO_EXPIRE.getValue());
+            employeeContractRepository.save(contract);
+        });
+    }
+
+    @Override
+    public void updateStatusContractRenawalMonth() {
+        List<EmployeeContracts> contracts = employeeContractRepository.findContractRenewalBeforeToday(
+                ContractStatusEnum.ABOUT_TO_EXPIRE.getValue(),
+                EmploymentStatus.EMPLOYMENT.getCode()
+        );
+        if (contracts.isEmpty()) {
+            return;
+        }
+        contracts.forEach(contract -> {
+            log.info("Update status EXPIRED with EmployeeContracts: {}", contract.getEmployee());
+            contract.setStatus(ContractStatusEnum.EXPIRED.getValue());
+            employeeContractRepository.save(contract);
+        });
+    }
 
 
 }

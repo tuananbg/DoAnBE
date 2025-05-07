@@ -92,6 +92,12 @@ public class AllowanceController {
         return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202,AppConstants.UPDATE_SUCCESS_MESS_202);
     }
 
+    @PutMapping("unlock/{allowanceCode}")
+    public BaseResponse<Object> unlock(@PathVariable String allowanceCode) {
+        allowanceService.unlock(allowanceCode);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202,AppConstants.UPDATE_SUCCESS_MESS_202);
+    }
+
     @DeleteMapping("deleteForEmployee/{id}")
     public ResultResp<Object> deleteForEmployee(@PathVariable Long id) {
         allowanceService.deleteForEmployeeByIds(id);

@@ -23,18 +23,11 @@ public interface EmployeeService {
 
     ResponsePage<ResponseListEmployeeDTO> findAllByKeywordAndStatus(String keyword, EmploymentStatus status, RequestPage page);
 
-    ResponseEmployeeDetailDTO detailEmployee(Long id);
-
     ResponseEmployeeDetailDTO detailEmployeeCode(String code);
 
     void createEmployee(MultipartFile avatarFile, RequestEmployeeDetailDTO request) throws IOException;
 
     void updateEmployee(MultipartFile avatarFile, UserDetailDTO userDetailDTO) throws IOException;
-
-    void deleteEmployee(Long id);
-
-
-    ExportPdfEmployeeResponse exportPdf(Long userDetailId);
 
     void lockEmployee(Long id);
 

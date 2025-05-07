@@ -107,12 +107,6 @@ public class EmployeeController {
     }
 
 
-    @DeleteMapping("/delete/{id}")
-    public ResultResp<Object> deleteEmployee(@PathVariable("id") Long id) {
-        employeeService.deleteEmployee(id);
-        return ResultResp.success(ErrorCode.DELETED_OK, null);
-    }
-
     @GetMapping(value = "/download-xlsx")
     public ResponseEntity<Resource> exportExcel() {
         byte[] bytes = jasperReportService.employeeFullInformation();

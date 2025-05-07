@@ -78,12 +78,17 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    @Transactional
-    public void deleteDepartment(Long id) {
-        log.debug("// Xóa phòng ban: {}", id);
-        if (departmentRepository.deleteById(id, CommonUtils.getUserLoginName()) <= 0) {
-            throw new AppException("ERR01", "Không tìm thấy phòng ban!");
-        }
+    public void lock(String departmentCode) {
+        Department department = departmentRepository.findByCode(departmentCode).orElseThrow(()->new RuntimeException("Mã phòng ban không tồn tại trong hệ thống!"));
+        department.setStatus(ObjectStatus.INACTIVE.getCode());
+        departmentRepository.save(department);
+    }
+
+    @Override
+    public void unlock(String departmentCode) {
+        Department department = departmentRepository.findByCode(departmentCode).orElseThrow(()->new RuntimeException("Mã phòng ban không tồn tại trong hệ thống!"));
+        department.setStatus(ObjectStatus.ACTIVE.getCode());
+        departmentRepository.save(department);
     }
 
     @Override

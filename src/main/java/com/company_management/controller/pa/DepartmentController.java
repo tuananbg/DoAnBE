@@ -1,5 +1,6 @@
 package com.company_management.controller.pa;
 
+import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.common.enums.ObjectStatus;
@@ -54,14 +55,16 @@ public class DepartmentController {
         return ResultResp.success(ErrorCode.UPDATED_OK, null);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResultResp<Object> deleteDepartment(@PathVariable("id") Long id) {
-        try {
-            departmentService.deleteDepartment(id);
-            return ResultResp.success(ErrorCode.DELETED_OK, null);
-        } catch (Exception ex) {
-            return ResultResp.badRequest(ErrorCode.DELETED_FAIL);
-        }
+    @PutMapping("/lock/{departmentCode}")
+    public BaseResponse<Object> lock(@PathVariable("departmentCode") String departmentCode) {
+            departmentService.lock(departmentCode);
+            return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202,AppConstants.UPDATE_SUCCESS_MESS_202);
+    }
+
+    @PutMapping("/unlock/{departmentCode}")
+    public BaseResponse<Object> unlock(@PathVariable("departmentCode") String departmentCode) {
+        departmentService.unlock(departmentCode);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202,AppConstants.UPDATE_SUCCESS_MESS_202);
     }
 
     @GetMapping("/total")

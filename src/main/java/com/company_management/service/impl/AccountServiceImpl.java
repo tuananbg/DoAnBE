@@ -32,7 +32,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
@@ -78,27 +77,6 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    @Override
-    public void updateStatusAccount(Long id, Integer status) {
-        EmploymentStatus employmentStatus = EmploymentStatus.findByCodeStatus(status);
-        Account account = accountRepository.findByEmployeeId(id).orElse(null);
-        if (account != null) {
-            switch (Objects.requireNonNull(employmentStatus)) {
-                case EMPLOYMENT:
-                    account.setStatus(AccountStatusEnum.ACTIVE.getCode());
-                    break;
-                case LOCK:
-                case RETIRED:
-                    account.setStatus(AccountStatusEnum.LOCK.getCode());
-                    break;
-                default:
-                    break;
-
-            }
-            accountRepository.save(account);
-        }
-
-    }
 
     public void createNewAccount(String userName, Employee emp) {
         //get config password expired date

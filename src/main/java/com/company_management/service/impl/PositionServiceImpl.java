@@ -81,10 +81,19 @@ public class PositionServiceImpl implements PositionService {
         positionRepository.save(position);
     }
 
+    @Override
     @Transactional
     public void disable(String positionCode) {
-        Position position = positionRepository.findByPositionCode(positionCode).orElseThrow(()-> new RuntimeException("Chức danh không tồn tại trong hệ thống"));
+        Position position = positionRepository.findByPositionCode(positionCode).orElseThrow(()-> new RuntimeException("Chức vụ không tồn tại trong hệ thống"));
         position.setStatus(ObjectStatus.INACTIVE.getCode());
+        positionRepository.save(position);
+    }
+
+    @Override
+    @Transactional
+    public void unlock(String positionCode) {
+        Position position = positionRepository.findByPositionCode(positionCode).orElseThrow(()-> new RuntimeException("Chức vụ không tồn tại trong hệ thống"));
+        position.setStatus(ObjectStatus.ACTIVE.getCode());
         positionRepository.save(position);
     }
 
@@ -109,31 +118,5 @@ public class PositionServiceImpl implements PositionService {
                 ).toList();
         return new ResponsePage<>(responsePositionDTOS, page, positions.getTotalElements());
     }
-
-//    @Override
-//    @Transactional(readOnly = true)
-//    public ByteArrayInputStream exportExcel(SearchPositionRequest searchPositionRequest, Pageable pageable) {
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        try (InputStream in = CommonUtils.getInputStreamByFileName("export-position-template.xlsx")) {
-//            List<PositionDTO> positionDTOList = positionRepository.searchExport(searchPositionRequest, pageable);
-//            AtomicInteger index = new AtomicInteger();
-//            for (PositionDTO item : positionDTOList) {
-//                item.setIndex(index.incrementAndGet());
-//            }
-//            Map<String, Object> beans = new HashMap<>();
-//            beans.put("posLst", positionDTOList);
-//            beans.put("date", DateTimeUtils.convertDateToStringByPattern(new Date(), "dd/MM/yyyy HH:mm:ss"));
-//            beans.put("total", positionDTOList.size());
-//            XLSTransformer transformer = new XLSTransformer();
-//            Workbook workbook = transformer.transformXLS(in, beans);
-//            workbook.write(byteArrayOutputStream);
-//            byte[] exportInputStream = byteArrayOutputStream.toByteArray();
-//            return new ByteArrayInputStream(exportInputStream);
-//        } catch (Exception ex) {
-//            log.error(ex.getMessage(), ex);
-//            throw new AppException("ERR01", "Xuất file excel bị lỗi");
-//        }
-//    }
-
 
 }

@@ -1,6 +1,7 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.AppConstants;
+import com.company_management.common.enums.AccountStatusEnum;
 import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.common.enums.Gender;
 import com.company_management.common.enums.ObjectStatus;
@@ -11,6 +12,7 @@ import com.company_management.dto.response.pa.employee.ResponseEmployeeDetailDTO
 import com.company_management.dto.response.pa.employee.ResponseEmployeeInfoDTO;
 import com.company_management.dto.response.pa.employee.ResponseEmployeeSelectDTO;
 import com.company_management.dto.response.pa.employee.ResponseListEmployeeDTO;
+import com.company_management.service.AccountService;
 import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.request.pa.employee.RequestEmployeeDetailDTO;
 import com.company_management.dto.response.*;
@@ -56,6 +58,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final PositionRepository positionRepository;
     private final EmployeeInfoRepository employeeInfoRepository;
     private final EmployeeContractsRepository employeeContractsRepository;
+    private final AccountRepository accountRepository;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -105,17 +108,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public ResponseEmployeeDetailDTO detailEmployee(Long id) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
-        ResponseEmployeeDetailDTO detailDTO = new ResponseEmployeeDetailDTO();
-        MapperUtils.map(employee, detailDTO);
-        detailDTO.setEmployeeCode(employee.getCode());
-        return detailDTO;
-    }
-
-    @Override
     public ResponseEmployeeDetailDTO detailEmployeeCode(String code) {
         Employee employee = getEmployee(code);
         ResponseEmployeeDetailDTO detailDTO = new ResponseEmployeeDetailDTO();
@@ -123,7 +115,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         detailDTO.setEmployeeCode(employee.getCode());
         detailDTO.setEmployeeName(employee.getFullName());
         Position position = employee.getPosition();
-        if (position != null){
+        if (position != null) {
             detailDTO.setPositionName(position.getPositionName());
             if (position.getDepartment() != null) {
                 detailDTO.setDepartmentName(position.getDepartment().getDepartmentName());
@@ -211,29 +203,36 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.info("// Lưu nhân viên thành công!");
     }
 
-    @Override
-    @Transactional
-    public void deleteEmployee(Long id) {
-        log.debug("// Xóa nhân viên: {}", id);
-        if (employeeRepository.deleteById(id, CommonUtils.getUserLoginName()) <= 0) {
-            throw new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001);
-        }
-    }
-
-
-
-    @Override
-    public ExportPdfEmployeeResponse exportPdf(Long userDetailId) {
-        return null;
-    }
 
     @Override
     public void lockEmployee(Long id) {
         Employee employee = employeeRepository.findById(id).orElse(null);
         if (employee != null) {
-            employee.setStatus(EmploymentStatus.LOCK.getCode());
+            employee.setStatus(EmploymentStatus.RETIRED.getCode());
+            updateStatusAccount(employee.getId(), employee.getStatus());
             employeeRepository.save(employee);
         }
+    }
+
+    public void updateStatusAccount(Long id, Integer status) {
+        EmploymentStatus employmentStatus = EmploymentStatus.findByCodeStatus(status);
+        Account account = accountRepository.findByEmployeeId(id).orElse(null);
+        if (account != null) {
+            switch (Objects.requireNonNull(employmentStatus)) {
+                case EMPLOYMENT:
+                    account.setStatus(AccountStatusEnum.ACTIVE.getCode());
+                    break;
+                case LOCK:
+                case RETIRED:
+                    account.setStatus(AccountStatusEnum.LOCK.getCode());
+                    break;
+                default:
+                    break;
+
+            }
+            accountRepository.save(account);
+        }
+
     }
 
     @Override
@@ -259,7 +258,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<ResponseEmployeeSelectDTO> selectEmployee() {
         List<Employee> employees = employeeRepository.findAllByStatus(EmploymentStatus.EMPLOYMENT.getCode());
-        List<ResponseEmployeeSelectDTO>  employeeSelectDTOS = new ArrayList<>();
+        List<ResponseEmployeeSelectDTO> employeeSelectDTOS = new ArrayList<>();
         for (Employee employee : employees) {
             ResponseEmployeeSelectDTO dto = new ResponseEmployeeSelectDTO();
             dto.setEmployeeCode(employee.getCode());
@@ -272,6 +271,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee getEmployee(String code) {
         return employeeRepository.findByCode(code)
-                .orElseThrow(()->new AppException(AppConstants.EMPLOYEE_CODE_001,AppConstants.EMPLOYEE_MESS_001));
+                .orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
     }
 }

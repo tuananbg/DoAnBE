@@ -56,13 +56,6 @@ public class ContractController {
         return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201, AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
-    @PostMapping(value = "/createForEmployee")
-    public ResultResp<Object> createForEmployee(@RequestBody @Valid UserDetailContractDTO userDetailContractDTO
-    ) {
-        contractService.addForEmployee(userDetailContractDTO);
-        return ResultResp.success(ErrorCode.CREATED_OK);
-    }
-
     @GetMapping(value = "/list/{status}")
     public BaseResponse<ResponsePage<ResponseContractListDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword,
                                                                        @PathVariable("status") ContractStatusEnum status, RequestPage page) {
@@ -91,53 +84,11 @@ public class ContractController {
         return ResultResp.success(contractService.detail(id));
     }
 
-    @PutMapping
-    public ResultResp<Object> update(@ModelAttribute("file") MultipartFile file,
-                                     @ModelAttribute @Valid ContractDTO contractDTO) {
-        contractService.update(file, contractDTO);
-        return ResultResp.success(null);
+    @PutMapping("disable/{id}")
+    public BaseResponse<Object> delete(@PathVariable("id") Long id) {
+        contractService.disable(id);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202,AppConstants.CREATE_SUCCESS_MESS_201);
     }
-
-    @PutMapping("/updateForEmployee")
-    public ResultResp<Object> updateForEmployee(@RequestBody @Valid UserDetailContractDTO userDetailContractDTO) {
-        contractService.updateForEmployee(userDetailContractDTO);
-        return ResultResp.success(null);
-    }
-
-    @DeleteMapping("delete/{id}")
-    public ResultResp<Object> delete(@PathVariable Long id) {
-//        contractService.deleteByIds(id);
-        return ResultResp.success(null);
-    }
-
-    @DeleteMapping("deleteForEmployee/{id}")
-    public ResultResp<Object> deleteForEmployee(@PathVariable Long id) {
-//        contractService.deleteForEmployeeByIds(id);
-        return ResultResp.success(null);
-    }
-
-//    @PostMapping("/download")
-//    public ResponseEntity<Object> downloadWordFile(@RequestParam("fileName") String fileName) {
-//        try {
-//            // Đọc tệp Word từ máy
-//            Path filePath = Paths.get(this.fileUpload + fileName);
-//            byte[] fileContent = Files.readAllBytes(filePath);
-//            ByteArrayResource resource = new ByteArrayResource(fileContent);
-//
-//            // Thiết lập các header cho phản hồi
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-//
-//            return ResponseEntity.ok()
-//                    .headers(headers)
-//                    .contentLength(fileContent.length)
-//                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-//                    .body(resource);
-//        } catch (IOException ex) {
-//            log.error("{Error export file}: " + ex.getMessage());
-//            return ResultResp.badRequest(new ObjectError(ErrorCode.SELECT_FAIL.getCode(), ex.getMessage()));
-//        }
-//    }
 
     @GetMapping("/statistical")
     private BaseResponse<List<ResponseTotalDTO>> getDepartmentTotal() {

@@ -1,5 +1,6 @@
 package com.company_management.service.au.impl;
 
+import com.company_management.common.enums.AccountStatusEnum;
 import com.company_management.common.enums.AuthorMessage;
 import com.company_management.common.enums.ConfigDataCode;
 import com.company_management.common.enums.EmploymentStatus;
@@ -45,7 +46,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new AppException(AuthorMessage.ACCOUNT_RETIRED.getCode(),
                     AuthorMessage.ACCOUNT_RETIRED.getMessage());
         }
-        if (account.getStatus().equals(EmploymentStatus.LOCK.getCode())) {
+        if (account.getStatus().equals(AccountStatusEnum.LOCK.getCode())) {
             throw new AppException(AuthorMessage.ACCOUNT_LOCK.getCode(), AuthorMessage.ACCOUNT_LOCK.getMessage());
         }
 

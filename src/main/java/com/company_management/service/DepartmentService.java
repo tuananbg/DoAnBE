@@ -17,7 +17,9 @@ public interface DepartmentService {
 
     void editDepartment(DepartmentDTO departmentDTO);
 
-    void deleteDepartment(Long id);
+    void lock(String departmentCode);
+
+    void unlock(String departmentCode);
 
     ResponseDepartmentDTO detailDepartment(Long id);
 

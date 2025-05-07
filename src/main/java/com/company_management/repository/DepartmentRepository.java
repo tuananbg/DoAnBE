@@ -16,7 +16,7 @@ import java.util.Optional;
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
-    @Query(value = "SELECT d FROM Department d WHERE LOWER(d.departmentCode) = :departmentCode")
+    @Query(value = "SELECT d FROM Department d WHERE d.departmentCode = :departmentCode")
     Optional<Department> findByCode(String departmentCode);
 
     @Modifying

@@ -20,8 +20,8 @@ public interface PositionService {
 
     void disable(String positionCode);
 
-    ResponsePage<ResponsePositionDTO> getListByStatus(ObjectStatus status,String keyword, RequestPage page);
+    void unlock(String positionCode);
 
-//    ByteArrayInputStream exportExcel(SearchPositionRequest searchPositionRequest, Pageable pageable);
+    ResponsePage<ResponsePositionDTO> getListByStatus(ObjectStatus status,String keyword, RequestPage page);
 
 }

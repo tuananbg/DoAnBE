@@ -395,6 +395,16 @@ public class DateUtils {
         return firstDay;
     }
 
+    public static Date getFirstDayOfNextMonth() {
+        LocalDate localDate = LocalDate.now().withDayOfMonth(1).plusMonths(1);
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static Date getFirstDayOfMonthAfterNext() {
+        LocalDate localDate = LocalDate.now().withDayOfMonth(1).plusMonths(2);
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
     public static boolean isValidMonthCode(String monthCode) {
         // Biểu thức chính quy để kiểm tra định dạng YYYYMM
         String regex = "^\\d{4}(0[1-9]|1[0-2])$";

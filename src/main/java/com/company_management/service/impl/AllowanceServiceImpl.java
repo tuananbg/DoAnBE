@@ -126,8 +126,6 @@ public class AllowanceServiceImpl implements AllowanceService {
             }
         }
         allowanceRepository.save(allowance);
-
-        log.info("------------------------saveData Finished--------------------------");
     }
 
     @Override
@@ -146,10 +144,15 @@ public class AllowanceServiceImpl implements AllowanceService {
 
     @Override
     @Transactional
+    public void unlock(String allowanceCode) {
+        Allowance allowance = allowanceRepository.findByAllowanceCode(allowanceCode).orElseThrow(()-> new RuntimeException("Mã phụ cấp không tồn tại trong hệ thông !"));
+        allowance.setStatus(ObjectStatus.ACTIVE.getCode());
+        allowanceRepository.save(allowance);
+    }
+
+    @Override
+    @Transactional
     public void deleteForEmployeeByIds(Long id) {
-//        if (userDetailWageRepository.updateById(id, CommonUtils.getUserLoginName()) <= 0) {
-//            throw new AppException("ERR01", "Thông tin phụ cấp này không tồn tại hoặc đã bị xóa");
-//        }
     }
 
     @Override

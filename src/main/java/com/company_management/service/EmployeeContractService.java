@@ -25,14 +25,15 @@ public interface EmployeeContractService {
 
     ResponseEmployeeContractsDetail detail(Long id);
 
-    void update(MultipartFile file, ContractDTO contractDTO);
-
-    void updateForEmployee(UserDetailContractDTO userDetailContractDTO);
-
     void create(MultipartFile file, RequestEmployeeContractDTO contractDTO);
 
-    void addForEmployee(UserDetailContractDTO userDetailContractDTO);
 
     List<ResponseTotalDTO> getStatistical();
+
+    void disable(Long id);
+
+    void updateStatusContractRenewalNextMonth();
+
+    void updateStatusContractRenawalMonth();
 
 }

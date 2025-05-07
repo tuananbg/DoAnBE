@@ -51,20 +51,16 @@ public class PositionController {
         return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202, AppConstants.UPDATE_SUCCESS_MESS_202);
     }
 
-    @PostMapping("/disable/{positionCode}")
+    @PutMapping("/lock/{positionCode}")
     public BaseResponse<Object> disable(@PathVariable("positionCode") String positionCode) {
         positionService.disable(positionCode);
         return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202, AppConstants.UPDATE_SUCCESS_MESS_202);
     }
-//
-//    @PostMapping(value = "/export")
-//    public ResponseEntity<Object> exportExcel(@RequestBody SearchPositionRequest searchPositionRequest, Pageable pageable) {
-//        ByteArrayInputStream result = positionService.exportExcel(searchPositionRequest, pageable);
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-//        String fileName = CommonUtils.getFileNameReportUpdate("EXPORT_POSITION");
-//        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-//        return new ResponseEntity<>(new InputStreamResource(result), headers, HttpStatus.OK);
-//    }
+
+    @PutMapping("/unlock/{positionCode}")
+    public BaseResponse<Object> unlock(@PathVariable("positionCode") String positionCode) {
+        positionService.unlock(positionCode);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202, AppConstants.UPDATE_SUCCESS_MESS_202);
+    }
 
 }

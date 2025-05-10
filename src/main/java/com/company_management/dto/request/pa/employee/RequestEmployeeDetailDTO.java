@@ -15,6 +15,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class RequestEmployeeDetailDTO {
 
+    private Long id;
+
     private String code;
 
     private String fullName;

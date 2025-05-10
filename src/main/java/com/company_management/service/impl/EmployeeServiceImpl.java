@@ -170,13 +170,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public void updateEmployee(MultipartFile avatarFile, UserDetailDTO userDetailDTO) throws IOException {
-        Employee employee = employeeRepository.findById(userDetailDTO.getId()).orElseThrow(
+    public void updateEmployee(MultipartFile avatarFile, RequestEmployeeDetailDTO request) throws IOException {
+        Employee employee = employeeRepository.findById(request.getId()).orElseThrow(
                 () -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
-        MapperUtils.map(userDetailDTO, employee);
-        if (userDetailDTO.getEmployeeCode() != null && !userDetailDTO.getEmployeeCode().equals(employee.getCode())) {
-            Employee byEmployeeCode = getEmployee(userDetailDTO.getEmployeeCode());
-            employee.setCode(userDetailDTO.getEmployeeCode());
+        MapperUtils.mapOnlyNotNullProperty(request, employee);
+        EmployeeInfo employeeInfo = employee.getEmployeeInfo();
+        if (employeeInfo != null) {
+            MapperUtils.map(employeeInfo, request);
         }
         //upload file ảnh
         if (avatarFile != null && avatarFile.getOriginalFilename() != null) {

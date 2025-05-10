@@ -27,7 +27,7 @@ public interface EmployeeService {
 
     void createEmployee(MultipartFile avatarFile, RequestEmployeeDetailDTO request) throws IOException;
 
-    void updateEmployee(MultipartFile avatarFile, UserDetailDTO userDetailDTO) throws IOException;
+    void updateEmployee(MultipartFile avatarFile, RequestEmployeeDetailDTO request) throws IOException;
 
     void lockEmployee(Long id);
 

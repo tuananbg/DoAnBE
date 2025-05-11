@@ -14,7 +14,7 @@ public class UserSearchResponse {
     private String fullName;
     private String email;
     private Integer gender;
-    private String birthday;
+    private String dateOfBirth;
     private String birthPlace;
     private String address;
     private String departmentName;

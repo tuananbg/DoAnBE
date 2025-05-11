@@ -15,7 +15,7 @@ public class UserDetailRequest {
     private Long userId;
     private String fullName;
     private Integer gender;
-    private String birthday;
+    private String dateOfBirth;
     private String address;
     private Long departmentId;
     private Long positionId;

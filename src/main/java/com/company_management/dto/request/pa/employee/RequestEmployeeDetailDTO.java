@@ -14,6 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestEmployeeDetailDTO {
+    private Long id;
 
     private String code;
 

@@ -112,19 +112,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = getEmployee(code);
         ResponseEmployeeDetailDTO detailDTO = new ResponseEmployeeDetailDTO();
         MapperUtils.map(employee, detailDTO);
-        detailDTO.setEmployeeCode(employee.getCode());
-        detailDTO.setEmployeeName(employee.getFullName());
+        detailDTO.setCode(employee.getCode());
+        detailDTO.setFullName(employee.getFullName());
         Position position = employee.getPosition();
         if (position != null) {
             detailDTO.setPositionName(position.getPositionName());
-            if (position.getDepartment() != null) {
-                detailDTO.setDepartmentName(position.getDepartment().getDepartmentName());
-            }
+            detailDTO.setPositionCode(position.getPositionCode());
         }
 
         EmployeeInfo employeeInfo = employee.getEmployeeInfo();
         if (employeeInfo != null) {
             MapperUtils.map(employeeInfo, detailDTO);
+            detailDTO.setDateOfBirth(employeeInfo.getDateOfBirth());
         }
 
         return detailDTO;
@@ -170,14 +169,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public void updateEmployee(MultipartFile avatarFile, UserDetailDTO userDetailDTO) throws IOException {
-        Employee employee = employeeRepository.findById(userDetailDTO.getId()).orElseThrow(
+    public void updateEmployee(MultipartFile avatarFile, RequestEmployeeDetailDTO request) throws IOException {
+        Employee employee = employeeRepository.findById(request.getId()).orElseThrow(
                 () -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
-        MapperUtils.map(userDetailDTO, employee);
-        if (userDetailDTO.getEmployeeCode() != null && !userDetailDTO.getEmployeeCode().equals(employee.getCode())) {
-            Employee byEmployeeCode = getEmployee(userDetailDTO.getEmployeeCode());
-            employee.setCode(userDetailDTO.getEmployeeCode());
+        MapperUtils.mapOnlyNotNullProperty(request, employee);
+        EmployeeInfo employeeInfo = employee.getEmployeeInfo();
+        if (employeeInfo != null) {
+            MapperUtils.mapOnlyNotNullProperty(request, employeeInfo);
         }
+        Position position = positionRepository.findByPositionCode(request.getPositionCode()).orElseThrow(()-> new RuntimeException("Mã chức vụ không tồn tại trong hệ thống"));
+        employee.setPosition(position);
         //upload file ảnh
         if (avatarFile != null && avatarFile.getOriginalFilename() != null) {
             try {

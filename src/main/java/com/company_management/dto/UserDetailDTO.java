@@ -27,7 +27,7 @@ public class UserDetailDTO {
 
     private String genderName;
 
-    private Date birthday;
+    private Date dateOfBirth;
 
     private String avatar;
 

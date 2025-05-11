@@ -19,7 +19,7 @@ public class ResponseListEmployeeDTO {
 
     private String genderName;
 
-    private Date birthday;
+    private Date dateOfBirth;
 
     private String phone;
 

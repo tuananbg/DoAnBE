@@ -15,7 +15,7 @@ public class ReportEmployeeDTO {
     private String employeeCode;
     private String employeeName;
     private String genderName;
-    private Date birthday;
+    private Date dateOfBirth;
     private String yearOld;
     private String email;
     private String placeOfBirth;

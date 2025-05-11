@@ -18,23 +18,25 @@ public class ResponseEmployeeDetailDTO {
     private Long id;
 
     //Mã CBNV
-    private String employeeCode;
+    private String code;
 
     //Họ tên
-    private String employeeName;
+    private String fullName;
 
     //Ảnh đại diện
     private String avatar;
 
     //Phòng ban
-    private String departmentName;
+    private String positionCode;
+
+
 
     //Chức vụ
     private String positionName;
 
     //Ngày sinh
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-    private Date birthDay;
+    private Date dateOfBirth;
 
     //Giới tính
     private int gender;
@@ -53,6 +55,8 @@ public class ResponseEmployeeDetailDTO {
 
 
     private String identityNumber;
+
+    private String accountNumber;
 
     //Só điện thoại
     private String mobile;

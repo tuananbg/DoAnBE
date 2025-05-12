@@ -191,7 +191,8 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
     @Override
     public List<ResponseTotalDTO> getStatistical() {
         List<ResponseTotalDTO> responseTotalDTOList = new ArrayList<>();
-        List<EmployeeContracts> employeeContracts = employeeContractRepository.findAllByStatus(ObjectStatus.ACTIVE.getCode());
+        List<Integer> contractStatus = Arrays.asList(ContractStatusEnum.EFFECTIVE.getValue(),ContractStatusEnum.ABOUT_TO_EXPIRE.getValue());
+        List<EmployeeContracts> employeeContracts = employeeContractRepository.findAllByStatusIn(contractStatus);
 
         // Đếm số lượng theo mã contractType
         Map<String, Long> countMap = employeeContracts.stream()

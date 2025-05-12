@@ -31,4 +31,8 @@ public class ResponseListEmployeeDTO {
 
     private String positionName;
 
+    private String departmentName;
+
+    private String permanentAddress;
+
 }

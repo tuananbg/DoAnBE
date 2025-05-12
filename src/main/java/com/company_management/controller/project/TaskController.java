@@ -55,7 +55,7 @@ public class TaskController {
     }
 
     @PutMapping(value = "/update")
-    public BaseResponse<Object> update(@ModelAttribute  @Valid RequestUpdateTaskDTO request) {
+    public BaseResponse<Object> update(@RequestBody  @Valid RequestUpdateTaskDTO request) {
         try {
             taskService.updateTask(request);
             return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202, AppConstants.UPDATE_SUCCESS_CODE_202);

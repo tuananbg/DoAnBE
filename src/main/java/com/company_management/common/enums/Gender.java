@@ -9,8 +9,8 @@ import java.util.Arrays;
 @AllArgsConstructor
 public enum Gender {
 
-    MALE(0, "Nam"),
-    WOMEN(1, "Nữ"),
+    WOMEN(0, "Nữ"),
+    MALE(1, "Nam"),
     OTHER(99,"Khác")
     ;
 

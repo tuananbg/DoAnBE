@@ -178,11 +178,20 @@ public class AccountServiceImpl implements AccountService {
                                 codeMap.putIfAbsent(roleDTO.getCode(), roleDTO);
                             }
                         }
+
+                        Position position = employee.getPosition();
+                        if (position != null){
+                            response.setPositionName(position.getPositionName());
+                            if (position.getDepartment() != null) {
+                                response.setDepartmentName(position.getDepartment().getDepartmentName());
+                            }
+                        }
                         // Chuyển đổi map thành set và gán cho dto
                         Set<AdminRoleDTO> uniqueRoleNames = new HashSet<>(codeMap.values());
                         response.setRole(new ArrayList<>(uniqueRoleNames));
                     }
                     response.setStatus(item.getStatus());
+                    response.setCreatedDate(item.getCreatedDate());
                     response.setId(item.getId());
                     return response;
                 }).toList();

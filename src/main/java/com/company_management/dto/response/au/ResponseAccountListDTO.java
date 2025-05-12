@@ -20,6 +20,7 @@ public class ResponseAccountListDTO {
     private String fullName;
     private String email;
     private Integer status;
+    private Date createdDate;
     // Vai tro
     private List<AdminRoleDTO> role;
 }

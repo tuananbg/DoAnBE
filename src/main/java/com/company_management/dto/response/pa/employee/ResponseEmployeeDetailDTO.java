@@ -29,8 +29,6 @@ public class ResponseEmployeeDetailDTO {
     //Phòng ban
     private String positionCode;
 
-
-
     //Chức vụ
     private String positionName;
 

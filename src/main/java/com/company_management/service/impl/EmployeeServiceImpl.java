@@ -77,6 +77,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                     Position position = item.getPosition();
                     if (position != null) {
                         response.setPositionName(position.getPositionName());
+                        Department department = position.getDepartment();
+                        if (department != null) {
+                            response.setDepartmentName(department.getDepartmentName());
+                        }
                     }
                     if (item.getEmployeeInfo() != null) {
                         EmployeeInfo employeeInfo = employeeInfoRepository.findById(item.getEmployeeInfo().getId()).orElse(null);
@@ -84,7 +88,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                             response.setGenderName(Gender.fromCode(employeeInfo.getGender()).getName());
                             response.setPhone(employeeInfo.getMobile());
                             response.setPlaceOfBirth(employeeInfo.getPlaceOfBirth());
-                            response.setPlaceOfBirth(employeeInfo.getPlaceOfBirth());
+                            response.setPermanentAddress(employeeInfo.getPermanentAddress());
                         }
                     }
                     return response;

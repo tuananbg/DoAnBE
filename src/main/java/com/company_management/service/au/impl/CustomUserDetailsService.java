@@ -71,6 +71,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public EmployeeInfo loadAdminUser(String password) {
         Employee employee = new Employee();
         Account account = new Account();
+        account.setAccount(EmployeeInfo.SUPER_ADMIN);
         account.setCode(EmployeeInfo.SUPER_ADMIN);
         account.setPassword(password);
         employee.setStatus(EmploymentStatus.EMPLOYMENT.getCode());

@@ -14,13 +14,6 @@ import java.util.Optional;
 
 @Repository
 public interface PositionRepository extends JpaRepository<Position, Long> {
-
-
-
-    @Modifying
-    @Query(value = "update Position p set p.status = 0, p.updatedDate = now(), p.updatedBy = :user where p.id = :id and p.status = 1 or p.status = 2 ")
-    int deleteById(Long id, Long user);
-
     @Query
     Optional<Position> findByPositionCode(String positionCode);
 
@@ -36,5 +29,7 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
     Page<Position> findAllByKeyword(@Param("status") Integer isActive,@Param("keyword") String keyword, Pageable pageable);
 
     List<Position> findByStatus(Integer status);
+
+    Boolean existsByDepartmentId(Long departmentId);
 
 }

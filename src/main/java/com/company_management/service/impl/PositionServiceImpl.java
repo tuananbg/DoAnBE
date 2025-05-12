@@ -4,16 +4,14 @@ import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.entity.Department;
+import com.company_management.entity.JobGroup;
 import com.company_management.entity.PositionCategory;
-import com.company_management.repository.DepartmentRepository;
-import com.company_management.repository.JobGroupRepository;
-import com.company_management.repository.PositionCategoryRepository;
+import com.company_management.repository.*;
 import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.request.pa.RequestPositionDTO;
 import com.company_management.dto.response.pa.ResponsePositionDTO;
 import com.company_management.exception.AppException;
 import com.company_management.entity.Position;
-import com.company_management.repository.PositionRepository;
 import com.company_management.service.PositionService;
 import com.company_management.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +31,7 @@ public class PositionServiceImpl implements PositionService {
     private final DepartmentRepository departmentRepository;
     private final PositionCategoryRepository positionCategoryRepository;
     private final JobGroupRepository jobGroupRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -71,7 +70,7 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public void update(RequestPositionDTO request) {
-        Position position = positionRepository.findById(request.getId()).orElseThrow(()-> new RuntimeException("Chức danh không tồn tại trong hệ thống"));
+        Position position = positionRepository.findById(request.getId()).orElseThrow(()-> new AppException("ER01","Chức danh không tồn tại trong hệ thống"));
         MapperUtils.mapOnlyNotNullProperty(request, position);
         Department department = departmentRepository.findByCode(request.getDepartmentCode())
                 .orElseThrow(()-> new AppException("ERR1","Mã chức danh không tồn tại trong hệ thống!") );
@@ -84,7 +83,10 @@ public class PositionServiceImpl implements PositionService {
     @Override
     @Transactional
     public void disable(String positionCode) {
-        Position position = positionRepository.findByPositionCode(positionCode).orElseThrow(()-> new RuntimeException("Chức vụ không tồn tại trong hệ thống"));
+        Position position = positionRepository.findByPositionCode(positionCode).orElseThrow(()-> new AppException("ERR01","Chức vụ không tồn tại trong hệ thống"));
+        if (employeeRepository.existsByPositionId(position.getId())) {
+            throw new AppException("ERR01","Vui lòng chuyển các nhân viền đang giữ chức vụ này sang chức vụ khác");
+        }
         position.setStatus(ObjectStatus.INACTIVE.getCode());
         positionRepository.save(position);
     }
@@ -92,7 +94,7 @@ public class PositionServiceImpl implements PositionService {
     @Override
     @Transactional
     public void unlock(String positionCode) {
-        Position position = positionRepository.findByPositionCode(positionCode).orElseThrow(()-> new RuntimeException("Chức vụ không tồn tại trong hệ thống"));
+        Position position = positionRepository.findByPositionCode(positionCode).orElseThrow(()-> new AppException("ERR01","Chức vụ không tồn tại trong hệ thống"));
         position.setStatus(ObjectStatus.ACTIVE.getCode());
         positionRepository.save(position);
     }
@@ -110,9 +112,19 @@ public class PositionServiceImpl implements PositionService {
                             Department department = item.getDepartment();
                             if (department != null) {
                                 response.setDepartmentName(department.getDepartmentName());
+                                response.setDepartmentCode(department.getDepartmentCode());
                             }
-                            response.setJobGroupName(item.getJobGroup()!= null ? item.getJobGroup().getName() : null);
-                            response.setPositionCategoryName(item.getPositionCategory() != null ? item.getPositionCategory().getName() : null);
+                            JobGroup jobGroup = item.getJobGroup();
+                            if (jobGroup != null){
+                                response.setJobGroupName(jobGroup.getName());
+                                response.setJobGroupCode(jobGroup.getCode());
+                            }
+                            PositionCategory positionCategory = item.getPositionCategory();
+                            if (positionCategory != null) {
+                                response.setPositionCategoryName(positionCategory.getName());
+                                response.setPositionCategoryCode(positionCategory.getCode());
+                            }
+
                             return response;
                         }
                 ).toList();

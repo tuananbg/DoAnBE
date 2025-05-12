@@ -51,10 +51,7 @@ public class AccountServiceImpl implements AccountService {
 
         Employee employeePrivateEmail = employeeRepository.findByEmployeeInfoEmail(requestDTO.getEmail()).orElse(null);
         if (employeePrivateEmail != null) {
-            Map<String, Object> data = new HashMap<>();
-            data.put("employeeCode", employeePrivateEmail.getCode());
-            data.put("employeeName", employeePrivateEmail.getFullName());
-            throw new AppException(AppConstants.VALIDATE_EMAILEXISTS_CODE, AppConstants.VALIDATE_EMAILEXISTS_MESS, data);
+            throw new AppException(AppConstants.VALIDATE_EMAILEXISTS_CODE, AppConstants.VALIDATE_EMAILEXISTS_MESS);
         }
 
         String username = requestDTO.getEmail().split("@")[0];

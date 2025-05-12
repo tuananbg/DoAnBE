@@ -4,6 +4,7 @@ import com.company_management.common.enums.DepartmentStatus;
 import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
+import com.company_management.repository.PositionRepository;
 import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.response.pa.ResponseDepartmentDTO;
 import com.company_management.dto.response.ResponseTotalDTO;
@@ -34,6 +35,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
 
     private final EmployeeRepository employeeRepository;
+    private final PositionRepository positionRepository;
 
     @Override
     public ResponsePage<ResponseDepartmentDTO> findAllPage(ObjectStatus status, String keyword, RequestPage page) {
@@ -80,6 +82,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public void lock(String departmentCode) {
         Department department = departmentRepository.findByCode(departmentCode).orElseThrow(()->new RuntimeException("Mã phòng ban không tồn tại trong hệ thống!"));
+        if (positionRepository.existsByDepartmentId(department.getId())) {
+            throw new RuntimeException("Vui lòng vô hiệu các chức vụ của phòng ban này trước khi vô hiệu");
+        }
         department.setStatus(ObjectStatus.INACTIVE.getCode());
         departmentRepository.save(department);
     }

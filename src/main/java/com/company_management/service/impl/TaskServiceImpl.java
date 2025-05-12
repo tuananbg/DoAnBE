@@ -44,12 +44,12 @@ public class TaskServiceImpl extends BaseController implements TaskService {
     public void createTask(RequestCreateTaskDTO request) {
         checkTaskCode(request.getTaskCode());
         Task task = new Task();
-        MapperUtils.map(request,task);
+        MapperUtils.map(request, task);
         Employee employee = employeeService.getEmployee(request.getEmployeeCode());
         task.setEmployee(employee);
 
         Project project = projectRepository.findByProjectCode(request.getProjectCode())
-                .orElseThrow(()-> new AppException("ER002","Dự án không tồn tại trong hệ thống!"));
+                .orElseThrow(() -> new AppException("ER002", "Dự án không tồn tại trong hệ thống!"));
         task.setProject(project);
         task.setStatus(request.getTaskStatus());
         taskRepository.save(task);
@@ -58,9 +58,9 @@ public class TaskServiceImpl extends BaseController implements TaskService {
     @Override
     public ResponsePage<ResponseListTaskDTO> getTasks(TaskStatusEnum status, String keyword, RequestPage page) {
         keyword = CommonUtils.escapeLike(keyword);
-        Page<Task> taskPage = taskRepository.findByStatus(status.getCode(),keyword,page.toPageable());
+        Page<Task> taskPage = taskRepository.findByStatus(status.getCode(), keyword, page.toPageable());
         List<ResponseListTaskDTO> data = getDataTask(taskPage);
-        return new ResponsePage<>(data,page,taskPage.getTotalElements());
+        return new ResponsePage<>(data, page, taskPage.getTotalElements());
     }
 
     @Override
@@ -69,20 +69,20 @@ public class TaskServiceImpl extends BaseController implements TaskService {
         keyword = CommonUtils.escapeLike(keyword);
         Page<Task> taskPage;
         if (Constants.ADMIN.equalsIgnoreCase(useCode)) {
-            taskPage = taskRepository.findByStatus(status.getCode(),keyword,page.toPageable());
-        }
-        else {
-            taskPage = taskRepository.findByStatusAndEmployeeCode(status.getCode(),useCode,keyword,page.toPageable());
+            taskPage = taskRepository.findByStatus(status.getCode(), keyword, page.toPageable());
+        } else {
+            taskPage = taskRepository.findByStatusAndEmployeeCode(status.getCode(), useCode, keyword, page.toPageable());
         }
         List<ResponseListTaskDTO> data = getDataTask(taskPage);
-        return new ResponsePage<>(data,page,taskPage.getTotalElements());
+        return new ResponsePage<>(data, page, taskPage.getTotalElements());
     }
 
     private void checkTaskCode(String taskCode) {
         if (taskRepository.existsByTaskCode(taskCode)) {
-            throw new AppException("ERR","Mã nhiệm vụ đã tồn tại");
+            throw new AppException("ERR", "Mã nhiệm vụ đã tồn tại");
         }
     }
+
     @Override
     public List<ResponseProjectDashboardTO> getListDashboard() {
         List<Project> projects = projectRepository.findAll();
@@ -90,7 +90,7 @@ public class TaskServiceImpl extends BaseController implements TaskService {
         for (Project project : projects) {
             ResponseProjectDashboardTO dto = new ResponseProjectDashboardTO();
             dto.setProjectName(project.getProjectName());
-            Object[] result = taskRepository.countTaskAndDoneByProjectCode(project.getProjectCode(),TaskStatusEnum.DONE.getCode());
+            Object[] result = taskRepository.countTaskAndDoneByProjectCode(project.getProjectCode(), TaskStatusEnum.DONE.getCode());
             Object[] row = (Object[]) result[0];
             long tasksOfProject = Long.parseLong(row[0].toString());
             long taskDoneOfProject = Long.parseLong(row[1].toString());
@@ -109,15 +109,15 @@ public class TaskServiceImpl extends BaseController implements TaskService {
 
     @Override
     public ResponseDetailTaskDTO getDetailTask(String code) {
-        Task task  = taskRepository.findByTaskCode(code).orElseThrow(()->new AppException("ERR1","Nhiệm vụ không tồn tại trong hệ thống!"));
+        Task task = taskRepository.findByTaskCode(code).orElseThrow(() -> new AppException("ERR1", "Nhiệm vụ không tồn tại trong hệ thống!"));
         ResponseDetailTaskDTO dto = new ResponseDetailTaskDTO();
-        MapperUtils.map(task,dto);
+        MapperUtils.map(task, dto);
         Employee employee = task.getEmployee();
-        if(employee != null) {
+        if (employee != null) {
             dto.setEmployeeCode(employee.getCode());
         }
         Project project = task.getProject();
-        if(project != null) {
+        if (project != null) {
             dto.setProjectCode(project.getProjectCode());
         }
         dto.setTaskStatus(task.getStatus());
@@ -126,30 +126,30 @@ public class TaskServiceImpl extends BaseController implements TaskService {
 
     @Override
     public void updateTask(RequestUpdateTaskDTO request) {
-        Task task = taskRepository.findByTaskCode(request.getTaskCode()).orElseThrow(()->new AppException("ERR01","Không tìm thấy nhiệm vụ trong hệ thống"));
-        MapperUtils.mapOnlyNotNullProperty(request,task);
-        Employee employee = employeeRepository.findByCode(request.getEmployeeCode()).orElseThrow(()->new AppException("ER01","Nhân viên không tôn tại trong hệ thống"));
+        Task task = taskRepository.findByTaskCode(request.getTaskCode()).orElseThrow(() -> new AppException("ERR01", "Không tìm thấy nhiệm vụ trong hệ thống"));
+        MapperUtils.mapOnlyNotNullProperty(request, task);
+        Employee employee = employeeRepository.findByCode(request.getEmployeeCode()).orElseThrow(() -> new AppException("ER01", "Nhân viên không tôn tại trong hệ thống"));
         task.setEmployee(employee);
         task.setStatus(request.getTaskStatus());
         taskRepository.save(task);
     }
 
-    public  List<ResponseListTaskDTO> getDataTask(Page<Task> taskPage){
+    public List<ResponseListTaskDTO> getDataTask(Page<Task> taskPage) {
         return taskPage.getContent()
                 .stream()
-                .map(item ->{
+                .map(item -> {
                     ResponseListTaskDTO dto = new ResponseListTaskDTO();
                     Project project = item.getProject();
-                    if(project != null) {
+                    if (project != null) {
                         dto.setProjectName(project.getProjectName());
                     }
                     Employee employee = item.getEmployee();
-                    if(employee != null) {
+                    if (employee != null) {
                         dto.setEmployeeName(employee.getFullName());
                     }
                     employeeRepository.findByCode(item.getManagerCode())
                             .ifPresent(empManager -> dto.setManagerName(empManager.getFullName()));
-                    MapperUtils.map(item,dto);
+                    MapperUtils.map(item, dto);
                     return dto;
                 }).toList();
     }

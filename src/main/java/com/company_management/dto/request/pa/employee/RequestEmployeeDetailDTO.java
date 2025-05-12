@@ -16,6 +16,8 @@ import java.util.Date;
 public class RequestEmployeeDetailDTO {
     private Long id;
 
+    private Long id;
+
     private String code;
 
     private String fullName;

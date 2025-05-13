@@ -96,9 +96,9 @@ public class TaskServiceImpl extends BaseController implements TaskService {
             long taskDoneOfProject = Long.parseLong(row[1].toString());
             dto.setNumberOfTasks((int) tasksOfProject);
             dto.setNumberOfTasksDone((int) taskDoneOfProject);
-            long percent = 0;
-            if (taskDoneOfProject != 0 && tasksOfProject != 0) {
-                percent = taskDoneOfProject / tasksOfProject;
+            double percent = 0.0;
+            if (taskDoneOfProject!= 0 && tasksOfProject!=0){
+                percent = (double) taskDoneOfProject / tasksOfProject;
             }
 
             dto.setPercentage(percent);

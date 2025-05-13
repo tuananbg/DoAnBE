@@ -1,4 +1,4 @@
-package com.company_management.dto.request.pa;
+package com.company_management.dto.response.pa;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,18 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestAllowanceCreateDTO {
-
-    private Long id;
-
+public class ResponseSelectAllowanceDTO {
     private String allowanceCode;
-
     private String allowanceName;
-
-    private Double allowanceBase;
-
-    private String allowanceDescription;
-
-    private String attachFile;
-
 }

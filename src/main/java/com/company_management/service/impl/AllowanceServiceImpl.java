@@ -1,11 +1,14 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.enums.ObjectStatus;
-import com.company_management.dto.ResponseWageEmployeeDetailDTO;
+import com.company_management.dto.response.pa.ResponseAllowanceEmployeeDetailDTO;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.pa.RequestAllowanceCreateDTO;
+import com.company_management.dto.request.pa.RequestEmployeeAllowanceDTO;
 import com.company_management.dto.response.pa.ResponseAllowanceListDTO;
+import com.company_management.dto.response.pa.ResponseSelectAllowanceDTO;
+import com.company_management.entity.Employee;
 import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.exception.AppException;
 import com.company_management.dto.UserDetailWageDTO;
@@ -65,15 +68,22 @@ public class AllowanceServiceImpl implements AllowanceService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public WageResponse detail(Long id) {
-        return null;
+    public List<ResponseSelectAllowanceDTO> select() {
+        List<Allowance> allowances = allowanceRepository.findAllByStatus(ObjectStatus.ACTIVE.getCode());
+        List<ResponseSelectAllowanceDTO> data = new ArrayList<>();
+        for (Allowance allowance : allowances) {
+            ResponseSelectAllowanceDTO dto = new ResponseSelectAllowanceDTO();
+            dto.setAllowanceCode(allowance.getAllowanceCode());
+            dto.setAllowanceName(allowance.getAllowanceName());
+            data.add(dto);
+        }
+        return data;
     }
 
     @Override
     @Transactional
     public void update(MultipartFile file, RequestAllowanceCreateDTO request) {
-        Allowance allowance = allowanceRepository.findById(request.getWageId()).orElseThrow(() -> new AppException("ERR01", "Không tìm mã hợp đồng này!"));
+        Allowance allowance = allowanceRepository.findById(request.getId()).orElseThrow(() -> new AppException("ERR01", "Không tìm mã hợp đồng này!"));
         MapperUtils.map(request, allowance);
         //upload file word
         if (file != null && file.getOriginalFilename() != null) {
@@ -85,7 +95,7 @@ public class AllowanceServiceImpl implements AllowanceService {
                 }
                 Path filePath = Paths.get(this.fileUpload + fileName);
                 Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                if (!allowance.getAttachFile().equals(filePath.toString())) {
+                if (allowance.getAttachFile() == null || !allowance.getAttachFile().equals(filePath.toString())) {
                     allowance.setAttachFile(fileName);
                 }
             } catch (NullPointerException e) {
@@ -108,6 +118,9 @@ public class AllowanceServiceImpl implements AllowanceService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void create(MultipartFile file, RequestAllowanceCreateDTO request) {
+        if (allowanceRepository.existsByAllowanceCode(request.getAllowanceCode())) {
+            throw new RuntimeException("Mã phụ cấp đã tồn tại");
+        }
         Allowance allowance = new Allowance();
         allowance.setAllowanceCode(request.getAllowanceCode());
         allowance.setAllowanceName(request.getAllowanceName());
@@ -130,9 +143,27 @@ public class AllowanceServiceImpl implements AllowanceService {
 
     @Override
     @Transactional
-    public void addForEmployee(UserDetailWageDTO userDetailWageDTO) {
+    public void addForEmployee(RequestEmployeeAllowanceDTO request) {
+        Employee employee = employeeRepository.findByCode(request.getEmployeeCode())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên"));
 
+        Allowance allowance = allowanceRepository.findByAllowanceCode(request.getAllowanceCode())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy phụ cấp"));
+
+        // Khởi tạo nếu null
+        if (employee.getAllowances() == null) {
+            employee.setAllowances(new HashSet<>());
+        }
+
+        // Thêm allowance nếu chưa có
+        if (!employee.getAllowances().contains(allowance)) {
+            employee.getAllowances().add(allowance);
+            employeeRepository.save(employee);
+        } else {
+            throw new RuntimeException("Phụ cấp đã tồn tại cho nhân viên này");
+        }
     }
+
 
     @Override
     @Transactional
@@ -156,15 +187,21 @@ public class AllowanceServiceImpl implements AllowanceService {
     }
 
     @Override
-    public ResponsePage<ResponseWageEmployeeDetailDTO> getEmployeeWageDetails(String employeeCode, RequestPage page) {
+    public ResponsePage<ResponseAllowanceEmployeeDetailDTO> getEmployeeWageDetails(String employeeCode, RequestPage page) {
         Page<Allowance> wagePage = allowanceRepository.findAllByEmployeeCode(employeeCode, page.toPageable());
-        List<ResponseWageEmployeeDetailDTO> responseWageEmployeeDetailDTOS = wagePage.getContent().stream().map(
-                item -> {
-                    ResponseWageEmployeeDetailDTO dto = new ResponseWageEmployeeDetailDTO();
-                    MapperUtils.map(item, dto);
-                    return dto;
-                }).toList();
-        return new ResponsePage<>(responseWageEmployeeDetailDTOS, page, wagePage.getTotalElements());
+
+        List<ResponseAllowanceEmployeeDetailDTO> responseList = wagePage.getContent().stream().map(item -> {
+            ResponseAllowanceEmployeeDetailDTO dto = new ResponseAllowanceEmployeeDetailDTO();
+            dto.setAllowanceCode(item.getAllowanceCode());
+            dto.setAllowanceName(item.getAllowanceName());
+            dto.setAllowanceBase(item.getAllowanceBase());
+            dto.setAllowanceDescription(item.getAllowanceDescription());
+            dto.setAttachFile(item.getAttachFile());
+            return dto;
+        }).toList();
+
+        return new ResponsePage<>(responseList, page, wagePage.getTotalElements());
     }
+
 
 }

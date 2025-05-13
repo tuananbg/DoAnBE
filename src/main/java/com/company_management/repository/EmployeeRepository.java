@@ -18,10 +18,6 @@ import java.util.Optional;
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Optional<Employee> findByCode(String code);
 
-    @Modifying
-    @Query(value = "update Employee e set e.status = 0, e.updatedDate = now(), e.updatedBy = :user where e.id = :id and e.status = 1 or e.status = 2 ")
-    int deleteById(Long id, Long user);
-
     List<Employee> findAllByStatus(Integer status);
 
     @Query(value = "SELECT e FROM Employee e " +
@@ -46,6 +42,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Long countActiveEmployeesWithBirthdayInCurrentMonth(Integer status);
 
     Optional<Employee> findByEmployeeInfoEmail(String employeeInfoEmail);
+
+    Boolean existsByPositionId(Long positionId);
 
 
 }

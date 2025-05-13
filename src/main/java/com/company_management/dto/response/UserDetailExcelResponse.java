@@ -21,7 +21,7 @@ public class UserDetailExcelResponse {
     private String employeeName;
     private Integer gender;
     private String genderName;
-    private String birthday;
+    private String dateOfBirth;
     private String avatar;
     private String email;
     private String address;

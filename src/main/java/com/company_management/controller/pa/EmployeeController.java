@@ -90,10 +90,10 @@ public class EmployeeController {
     }
 
     @PutMapping("/update")
-    public ResultResp<Object> updateEmployee(@ModelAttribute("avatarFile") MultipartFile avatarFile,
+    public BaseResponse<Object> updateEmployee(@ModelAttribute("avatarFile") MultipartFile avatarFile,
                                              @ModelAttribute RequestEmployeeDetailDTO request) throws IOException {
         employeeService.updateEmployee(avatarFile, request);
-        return ResultResp.success(ErrorCode.UPDATED_OK, null);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202,AppConstants.UPDATE_SUCCESS_MESS_202);
     }
 
     @GetMapping("/select")

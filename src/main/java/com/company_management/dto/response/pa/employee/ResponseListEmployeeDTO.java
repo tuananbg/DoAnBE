@@ -19,7 +19,7 @@ public class ResponseListEmployeeDTO {
 
     private String genderName;
 
-    private Date birthday;
+    private Date dateOfBirth;
 
     private String phone;
 
@@ -30,5 +30,9 @@ public class ResponseListEmployeeDTO {
     private String placeOfBirth;
 
     private String positionName;
+
+    private String departmentName;
+
+    private String permanentAddress;
 
 }

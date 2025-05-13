@@ -11,14 +11,17 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseAllowanceListDTO {
-    private int index;
-    private Long id;
+public class ResponseAllowanceEmployeeDetailDTO {
+
     private String allowanceCode;
+
+    private String employeeCode;
+
     private String allowanceName;
-    private Double allowanceBase; //so tiền phu cap
+
+    private Double allowanceBase; //luong phu cap co ban( số tien)
+
     private String allowanceDescription;
-    private Integer status;
+
     private String attachFile;  //file thong tin phu cap
-    private Date createdDate;
 }

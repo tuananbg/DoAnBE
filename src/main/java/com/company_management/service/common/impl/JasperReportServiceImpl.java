@@ -66,7 +66,7 @@ public class JasperReportServiceImpl implements JasperReportService {
             if (employeeInfo != null) {
                 MapperUtils.map(employee.getEmployeeInfo(), item);
                 item.setGenderName(Gender.fromCode(employeeInfo.getGender()).getName());
-                item.setBirthday(employee.getEmployeeInfo().getDateOfBirth());
+                item.setDateOfBirth(employee.getEmployeeInfo().getDateOfBirth());
                 item.setYearOld(calculateAge(employee.getEmployeeInfo().getDateOfBirth()) + " tuổi");
             }
             EmploymentStatus status = EmploymentStatus.findByCodeStatus(employee.getStatus());

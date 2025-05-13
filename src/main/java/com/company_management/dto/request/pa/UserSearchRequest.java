@@ -14,7 +14,7 @@ public class UserSearchRequest {
     private Long id;
     private String fullName;
     private Integer gender;
-    private String birthday;
+    private String dateOfBirth;
     private Long provinceId;
     private Long departmentId;
     private String contract_createdate;

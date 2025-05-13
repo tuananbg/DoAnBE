@@ -54,7 +54,7 @@
 	<field name="employeeCode" class="java.lang.String"/>
 	<field name="employeeName" class="java.lang.String"/>
 	<field name="genderName" class="java.lang.String"/>
-	<field name="birthday" class="java.util.Date"/>
+	<field name="dateOfBirth" class="java.util.Date"/>
 	<field name="yearOld" class="java.lang.String"/>
 	<field name="email" class="java.lang.String"/>
 	<field name="placeOfBirth" class="java.lang.String"/>
@@ -191,7 +191,7 @@
 			</textField>
 			<textField>
 				<reportElement style="text" x="519" y="0" width="173" height="30" uuid="fc827a21-5e42-4cb6-ab43-cf842dc64485"/>
-				<textFieldExpression><![CDATA[$F{birthday} != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{birthday}) : ""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{dateOfBirth} != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{dateOfBirth}) : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="692" y="0" width="173" height="30" uuid="524f496e-3b8d-4f00-8831-b6641dae3133"/>

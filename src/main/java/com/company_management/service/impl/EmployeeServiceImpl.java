@@ -77,6 +77,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                     Position position = item.getPosition();
                     if (position != null) {
                         response.setPositionName(position.getPositionName());
+                        Department department = position.getDepartment();
+                        if (department != null) {
+                            response.setDepartmentName(department.getDepartmentName());
+                        }
                     }
                     if (item.getEmployeeInfo() != null) {
                         EmployeeInfo employeeInfo = employeeInfoRepository.findById(item.getEmployeeInfo().getId()).orElse(null);
@@ -84,7 +88,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                             response.setGenderName(Gender.fromCode(employeeInfo.getGender()).getName());
                             response.setPhone(employeeInfo.getMobile());
                             response.setPlaceOfBirth(employeeInfo.getPlaceOfBirth());
-                            response.setPlaceOfBirth(employeeInfo.getPlaceOfBirth());
+                            response.setPermanentAddress(employeeInfo.getPermanentAddress());
                         }
                     }
                     return response;
@@ -112,19 +116,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = getEmployee(code);
         ResponseEmployeeDetailDTO detailDTO = new ResponseEmployeeDetailDTO();
         MapperUtils.map(employee, detailDTO);
-        detailDTO.setEmployeeCode(employee.getCode());
-        detailDTO.setEmployeeName(employee.getFullName());
+        detailDTO.setCode(employee.getCode());
+        detailDTO.setFullName(employee.getFullName());
         Position position = employee.getPosition();
         if (position != null) {
             detailDTO.setPositionName(position.getPositionName());
-            if (position.getDepartment() != null) {
-                detailDTO.setDepartmentName(position.getDepartment().getDepartmentName());
-            }
+            detailDTO.setPositionCode(position.getPositionCode());
         }
 
         EmployeeInfo employeeInfo = employee.getEmployeeInfo();
         if (employeeInfo != null) {
             MapperUtils.map(employeeInfo, detailDTO);
+            detailDTO.setDateOfBirth(employeeInfo.getDateOfBirth());
         }
 
         return detailDTO;
@@ -176,8 +179,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         MapperUtils.mapOnlyNotNullProperty(request, employee);
         EmployeeInfo employeeInfo = employee.getEmployeeInfo();
         if (employeeInfo != null) {
-            MapperUtils.map(employeeInfo, request);
+            MapperUtils.mapOnlyNotNullProperty(request, employeeInfo);
         }
+        Position position = positionRepository.findByPositionCode(request.getPositionCode()).orElseThrow(()-> new RuntimeException("Mã chức vụ không tồn tại trong hệ thống"));
+        employee.setPosition(position);
         //upload file ảnh
         if (avatarFile != null && avatarFile.getOriginalFilename() != null) {
             try {

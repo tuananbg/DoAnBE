@@ -19,6 +19,8 @@ public interface EmployeeContractsRepository extends JpaRepository<EmployeeContr
 
     List<EmployeeContracts> findAllByStatus(Integer status);
 
+    List<EmployeeContracts> findAllByStatusIn(List<Integer> status);
+
     List<EmployeeContracts> findAllByEmployeeId(Long id);
 
     @Query(value = "SELECT ec FROM EmployeeContracts ec  WHERE " +

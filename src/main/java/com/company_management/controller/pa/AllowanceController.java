@@ -5,14 +5,16 @@ import com.company_management.common.ErrorCode;
 import com.company_management.common.ObjectError;
 import com.company_management.common.ResultResp;
 import com.company_management.common.enums.ObjectStatus;
-import com.company_management.dto.ResponseWageEmployeeDetailDTO;
+import com.company_management.dto.response.pa.ResponseAllowanceEmployeeDetailDTO;
 import com.company_management.dto.UserDetailWageDTO;
 import com.company_management.dto.WageDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.pa.RequestAllowanceCreateDTO;
+import com.company_management.dto.request.pa.RequestEmployeeAllowanceDTO;
 import com.company_management.dto.response.pa.ResponseAllowanceListDTO;
+import com.company_management.dto.response.pa.ResponseSelectAllowanceDTO;
 import com.company_management.service.AllowanceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @RestController
 @RequestMapping("${apiPrefix}/allowance")
@@ -50,11 +53,11 @@ public class AllowanceController {
         return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201,AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
-    @PostMapping(value = "/createForEmployee")
-    public ResultResp<Object> createForEmployee(@RequestBody @Valid UserDetailWageDTO userDetailWageDTO
+    @PostMapping(value = "/employee-detail/create")
+    public BaseResponse<Object> createForEmployee(@RequestBody @Valid RequestEmployeeAllowanceDTO request
     ) {
-        allowanceService.addForEmployee(userDetailWageDTO);
-        return ResultResp.success(ErrorCode.CREATED_OK);
+        allowanceService.addForEmployee(request);
+        return BaseResponse.ok(AppConstants.CREATE_SUCCESS_CODE_201,AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
     @GetMapping(value = "/list/{status}")
@@ -68,16 +71,17 @@ public class AllowanceController {
         return ResultResp.success(allowanceService.searchForEmployee(wageDTO, pageable));
     }
 
-    @GetMapping(value = "/detail/{id}")
-    public ResultResp<Object> detail(@PathVariable Long id) {
-        return ResultResp.success(allowanceService.detail(id));
+    @GetMapping(value = "/select")
+    public BaseResponse<List<ResponseSelectAllowanceDTO>> select() {
+        return BaseResponse.ok(allowanceService.select());
     }
 
+
     @PutMapping("/update")
-    public ResultResp<Object> update(@ModelAttribute("file") MultipartFile file,
+    public BaseResponse<Object> update(@ModelAttribute("file") MultipartFile file,
                                      @ModelAttribute @Valid RequestAllowanceCreateDTO request) {
         allowanceService.update(file, request);
-        return ResultResp.success(null);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202,AppConstants.UPDATE_SUCCESS_MESS_202);
     }
 
     @PutMapping("/updateForEmployee")
@@ -128,7 +132,7 @@ public class AllowanceController {
     }
 
     @GetMapping("/employee-detail/{employeeCode}")
-    private BaseResponse<ResponsePage<ResponseWageEmployeeDetailDTO>> getEmployeeDetail(@PathVariable("employeeCode") String employeeCode,RequestPage page) {
+    private BaseResponse<ResponsePage<ResponseAllowanceEmployeeDetailDTO>> getEmployeeDetail(@PathVariable("employeeCode") String employeeCode, RequestPage page) {
         return BaseResponse.ok(allowanceService.getEmployeeWageDetails(employeeCode,page));
     }
 

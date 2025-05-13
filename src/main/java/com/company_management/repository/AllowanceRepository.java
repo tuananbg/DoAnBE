@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -28,13 +29,14 @@ public interface AllowanceRepository extends JpaRepository<Allowance, Long> {
             "ORDER BY a.createdDate ASC")
     Page<Allowance> findAllByIsActive(@Param("status") Integer active, @Param("keyword") String keyword, Pageable pageable);
 
-    @Query("""
-                SELECT a FROM Allowance a
-                JOIN a.employees e
-                WHERE e.code = :employeeCode
-            """)
+    @Query("SELECT a FROM Allowance a JOIN a.employees e WHERE e.code = :employeeCode")
     Page<Allowance> findAllByEmployeeCode(@Param("employeeCode") String employeeCode, Pageable pageable);
 
+
     Optional<Allowance> findByAllowanceCode(String allowanceCode);
+
+    List<Allowance> findAllByStatus(Integer status);
+
+    Boolean existsByAllowanceCode(String allowanceCode);
 
 }

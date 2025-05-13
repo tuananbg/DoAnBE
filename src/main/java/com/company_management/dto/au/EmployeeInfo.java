@@ -51,7 +51,7 @@ public class EmployeeInfo implements UserDetails {
 
     @Override
     public String getUsername() {
-        return account.getCode();
+        return account.getAccount();
     }
 
     @Override

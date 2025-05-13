@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -88,14 +89,23 @@ public class JasperReportServiceImpl implements JasperReportService {
         String path = "report/EmployeeContractStatus.jrxml";
         List<ReportEmployeeContractDTO> data = new ArrayList<>();
         for (EmployeeContracts employeeContracts : employeeContractsList) {
+            Employee employee = employeeContracts.getEmployee();
             ReportEmployeeContractDTO dto = new ReportEmployeeContractDTO();
             MapperUtils.map(employeeContracts, dto);
+            dto.setSalaryRate(convertToBigDecimal(employeeContracts.getSalaryRate()));
+            dto.setBasicSalaryInsurance(convertToBigDecimal(employeeContracts.getBasicSalary()));
+            dto.setBasicSalaryInsurance(convertToBigDecimal(employeeContracts.getBasicSalaryInsurance()));
+            if (employee != null) {
+                dto.setEmployeeCode(employee.getCode());
+                dto.setFullName(employee.getFullName());
+            }
+            dto.setStatusName(status.getName());
             data.add(dto);
         }
         try {
             return exportReport(ReportType.XLSX, path, data, null);
         } catch (Exception e) {
-            throw new RuntimeException(AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01, e);
+            throw new AppException(AppConstants.DOWNLOAD_DATA_NULL_CODE_EX01,AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01);
         }
     }
 
@@ -199,5 +209,16 @@ public class JasperReportServiceImpl implements JasperReportService {
         LocalDate birthDate = birthday.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate now = LocalDate.now();
         return Period.between(birthDate, now).getYears();
+    }
+
+    public static BigDecimal convertToBigDecimal(Double value) {
+        return value != null ? BigDecimal.valueOf(value) : BigDecimal.ZERO;
+    }
+
+    public static BigDecimal convertToBigDecimal(Long value) {
+        return value != null ? BigDecimal.valueOf(value) : BigDecimal.ZERO;
+    }
+    public static BigDecimal convertToBigDecimal(Float value) {
+        return value != null ? BigDecimal.valueOf(value) : BigDecimal.ZERO;
     }
 }

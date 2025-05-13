@@ -68,7 +68,7 @@ public class ContractController {
     }
 
     @GetMapping(value = "/download/{status}")
-    public ResponseEntity<Resource> download(ContractStatusEnum status) {
+    public ResponseEntity<Resource> download(@PathVariable("status") ContractStatusEnum status) {
         byte[] bytes = jasperReportService.contractStatus(status);
         String fileName = "[DTDI] HRM_Danh sach hop dong_" + CommonUtils.getCurrentDate("ddMMyyyy") + "." + ReportType.XLSX.getCode();
         return jasperReportService.baseDownload(bytes,fileName);

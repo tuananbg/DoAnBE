@@ -1,12 +1,11 @@
 package com.company_management.service.au.impl;
 
-import com.company_management.common.AppConstants;
 import com.company_management.common.enums.AuthorMessage;
 import com.company_management.common.enums.ConfigDataCode;
 import com.company_management.common.enums.EmailTemplate;
 import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.config.AppConfig;
-import com.company_management.dto.au.ChangePasswordRequest;
+import com.company_management.dto.au.ForgotPasswordRequest;
 import com.company_management.dto.au.EmployeeInfo;
 import com.company_management.dto.au.RequestChangePasswordDTO;
 import com.company_management.dto.au.RequestLoginDTO;
@@ -138,25 +137,25 @@ public class AuthorServiceImpl implements AuthorService {
             }
         } else {
             // get employee
-            Account em = accountRepository.findByAccountIgnoreCase(request.getAccount());
-            if (em == null) {
+            Account account = accountRepository.findByAccountIgnoreCase(request.getAccount());
+            if (account == null) {
                 throw new AppException("ERR","Tài khoản không tồn tại");
             }
             // check current password is valid or not
-            if (!passwordEncoder.matches(request.getCurrentPassword(), em.getPassword())) {
+            if (!passwordEncoder.matches(request.getCurrentPassword(), account.getPassword())) {
                 throw new AppException(AuthorMessage.WRONG_CURENT_PASSWORD.getCode(),
                         AuthorMessage.WRONG_CURENT_PASSWORD.getMessage());
             }
             // change password
-            em.setPassword(passwordEncoder.encode(request.getNewPassword()));
-            em.setNumPwWrong(0);
+            account.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            account.setNumPwWrong(0);
             Calendar c = Calendar.getInstance();
             c.setTime(DateUtils.getNow());
             // get expire password config
 
             c.add(Calendar.DATE, ConfigDataCode.SYSTEM_EXPIRED_PASSWORD);
-            em.setPwExpDate(c.getTime());
-            accountRepository.save(em);
+            account.setPwExpDate(c.getTime());
+            accountRepository.save(account);
         }
     }
 
@@ -201,14 +200,20 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Boolean changePassword(ChangePasswordRequest request) {
+    public void forgotPassword(ForgotPasswordRequest request) {
         Account account = accountRepository.findByAccount(request.getAccount()).orElseThrow(() -> new RuntimeException("Tài khoản không tồn tại trong hệ thống"));
         if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new RuntimeException("Confirm Password not same!!!");
+            throw new AppException("ERR01","Mật khẩu không khớp");
         }
+        account.setNumPwWrong(0);
+        Calendar c = Calendar.getInstance();
+        c.setTime(DateUtils.getNow());
+        // get expire password config
+
+        c.add(Calendar.DATE, ConfigDataCode.SYSTEM_EXPIRED_PASSWORD);
+        account.setPwExpDate(c.getTime());
         account.setPassword(passwordEncoder.encode(request.getPassword()));
         accountRepository.save(account);
-        return true;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.company_management.service.au;
 
-import com.company_management.dto.au.ChangePasswordRequest;
+import com.company_management.dto.au.ForgotPasswordRequest;
 import com.company_management.dto.au.RequestChangePasswordDTO;
 import com.company_management.dto.au.RequestLoginDTO;
 import com.company_management.dto.response.au.ResponseLoginDTO;
@@ -12,7 +12,7 @@ public interface AuthorService {
 
     void logout(String account);
 
-    Boolean changePassword(ChangePasswordRequest request);
+    void forgotPassword(ForgotPasswordRequest request);
 
     Boolean checkVerifyCode(String otp);
 

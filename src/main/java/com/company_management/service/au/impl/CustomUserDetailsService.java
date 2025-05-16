@@ -39,12 +39,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         Account account = accountRepo.findByAccountIgnoreCase(username);
         if (account == null) {
-            throw new AppException(AuthorMessage.ACCOUNT_NOT_FOUND.getCode(),
-                    AuthorMessage.ACCOUNT_NOT_FOUND.getMessage());
+            throw new AppException(AuthorMessage.ACCOUNT_NOT_FOUND.getCode(), AuthorMessage.ACCOUNT_NOT_FOUND.getMessage());
         }
-        if (account.getStatus().equals(EmploymentStatus.RETIRED.getCode())) {
-            throw new AppException(AuthorMessage.ACCOUNT_RETIRED.getCode(),
-                    AuthorMessage.ACCOUNT_RETIRED.getMessage());
+        Employee employee = account.getEmployee();
+        if (employee != null) {
+            if (employee.getStatus().equals(EmploymentStatus.RETIRED.getCode())) {
+                throw new AppException(AuthorMessage.ACCOUNT_RETIRED.getCode(), AuthorMessage.ACCOUNT_RETIRED.getMessage());
+            }
         }
         if (account.getStatus().equals(AccountStatusEnum.LOCK.getCode())) {
             throw new AppException(AuthorMessage.ACCOUNT_LOCK.getCode(), AuthorMessage.ACCOUNT_LOCK.getMessage());
@@ -65,7 +66,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 //        if (!roles.isEmpty()) {
 //            roles.forEach(r -> permission.addAll(r.getPermission()));
 //        }
-        return new EmployeeInfo(account.getEmployee(), roles, account.getEmployee().getEmployeeInfo().getEmail(), positionRoleDepartment,account);
+        return new EmployeeInfo(account.getEmployee(), roles, account.getEmployee().getEmployeeInfo().getEmail(), positionRoleDepartment, account);
     }
 
     public EmployeeInfo loadAdminUser(String password) {
@@ -78,7 +79,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         employee.setFullName("Admin");
         employee.setCode("Admin");
         Set<Role> roles = new HashSet<>();
-        return new EmployeeInfo(employee, roles, "admin@dtdi.vn.com", new ArrayList<>(),account);
+        return new EmployeeInfo(employee, roles, "admin@dtdi.vn.com", new ArrayList<>(), account);
     }
 
 }

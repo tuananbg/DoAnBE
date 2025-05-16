@@ -76,11 +76,9 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
                 .map(item -> {
                     ResponseContractListDTO response = new ResponseContractListDTO();
                     MapperUtils.map(item, response);
-                    response.setContractType(item.getContractTypeDisplay());
+                    response.setContractType(item.getContractType());
+                    response.setContractTypeDisplay(item.getContractTypeDisplay());
                     response.setContractTerm(item.getContractTermDisplay());
-                    response.setSignDate(item.getContractSignDate());
-                    response.setEffectiveDate(item.getContractEffectiveDate());
-                    response.setExpiredDate(item.getContractEndDate());
                     ContractStatusEnum contractStatusEnum = ContractStatusEnum.fromValue(item.getStatus());
                     if (contractStatusEnum != null) {
                         response.setContractStatus(contractStatusEnum.getName());
@@ -102,11 +100,8 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
                 .map(item -> {
                     ResponseContractListDTO response = new ResponseContractListDTO();
                     MapperUtils.map(item, response);
-                    response.setEffectiveDate(item.getContractEffectiveDate());
                     response.setContractType(item.getContractTypeDisplay());
-                    response.setExpiredDate(item.getContractSignDate());
                     response.setContractTerm(item.getContractTermDisplay());
-                    response.setSignDate(item.getContractSignDate());
                     return response;
                 }).toList();
         return new ResponsePage<>(responseContractListDTOS, page, employeeContracts.getTotalElements());

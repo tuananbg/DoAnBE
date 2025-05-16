@@ -1,5 +1,6 @@
 package com.company_management.dto.response.pa;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,11 +18,14 @@ public class ResponseContractListDTO {
     private String employeeName;
     private String contractNumber; // ma hop dong
     private String contractType; // loai hop dong: thu viec, chinh thuc,....
+    private String contractTypeDisplay;
     private String attachFile;
-    private Date signDate; // ngay ky HD
-    private Date effectiveDate; // ngay hieu luc
-    private Date expiredDate; // thoi han hop dong
+    private Date contractSignDate;
+    private Date contractEffectiveDate; // ngay hieu luc
+    private Date contractEndDate; // thoi han hop dong
     private String contractTerm;
     private String contractStatus; // la hop dong hien tai
+    private Double basicSalaryInsurance;
+    private Long basicSalary;
 
 }

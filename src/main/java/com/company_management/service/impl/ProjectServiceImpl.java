@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -82,7 +83,7 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ResponseListTaskOfProjectDTO> getListTask(long id) {
         Project project = projectRepository.findById(id).orElseThrow(() -> new AppException("ERR01","Dự án không tồn tại!"));
         List<Task> tasks = taskRepository.findByProjectCode(project.getProjectCode());
-        List<Integer> statusList = tasks.stream().map(Task::getStatus).toList();
+        List<Integer> statusList = tasks.stream().map(Task::getStatus).collect(Collectors.toSet()).stream().toList();
         List<ResponseListTaskOfProjectDTO> data = new ArrayList<>();
         for (Integer status : statusList) {
             ResponseListTaskOfProjectDTO dto = new ResponseListTaskOfProjectDTO();
@@ -91,8 +92,12 @@ public class ProjectServiceImpl implements ProjectService {
             for (Task task : tasks) {
                 if (task.getStatus().equals(status)) {
                     ResponseDetailListTaskDTO taskDTO = new ResponseDetailListTaskDTO();
+                    taskDTO.setTaskCode(task.getTaskCode());
                     taskDTO.setTaskName(task.getTaskName());
                     taskDTO.setId(task.getId());
+                    taskDTO.setPriority(task.getPriority());
+                    taskDTO.setStartDay(task.getStartDay());
+                    taskDTO.setEndDay(task.getEndDay());
                     taskDTO.setTaskStatusName(TaskStatusEnum.findByCode(status).getName());
                     taskDTO.setDescription(task.getTaskDescription());
                     taskDTOList.add(taskDTO);

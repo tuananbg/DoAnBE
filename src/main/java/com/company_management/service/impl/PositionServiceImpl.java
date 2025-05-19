@@ -61,8 +61,8 @@ public class PositionServiceImpl implements PositionService {
         position.setPositionDescription(request.getPositionDescription());
         position.setStatus(ObjectStatus.ACTIVE.getCode());
         Department department = departmentRepository.findByCode(request.getDepartmentCode())
-                .orElseThrow(()-> new AppException("ERR1","Mã phòng ban không tồn tại trong hệ thống!") );
-        checkDepartmentHead(department.getDepartmentCode());
+                .orElseThrow(() -> new AppException("ERR1", "Mã phòng ban không tồn tại trong hệ thống!"));
+        checkDepartmentHead(department.getDepartmentCode(), request.getPositionCategory());
         position.setDepartment(department);
 //        if (PositionCategoryEnum.DEPARTMENT_HEAD.getCode().equals(request.getPositionCategory())) {
 //            throw new AppException("ERR01","Chức danh Trưởng phòng do hệ thống tự sinh vui lòng chọn chức danh khác");
@@ -74,12 +74,12 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public void update(RequestPositionDTO request) {
-        Position position = positionRepository.findById(request.getId()).orElseThrow(()-> new AppException("ER01","Chức danh không tồn tại trong hệ thống"));
+        Position position = positionRepository.findById(request.getId()).orElseThrow(() -> new AppException("ER01", "Chức danh không tồn tại trong hệ thống"));
         MapperUtils.mapOnlyNotNullProperty(request, position);
         Department department = departmentRepository.findByCode(request.getDepartmentCode())
-                .orElseThrow(()-> new AppException("ERR1","Mã chức danh không tồn tại trong hệ thống!") );
+                .orElseThrow(() -> new AppException("ERR1", "Mã chức danh không tồn tại trong hệ thống!"));
         position.setDepartment(department);
-        checkDepartmentHead(department.getDepartmentCode());
+        checkDepartmentHead(department.getDepartmentCode(), request.getPositionCategory());
         positionCategoryRepository.findByCode(request.getPositionCategory()).ifPresent(position::setPositionCategory);
         jobGroupRepository.findByCode(request.getJobGroup()).ifPresent(position::setJobGroup);
         positionRepository.save(position);
@@ -88,9 +88,9 @@ public class PositionServiceImpl implements PositionService {
     @Override
     @Transactional
     public void disable(String positionCode) {
-        Position position = positionRepository.findByPositionCode(positionCode).orElseThrow(()-> new AppException("ERR01","Chức vụ không tồn tại trong hệ thống"));
+        Position position = positionRepository.findByPositionCode(positionCode).orElseThrow(() -> new AppException("ERR01", "Chức vụ không tồn tại trong hệ thống"));
         if (employeeRepository.existsByPositionId(position.getId())) {
-            throw new AppException("ERR01","Vui lòng chuyển các nhân viền đang giữ chức vụ này sang chức vụ khác");
+            throw new AppException("ERR01", "Vui lòng chuyển các nhân viền đang giữ chức vụ này sang chức vụ khác");
         }
         position.setStatus(ObjectStatus.INACTIVE.getCode());
         positionRepository.save(position);
@@ -99,19 +99,23 @@ public class PositionServiceImpl implements PositionService {
     @Override
     @Transactional
     public void unlock(String positionCode) {
-        Position position = positionRepository.findByPositionCode(positionCode).orElseThrow(()-> new AppException("ERR01","Chức vụ không tồn tại trong hệ thống"));
+        Position position = positionRepository.findByPositionCode(positionCode).orElseThrow(() -> new AppException("ERR01", "Chức vụ không tồn tại trong hệ thống"));
         Department department = position.getDepartment();
         if (department != null) {
-            checkDepartmentHead(department.getDepartmentCode());
+            PositionCategory positionCategory = position.getPositionCategory();
+            if (positionCategory != null) {
+                checkDepartmentHead(department.getDepartmentCode(),positionCategory.getCode());
+            }
+
         }
         position.setStatus(ObjectStatus.ACTIVE.getCode());
         positionRepository.save(position);
     }
 
     @Override
-    public ResponsePage<ResponsePositionDTO> getListByStatus(ObjectStatus status,String keyword, RequestPage page) {
+    public ResponsePage<ResponsePositionDTO> getListByStatus(ObjectStatus status, String keyword, RequestPage page) {
         keyword = CommonUtils.escapeLike(keyword);
-        Page<Position> positions = positionRepository.findAllByKeyword(status.getCode(),keyword,page.toPageable());
+        Page<Position> positions = positionRepository.findAllByKeyword(status.getCode(), keyword, page.toPageable());
         List<ResponsePositionDTO> responsePositionDTOS = positions.getContent()
                 .stream()
                 .map(
@@ -124,7 +128,7 @@ public class PositionServiceImpl implements PositionService {
                                 response.setDepartmentCode(department.getDepartmentCode());
                             }
                             JobGroup jobGroup = item.getJobGroup();
-                            if (jobGroup != null){
+                            if (jobGroup != null) {
                                 response.setJobGroupName(jobGroup.getName());
                                 response.setJobGroupCode(jobGroup.getCode());
                             }
@@ -140,11 +144,13 @@ public class PositionServiceImpl implements PositionService {
         return new ResponsePage<>(responsePositionDTOS, page, positions.getTotalElements());
     }
 
-    private void checkDepartmentHead(String departmentCode){
-        Position positionCheck = positionRepository.findByDepartmentCodeAndPositionCategoryCode(departmentCode,PositionCategoryEnum.DEPARTMENT_HEAD.getCode(),ObjectStatus.ACTIVE.getCode())
-                .orElse(null);
-        if (positionCheck != null) {
-            throw new AppException("ERR1","Phòng ban đã có chức danh Trưởng phòng đang hoạt động!");
+    private void checkDepartmentHead(String departmentCode,String positionCategoryCode) {
+        if (PositionCategoryEnum.DEPARTMENT_HEAD.getCode().equals(positionCategoryCode)) {
+            Position positionCheck = positionRepository.findByDepartmentCodeAndPositionCategoryCode(departmentCode, positionCategoryCode, ObjectStatus.ACTIVE.getCode())
+                    .orElse(null);
+            if (positionCheck != null) {
+                throw new AppException("ERR1", "Phòng ban đã có chức danh Trưởng phòng đang hoạt động!");
+            }
         }
     }
 

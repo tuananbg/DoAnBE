@@ -18,7 +18,5 @@ public class RequestAttendanceOTDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date endTime; //thời gian kết thúc
     private Double totalTime;
-    private String employeeCode;
-    private String followCode;
     private String descriptionOt;  //mô tả công việc cần ot
 }

@@ -20,7 +20,24 @@ public interface AttendanceLeaveRepository extends JpaRepository<AttendanceLeave
     @Query(value = "SELECT al FROM AttendanceLeave al " +
             "WHERE ((:keyword IS NULL OR UPPER(al.reviewer.fullName) LIKE CONCAT('%', UPPER(:keyword), '%')) "
             + " OR (:keyword IS NULL OR UPPER(al.reviewer.code) LIKE CONCAT('%', UPPER(:keyword), '%')))"
-            + "AND (al.status = :status)"+
+            + "AND (al.status = :status)" +
             "ORDER BY al.createdDate ASC")
-    Page<AttendanceLeave> findAllByKeyword(@Param("status") Integer status, @Param("keyword") String keyword, Pageable pageable);
+    Page<AttendanceLeave> findAllByKeyword(@Param("status") Integer status,
+                                           @Param("keyword") String keyword,
+                                           Pageable pageable);
+
+    @Query(value = "SELECT al FROM AttendanceLeave al " +
+            "WHERE (" +
+            "(:keyword IS NULL OR UPPER(al.reviewer.fullName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
+            "OR (:keyword IS NULL OR UPPER(al.reviewer.code) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
+            "OR (:keyword IS NULL OR UPPER(al.employee.fullName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
+            "OR (:keyword IS NULL OR UPPER(al.employee.code) LIKE CONCAT('%', UPPER(:keyword), '%'))" +
+            ") " +
+            "AND al.status = :status " +
+            "AND (al.employee.code = :userCode OR al.reviewer.code = :userCode OR upper(:userCode) = 'ADMIN')" +
+            "ORDER BY al.createdDate ASC")
+    Page<AttendanceLeave> findAllByKeywordV2(@Param("status") Integer status,
+                                             @Param("keyword") String keyword,
+                                             @Param("userCode") String userCode,
+                                             Pageable pageable);
 }

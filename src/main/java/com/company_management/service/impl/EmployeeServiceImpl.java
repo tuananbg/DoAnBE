@@ -270,10 +270,10 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
     @Override
     public List<ResponseEmployeeSelectDTO> selectEmployeeForDepartment() {
         String userCode = getCurrentUserCode();
-        Department department = departmentRepository.findByEmployeeCode(userCode).orElse(null);
         List<ResponseEmployeeSelectDTO> response = new ArrayList<>();
-        if (department != null) {
-            List<Employee> employees = employeeRepository.findAllByStatusAndDepartmentCode(department.getDepartmentCode(), EmploymentStatus.EMPLOYMENT.getCode());
+        Employee empDepart = employeeRepository.findByCode(userCode).orElse(null);
+        if (empDepart != null) {
+            List<Employee> employees = employeeRepository.findAllByStatusAndDepartmentCode(empDepart.getDepartmentCode(), EmploymentStatus.EMPLOYMENT.getCode());
             for (Employee employee : employees) {
                 ResponseEmployeeSelectDTO dto = new ResponseEmployeeSelectDTO();
                 dto.setEmployeeCode(employee.getCode());
@@ -281,6 +281,8 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
                 response.add(dto);
             }
         }
+
+
         return response;
     }
 

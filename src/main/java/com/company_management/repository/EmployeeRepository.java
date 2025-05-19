@@ -22,9 +22,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findAllByStatus(Integer status);
 
     @Query("SELECT e FROM Employee e " +
-            "join Position p ON e.position.id = p.id " +
-            "JOIN Department d ON d.id=p.department.id " +
-            "WHERE d.departmentCode = :departmentCode AND e.status =:status")
+            "WHERE e.departmentCode = :departmentCode AND e.status =:status")
     List<Employee> findAllByStatusAndDepartmentCode(@Param("departmentCode") String departmentCode,
                                                     @Param("status") Integer status);
 
@@ -68,5 +66,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Boolean existsByPositionId(Long positionId);
 
+
+    Optional<Employee> findByPositionId(Long positionId);
 
 }

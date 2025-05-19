@@ -12,15 +12,27 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AttendanceOTRepository extends JpaRepository<AttendanceOt, Long> {
 
-    @Modifying
-    @Query(value = "update AttendanceOt p set p.status = 0, p.updatedDate = now(), p.updatedBy = :user where p.id = :id ")
-    int deleteById(Long id, Long user);
-
     @Query(value = "SELECT aot FROM AttendanceOt aot " +
             "WHERE ((:keyword IS NULL OR UPPER(aot.employeeFollow.fullName) LIKE CONCAT('%', UPPER(:keyword), '%')) "
             + " OR (:keyword IS NULL OR UPPER(aot.employeeFollow.code) LIKE CONCAT('%', UPPER(:keyword), '%')))"
-            + "AND (aot.status = :status)"+
+            + "AND (aot.status = :status)" +
             "ORDER BY aot.createdDate ASC")
-    Page<AttendanceOt> findAllByKeyword(@Param("status") Integer status,@Param("keyword") String keyword, Pageable pageable);
+    Page<AttendanceOt> findAllByKeyword(@Param("status") Integer status,
+                                        @Param("keyword") String keyword,
+                                        Pageable pageable);
 
+    @Query(value = "SELECT aot FROM AttendanceOt aot " +
+            "WHERE (" +
+            "(:keyword IS NULL OR UPPER(aot.employeeFollow.fullName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
+            "OR (:keyword IS NULL OR UPPER(aot.employeeFollow.code) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
+            "OR (:keyword IS NULL OR UPPER(aot.employee.fullName) LIKE CONCAT('%', UPPER(:keyword), '%')) " +
+            "OR (:keyword IS NULL OR UPPER(aot.employee.code) LIKE CONCAT('%', UPPER(:keyword), '%'))" +
+            ") " +
+            "AND aot.status = :status " +
+            "AND (aot.employee.code = :userCode OR aot.employeeFollow.code = :userCode OR upper(:userCode) = 'ADMIN')" +
+            "ORDER BY aot.createdDate ASC")
+    Page<AttendanceOt> findAllByKeywordV2(@Param("status") Integer status,
+                                          @Param("keyword") String keyword,
+                                          @Param("userCode") String userCode,
+                                          Pageable pageable);
 }

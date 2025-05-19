@@ -14,13 +14,11 @@ import java.util.Date;
 public class RequestAttendanceLeaveDTO {
     // loại nghỉ phép nghỉ tính phép, nghỉ không tính phép)
     private String leaveCategory;
-    private String employeeCode;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date startDay; // tu ngày
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date endDay;  //đến ngày
     private String description; //Nội dung
     private Long totalTime;  //Tổng số ngày
-    private String reviewerCode;
     private Integer status;  // trạng thái đã duyệt, chờ duyệt, từ chối
 }

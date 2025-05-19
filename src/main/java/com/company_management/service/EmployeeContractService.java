@@ -34,6 +34,8 @@ public interface EmployeeContractService {
 
     void updateStatusContractRenewalNextMonth();
 
-    void updateStatusContractRenawalMonth();
+    void updateStatusContractRenewalMonth();
+
+    void updateStatusContractEffectiveToday();
 
 }

@@ -21,9 +21,11 @@ public class ContractSuspensionActiveJob implements Job {
         try{
             log.info("Start job ContractSuspensionActiveJob");
 //            Cập nhật trạng thái hợp đồng sắp hết hạn vào tháng này thành hết hạn
-            employeeContractService.updateStatusContractRenawalMonth();
+            employeeContractService.updateStatusContractRenewalMonth();
 //            Cập nhật trạng thái hợp đồng hết hạn vào tháng sau thành sắp hết hạn
             employeeContractService.updateStatusContractRenewalNextMonth();
+            // cập nhật trạng thái hợp đồng thành hiệu lực
+            employeeContractService.updateStatusContractEffectiveToday();
         }catch (Exception e){
             log.error(e.getMessage());
         }

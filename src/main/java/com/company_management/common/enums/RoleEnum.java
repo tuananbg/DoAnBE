@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public enum RoleEnum {
     ADMIN( "ADMIN", "Quản trị viên"),
     USER( "USER", "Nhân viên"),
+    MANAGER("MANAGER","Quản lý"),
     ;
 
     @JsonValue

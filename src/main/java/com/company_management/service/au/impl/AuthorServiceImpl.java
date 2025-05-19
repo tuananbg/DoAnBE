@@ -1,9 +1,6 @@
 package com.company_management.service.au.impl;
 
-import com.company_management.common.enums.AuthorMessage;
-import com.company_management.common.enums.ConfigDataCode;
-import com.company_management.common.enums.EmailTemplate;
-import com.company_management.common.enums.EmploymentStatus;
+import com.company_management.common.enums.*;
 import com.company_management.config.AppConfig;
 import com.company_management.dto.au.ForgotPasswordRequest;
 import com.company_management.dto.au.EmployeeInfo;
@@ -178,7 +175,7 @@ public class AuthorServiceImpl implements AuthorService {
             int maxNumPassWrong = ConfigDataCode.SYSTEM_NUM_PASSWORD_WRONG;
             if (numPassWrong == maxNumPassWrong) {
                 // login wrong password many time then lock user
-                acc.setStatus(EmploymentStatus.LOCK.getCode());
+                acc.setStatus(AccountStatusEnum.LOCK.getCode());
                 acc.setNumPwWrong(0);
                 throw new AppException(AuthorMessage.WRONG_PASSWORD_LOCK_ACCOUNT.getCode(),
                         String.format(AuthorMessage.WRONG_PASSWORD_LOCK_ACCOUNT.getMessage(), maxNumPassWrong));

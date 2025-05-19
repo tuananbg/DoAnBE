@@ -14,6 +14,7 @@ public enum ContractStatusEnum {
     ABOUT_TO_EXPIRE(2, "02", "Sắp hết hạn"),
     EXPIRED(3, "03","Hết hạn"),
     TERMINATED(4, "04", "Vô hiệu"),
+    NOT_EFFECTIVE(5,"05","Chưa hiệu lực"),
     ;
     private int value;
     private String code;

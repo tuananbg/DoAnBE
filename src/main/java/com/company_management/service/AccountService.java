@@ -13,7 +13,6 @@ import java.io.UnsupportedEncodingException;
 public interface AccountService {
     void createAccount(EmployeeAccountRequestDTO dto) throws UnsupportedEncodingException;
 
-
     void lockEmployee(String employeeCode);
 
     void unlockEmployee(String employeeCode);

@@ -195,4 +195,61 @@ public class CommonUtils {
                 .replace("%", "\\%");  // escape phần trăm
     }
 
+
+    public static String generateNextCode(String incomeCodeMax) {
+        if (incomeCodeMax == null) {
+            return "A00001";
+        }
+
+        return generateNextCodeFrom(incomeCodeMax);
+    }
+
+    public static   String generateNextCodeFrom(String currentCode) {
+        //  Chuyển chuỗi mã hiện tại thành mảng ký tự để dễ dàng thao tác
+        char[] codeArray = currentCode.toCharArray();
+        // Tìm chỉ mục của ký tự số cuối cùng
+        int numIndex = codeArray.length - 1;
+
+        while (numIndex >= 0 && Character.isDigit(codeArray[numIndex])) {
+            numIndex--;
+        }
+
+        boolean isUpdated = false;// Biến kiểm tra xem đã cập nhật mã chưa
+        // Duyệt qua các ký tự số từ phải qua trái và tăng giá trị của chúng
+        for (int i = codeArray.length - 1; i > numIndex; i--) {
+            if (Character.isDigit(codeArray[i])) {
+                // Nếu là số và nhỏ hơn 9, tăng lên 1
+                if (codeArray[i] < '9') {
+                    codeArray[i] = (char) (codeArray[i] + 1);
+                    isUpdated = true;// Đánh dấu là đã cập nhật mã
+                    break;
+                } else {
+                    codeArray[i] = '0';  // Đặt lại về 0 nếu đạt 9
+                }
+            }
+        }
+        // Nếu chưa cập nhật mã (tức là mã đã đạt tối đa, chẳng hạn từ "ZZ9" thành "AAA")
+        if (!isUpdated) {
+            // Duyệt qua các ký tự chữ cái từ phải qua trái và tăng chúng
+            for (int i = numIndex; i >= 0; i--) {
+                if (Character.isLetter(codeArray[i])) {
+                    // Nếu là chữ cái và nhỏ hơn 'Z', tăng lên 1
+                    if (codeArray[i] < 'Z') {
+                        codeArray[i] = (char) (codeArray[i] + 1);
+                        isUpdated = true;
+                        break;
+                    } else {
+                        // Nếu là chữ 'Z', reset về 'A' và tiếp tục kiểm tra ký tự tiếp theo
+                        codeArray[i] = 'A';
+                    }
+                }
+            }
+        }
+        // Nếu mã không thể được cập nhật (đã đạt đến giới hạn tối đa)
+        if (!isUpdated) {
+            throw new RuntimeException("Max code reached. Cannot generate a new code.");
+        }
+        return new String(codeArray);
+    }
+
 }

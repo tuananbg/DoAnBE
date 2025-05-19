@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 public enum EmploymentStatus {
     RETIRED(0, "RETIRED", "Nghỉ việc"),
     EMPLOYMENT(1, "EMPLOYMENT", "Đang làm việc"),
-    LOCK(2,"LOCK","Vô hiệu"),
+    WAITING_FOR_SIGNING(2,"WAITING_FOR_SIGNING","Chờ ký hợp đồng"),
+    WAITING_FOR_ONBOARD(3,"WAITING_FOR_ONBOARD","Chờ làm việc")
     ;
 
     @JsonValue

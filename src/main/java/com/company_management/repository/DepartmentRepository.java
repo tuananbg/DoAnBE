@@ -19,10 +19,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Query(value = "SELECT d FROM Department d WHERE d.departmentCode = :departmentCode")
     Optional<Department> findByCode(String departmentCode);
 
-    @Modifying
-    @Query(value = "update Department u set u.status = 0, u.updatedDate = now(), u.updatedBy = :user where u.id = :id and u.status = 1")
-    int deleteById(Long id, Long user);
-
     List<Department> findAllByStatus(Integer status);
 
     @Query(value = "SELECT d FROM Department d  WHERE " +
@@ -33,5 +29,10 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
             "ORDER BY d.createdDate ASC")
     Page<Department> findAllByIsActive(@Param("status") Integer status, @Param("keyword") String keyword, Pageable pageable);
 
+    @Query(value = "SELECT d FROM Department d " +
+            "JOIN Position p ON p.department.id = d.id " +
+            "JOIN Employee e ON e.position.id = p.id " +
+            "WHERE e.code = :employeeCode")
+    Optional<Department> findByEmployeeCode(@Param("employeeCode") String employeeCode);
 
 }

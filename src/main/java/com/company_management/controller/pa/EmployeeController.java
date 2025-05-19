@@ -102,6 +102,11 @@ public class EmployeeController {
 
     }
 
+    @GetMapping("/select-department")
+    public BaseResponse<List<ResponseEmployeeSelectDTO>> selectEmployeeForDepartment() {
+        return BaseResponse.ok(employeeService.selectEmployeeForDepartment());
+    }
+
 
     @GetMapping(value = "/download-xlsx")
     public ResponseEntity<Resource> exportExcel() {

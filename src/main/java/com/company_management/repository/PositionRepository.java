@@ -22,7 +22,8 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
     @Query(value = "SELECT p FROM Position p  WHERE " +
             "(:keyword IS NULL  OR " +
             "UPPER(p.positionCode) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
-//            "UPPER(p.positionCategory.name) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
+            "UPPER(p.positionCategory.name) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
+            "UPPER(p.jobGroup.name) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
             "UPPER(p.positionName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
             "AND p.status = :status " +
             "ORDER BY p.createdDate ASC")
@@ -31,5 +32,20 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
     List<Position> findByStatus(Integer status);
 
     Boolean existsByDepartmentId(Long departmentId);
+
+    @Query(value = "SELECT p.POSITION_CODE " +
+            "FROM Position p " +
+            "ORDER BY p.POSITION_CODE DESC " +
+            "LIMIT 1", nativeQuery = true)
+    String positionCodeMax();
+
+    @Query(value = "SELECT p FROM Position  p " +
+            "JOIN Department d ON d.id = p.department.id " +
+            "JOIN POSITION_CATEGORY pc ON p.positionCategory.id = pc.id " +
+            "WHERE d.departmentCode = :departmentCode " +
+            "AND pc.code =:positionCategoryCode AND p.status = :status")
+    Optional<Position> findByDepartmentCodeAndPositionCategoryCode(@Param("departmentCode") String departmentCode,
+                                                                   @Param("positionCategoryCode") String positionCategoryCode,
+                                                                   @Param("status") Integer status);
 
 }

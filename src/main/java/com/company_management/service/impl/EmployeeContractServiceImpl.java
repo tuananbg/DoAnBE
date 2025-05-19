@@ -124,7 +124,6 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
     public void create(MultipartFile file, RequestEmployeeContractDTO request) {
         if (request.getEmployeeCode() != null) {
             Employee employee = employeeService.getEmployee(request.getEmployeeCode());
-
             EmployeeContracts contract = new EmployeeContracts();
             MapperUtils.map(request, contract);
             contract.setEmployee(employee);
@@ -133,8 +132,14 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
             contract.setContractTermDisplay(termValue);
             if (checkContractEndDateForNextMonth(contract.getContractEndDate())) {
                 contract.setStatus(ContractStatusEnum.ABOUT_TO_EXPIRE.getValue());
+                employee.setStatus(EmploymentStatus.EMPLOYMENT.getCode());
             } else {
                 contract.setStatus(ContractStatusEnum.EFFECTIVE.getValue());
+                employee.setStatus(EmploymentStatus.EMPLOYMENT.getCode());
+            }
+            if (checkContractEffectiveDateFuture(request.getContractEffectiveDate())){
+                contract.setStatus(ContractStatusEnum.NOT_EFFECTIVE.getValue());
+                employee.setStatus(EmploymentStatus.WAITING_FOR_ONBOARD.getCode());
             }
 
             if (file != null && file.getOriginalFilename() != null) {
@@ -222,12 +227,18 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
             return false;
         }
 
-        LocalDate contractEndLocalDate = contractEndDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate contractEndLocalDate = DateUtils.convertDateToLocalDate(contractEndDate);
         LocalDate today = LocalDate.now();
 
         LocalDate endOfNextMonth = today.plusMonths(2).withDayOfMonth(1).minusDays(1);
 
         return !contractEndLocalDate.isBefore(today) && !contractEndLocalDate.isAfter(endOfNextMonth);
+    }
+
+    public boolean checkContractEffectiveDateFuture(Date contractEffectiveDate) {
+        LocalDate contractEffectiveLocalDate = DateUtils.convertDateToLocalDate(contractEffectiveDate);
+        LocalDate today = LocalDate.now();
+        return today.isBefore(contractEffectiveLocalDate);
     }
 
     @Override
@@ -250,7 +261,7 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
     }
 
     @Override
-    public void updateStatusContractRenawalMonth() {
+    public void updateStatusContractRenewalMonth() {
         List<EmployeeContracts> contracts = employeeContractRepository.findContractRenewalBeforeToday(
                 ContractStatusEnum.ABOUT_TO_EXPIRE.getValue(),
                 EmploymentStatus.EMPLOYMENT.getCode()
@@ -261,9 +272,37 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
         contracts.forEach(contract -> {
             log.info("Update status EXPIRED with EmployeeContracts: {}", contract.getEmployee());
             contract.setStatus(ContractStatusEnum.EXPIRED.getValue());
+            Employee employee = contract.getEmployee();
+            if (employee != null) {
+                employeeService.lockEmployee(employee.getId());
+            }
             employeeContractRepository.save(contract);
         });
     }
+
+    @Override
+    public void updateStatusContractEffectiveToday() {
+        List<EmployeeContracts> employeeContracts = employeeContractRepository.findAllByStatus(ContractStatusEnum.NOT_EFFECTIVE.getValue());
+        if (employeeContracts.isEmpty()) {
+            return;
+        }
+        employeeContracts.forEach(contract -> {
+            log.info("Update status NOT_EFFECTIVE with EmployeeContracts: {}", contract.getEmployee());
+            Employee employee = contract.getEmployee();
+            if (!checkContractEffectiveDateFuture(contract.getContractEffectiveDate())){
+                if (checkContractEndDateForNextMonth(contract.getContractEndDate())) {
+                    contract.setStatus(ContractStatusEnum.ABOUT_TO_EXPIRE.getValue());
+                    employee.setStatus(EmploymentStatus.EMPLOYMENT.getCode());
+                } else {
+                    contract.setStatus(ContractStatusEnum.EFFECTIVE.getValue());
+                    employee.setStatus(EmploymentStatus.EMPLOYMENT.getCode());
+                }
+                employeeRepository.save(employee);
+                employeeContractRepository.save(contract);
+            }
+        });
+    }
+
 
 
 }

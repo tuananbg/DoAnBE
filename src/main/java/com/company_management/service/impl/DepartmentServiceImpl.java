@@ -2,9 +2,14 @@ package com.company_management.service.impl;
 
 import com.company_management.common.enums.DepartmentStatus;
 import com.company_management.common.enums.ObjectStatus;
+import com.company_management.common.enums.PositionCategoryEnum;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
+import com.company_management.entity.Position;
+import com.company_management.entity.PositionCategory;
+import com.company_management.repository.PositionCategoryRepository;
 import com.company_management.repository.PositionRepository;
+import com.company_management.service.PositionService;
 import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.response.pa.ResponseDepartmentDTO;
 import com.company_management.dto.response.ResponseTotalDTO;
@@ -33,9 +38,10 @@ import java.util.Optional;
 public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
-
+    private final PositionCategoryRepository positionCategoryRepository;
     private final EmployeeRepository employeeRepository;
     private final PositionRepository positionRepository;
+    private final PositionService positionService;
 
     @Override
     public ResponsePage<ResponseDepartmentDTO> findAllPage(ObjectStatus status, String keyword, RequestPage page) {
@@ -62,6 +68,16 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department department = new Department();
         MapperUtils.map(departmentDTO, department);
         departmentRepository.save(department);
+        String positionCodeMax = positionRepository.positionCodeMax();
+        String positionCode = CommonUtils.generateNextCode(positionCodeMax);
+        Position position = new Position();
+        position.setPositionCode(positionCode);
+        positionCategoryRepository.findByCode(PositionCategoryEnum.DEPARTMENT_HEAD.getCode()).ifPresent(position::setPositionCategory);
+        position.setPositionName(PositionCategoryEnum.DEPARTMENT_HEAD.getName());
+        position.setDepartment(department);
+        position.setStatus(ObjectStatus.ACTIVE.getCode());
+        positionRepository.save(position);
+
     }
 
     @Override
@@ -81,7 +97,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public void lock(String departmentCode) {
-        Department department = departmentRepository.findByCode(departmentCode).orElseThrow(()->new RuntimeException("Mã phòng ban không tồn tại trong hệ thống!"));
+        Department department = departmentRepository.findByCode(departmentCode).orElseThrow(() -> new RuntimeException("Mã phòng ban không tồn tại trong hệ thống!"));
         if (positionRepository.existsByDepartmentId(department.getId())) {
             throw new RuntimeException("Vui lòng vô hiệu các chức vụ của phòng ban này trước khi vô hiệu");
         }
@@ -91,7 +107,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public void unlock(String departmentCode) {
-        Department department = departmentRepository.findByCode(departmentCode).orElseThrow(()->new RuntimeException("Mã phòng ban không tồn tại trong hệ thống!"));
+        Department department = departmentRepository.findByCode(departmentCode).orElseThrow(() -> new RuntimeException("Mã phòng ban không tồn tại trong hệ thống!"));
         department.setStatus(ObjectStatus.ACTIVE.getCode());
         departmentRepository.save(department);
     }

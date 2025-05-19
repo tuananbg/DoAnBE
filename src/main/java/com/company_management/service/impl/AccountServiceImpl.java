@@ -1,10 +1,7 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.AppConstants;
-import com.company_management.common.enums.AccountStatusEnum;
-import com.company_management.common.enums.ConfigDataCode;
-import com.company_management.common.enums.EmailTemplate;
-import com.company_management.common.enums.EmploymentStatus;
+import com.company_management.common.enums.*;
 import com.company_management.dto.au.EmployeeAccountRequestDTO;
 import com.company_management.dto.au.RequestAddRoleDTO;
 import com.company_management.dto.common.RequestPage;
@@ -42,23 +39,27 @@ public class AccountServiceImpl implements AccountService {
     private final EmployeeService employeeService;
     private final SendEmailService sendEmailService;
 
-    private static final String USER_CODE = "USER";
-
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void createAccount(EmployeeAccountRequestDTO requestDTO) throws UnsupportedEncodingException {
+        String roleCode = RoleEnum.USER.getCode();
         Employee employee = employeeService.getEmployee(requestDTO.getEmployeeCode());
-
+        Position position = employee.getPosition();
+        if (position != null) {
+            PositionCategory positionCategory = position.getPositionCategory();
+            if (positionCategory != null) {
+                if (PositionCategoryEnum.DEPARTMENT_HEAD.getCode().equals(positionCategory.getCode())) {
+                    roleCode = RoleEnum.MANAGER.getCode();
+                }
+            }
+        }
         Employee employeePrivateEmail = employeeRepository.findByEmployeeInfoEmail(requestDTO.getEmail()).orElse(null);
         if (employeePrivateEmail != null) {
             throw new AppException(AppConstants.VALIDATE_EMAILEXISTS_CODE, AppConstants.VALIDATE_EMAILEXISTS_MESS);
         }
-
         String username = requestDTO.getEmail().split("@")[0];
-
         employee.getEmployeeInfo().setEmail(requestDTO.getEmail());
-
-        roleRepository.findByCode(USER_CODE).ifPresent(role -> employee.setRoles(new HashSet<>(Set.of(role))));
+        roleRepository.findByCode(roleCode).ifPresent(role -> employee.setRoles(new HashSet<>(Set.of(role))));
         employeeRepository.save(employee);
 
         updateEmployeeStatusAfterEmailSent(employee, username);

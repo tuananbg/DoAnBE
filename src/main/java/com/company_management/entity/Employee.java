@@ -34,6 +34,9 @@ public class Employee extends BaseEntity {
     @JoinColumn(name = "POSITION_ID")
     private Position position;
 
+    @Column(name = "DEPARTMENT_CODE")
+    private String departmentCode;
+
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<EmployeeContracts> employeeContractsList;
 

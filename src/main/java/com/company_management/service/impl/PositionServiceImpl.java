@@ -1,6 +1,7 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.enums.ObjectStatus;
+import com.company_management.common.enums.PositionCategoryEnum;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.entity.Department;
@@ -52,17 +53,20 @@ public class PositionServiceImpl implements PositionService {
     @Override
     @Transactional
     public void create(RequestPositionDTO request) {
-        if (positionRepository.existsByPositionCode(request.getPositionCode())) {
-          throw new AppException("ERR01", "Mã chức vụ đã tồn tại trong hệ thống!");
-        }
         Position position = new Position();
-        position.setPositionCode(request.getPositionCode());
+        String positionCodeMax = positionRepository.positionCodeMax();
+        String code = CommonUtils.generateNextCode(positionCodeMax);
+        position.setPositionCode(code);
         position.setPositionName(request.getPositionName());
         position.setPositionDescription(request.getPositionDescription());
         position.setStatus(ObjectStatus.ACTIVE.getCode());
         Department department = departmentRepository.findByCode(request.getDepartmentCode())
-                .orElseThrow(()-> new AppException("ERR1","Mã chức danh không tồn tại trong hệ thống!") );
+                .orElseThrow(()-> new AppException("ERR1","Mã phòng ban không tồn tại trong hệ thống!") );
+        checkDepartmentHead(department.getDepartmentCode());
         position.setDepartment(department);
+//        if (PositionCategoryEnum.DEPARTMENT_HEAD.getCode().equals(request.getPositionCategory())) {
+//            throw new AppException("ERR01","Chức danh Trưởng phòng do hệ thống tự sinh vui lòng chọn chức danh khác");
+//        }
         positionCategoryRepository.findByCode(request.getPositionCategory()).ifPresent(position::setPositionCategory);
         jobGroupRepository.findByCode(request.getJobGroup()).ifPresent(position::setJobGroup);
         positionRepository.save(position);
@@ -75,6 +79,7 @@ public class PositionServiceImpl implements PositionService {
         Department department = departmentRepository.findByCode(request.getDepartmentCode())
                 .orElseThrow(()-> new AppException("ERR1","Mã chức danh không tồn tại trong hệ thống!") );
         position.setDepartment(department);
+        checkDepartmentHead(department.getDepartmentCode());
         positionCategoryRepository.findByCode(request.getPositionCategory()).ifPresent(position::setPositionCategory);
         jobGroupRepository.findByCode(request.getJobGroup()).ifPresent(position::setJobGroup);
         positionRepository.save(position);
@@ -95,6 +100,10 @@ public class PositionServiceImpl implements PositionService {
     @Transactional
     public void unlock(String positionCode) {
         Position position = positionRepository.findByPositionCode(positionCode).orElseThrow(()-> new AppException("ERR01","Chức vụ không tồn tại trong hệ thống"));
+        Department department = position.getDepartment();
+        if (department != null) {
+            checkDepartmentHead(department.getDepartmentCode());
+        }
         position.setStatus(ObjectStatus.ACTIVE.getCode());
         positionRepository.save(position);
     }
@@ -130,5 +139,14 @@ public class PositionServiceImpl implements PositionService {
                 ).toList();
         return new ResponsePage<>(responsePositionDTOS, page, positions.getTotalElements());
     }
+
+    private void checkDepartmentHead(String departmentCode){
+        Position positionCheck = positionRepository.findByDepartmentCodeAndPositionCategoryCode(departmentCode,PositionCategoryEnum.DEPARTMENT_HEAD.getCode(),ObjectStatus.ACTIVE.getCode())
+                .orElse(null);
+        if (positionCheck != null) {
+            throw new AppException("ERR1","Phòng ban đã có chức danh Trưởng phòng đang hoạt động!");
+        }
+    }
+
 
 }

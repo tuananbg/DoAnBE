@@ -1,18 +1,15 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.AppConstants;
-import com.company_management.common.enums.AccountStatusEnum;
-import com.company_management.common.enums.EmploymentStatus;
-import com.company_management.common.enums.Gender;
-import com.company_management.common.enums.ObjectStatus;
+import com.company_management.common.Constants;
+import com.company_management.common.enums.*;
+import com.company_management.controller.auth.BaseController;
 import com.company_management.dto.common.DataPage;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.response.pa.employee.ResponseEmployeeDetailDTO;
-import com.company_management.dto.response.pa.employee.ResponseEmployeeInfoDTO;
 import com.company_management.dto.response.pa.employee.ResponseEmployeeSelectDTO;
 import com.company_management.dto.response.pa.employee.ResponseListEmployeeDTO;
-import com.company_management.service.AccountService;
 import com.company_management.utils.mapper.MapperUtils;
 import com.company_management.dto.request.pa.employee.RequestEmployeeDetailDTO;
 import com.company_management.dto.response.*;
@@ -20,15 +17,11 @@ import com.company_management.entity.*;
 import com.company_management.exception.AppException;
 import com.company_management.dto.UserDetailDTO;
 
-import com.company_management.dto.request.pa.SearchEmployeeRequest;
 import com.company_management.repository.*;
 import com.company_management.service.EmployeeService;
 import com.company_management.utils.CommonUtils;
-import com.company_management.utils.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jxls.transformer.XLSTransformer;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,21 +30,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class EmployeeServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl extends BaseController implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
@@ -65,8 +54,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResponsePage<ResponseListEmployeeDTO> findAllByKeywordAndStatus(String keyword, EmploymentStatus status, RequestPage page) {
+        String userCode = getCurrentUserCode();
         keyword = CommonUtils.escapeLike(keyword);
-        Page<Employee> employees = employeeRepository.findAllByKeywordAndStatus(keyword, status.getCode(), page.toPageable());
+        Page<Employee> employees = null;
+        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+            employees = employeeRepository.findAllByKeywordAndStatus(keyword, status.getCode(), page.toPageable());
+        } else {
+            Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản không còn tồn tại trong hệ thống!"));
+            employees = employeeRepository.findAllByKeywordAndStatusAndDepartmentCode(keyword, status.getCode(), employee.getDepartmentCode(), page.toPageable());
+        }
+
+
         List<ResponseListEmployeeDTO> responseEmployeeDTOList = employees.getContent()
                 .stream()
                 .map(item -> {
@@ -95,20 +93,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 }).toList();
         return new ResponsePage<>(responseEmployeeDTOList, page, employees.getTotalElements());
 
-    }
-
-    private static DataPage<UserDetailDTO> getUserDetailDTODataPage(Pageable pageable, List<UserDetailDTO> lstDTO) {
-        DataPage<UserDetailDTO> dataPage = new DataPage<>();
-        if (pageable.isPaged() && !lstDTO.isEmpty()) {
-            int count = lstDTO.size();
-            dataPage.setDataCount(count);
-            dataPage.setPageSize(pageable.getPageSize());
-            int pageCount = pageable.getPageSize() == 0 ? 1 : (int) Math.ceil((double) count / (double) pageable.getPageSize());
-            dataPage.setPageCount(pageCount);
-            dataPage.setPageIndex(pageable.getPageNumber());
-        }
-        dataPage.setData(lstDTO);
-        return dataPage;
     }
 
     @Override
@@ -140,9 +124,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee employee = new Employee();
         MapperUtils.mapOnlyNotNullProperty(request, employee);
-        employee.setStatus(ObjectStatus.ACTIVE.getCode());
+        employee.setStatus(EmploymentStatus.WAITING_FOR_SIGNING.getCode());
         if (request.getPositionCode() != null) {
             Position position = positionRepository.findByPositionCode(request.getPositionCode()).orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
+            PositionCategory positionCategory = position.getPositionCategory();
+            if (positionCategory != null) {
+                if (PositionCategoryEnum.DEPARTMENT_HEAD.getCode().equals(positionCategory.getCode())) {
+                    if (employeeRepository.existsByPositionId(position.getId())) {
+                        throw new AppException("ERR01", String.format("Chức vụ %s với chức danh %s đã có nhân viên giữ vui lòng chọn chức vụ khác!", position.getPositionName(), PositionCategoryEnum.DEPARTMENT_HEAD.getName()));
+                    }
+                }
+            }
+            if (position.getDepartment() != null) {
+                employee.setDepartmentCode(position.getDepartment().getDepartmentCode());
+            }
             employee.setPosition(position);
         }
 
@@ -181,7 +176,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeeInfo != null) {
             MapperUtils.mapOnlyNotNullProperty(request, employeeInfo);
         }
-        Position position = positionRepository.findByPositionCode(request.getPositionCode()).orElseThrow(()-> new RuntimeException("Mã chức vụ không tồn tại trong hệ thống"));
+        Position position = positionRepository.findByPositionCode(request.getPositionCode()).orElseThrow(() -> new RuntimeException("Mã chức vụ không tồn tại trong hệ thống"));
         employee.setPosition(position);
         //upload file ảnh
         if (avatarFile != null && avatarFile.getOriginalFilename() != null) {
@@ -227,7 +222,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 case EMPLOYMENT:
                     account.setStatus(AccountStatusEnum.ACTIVE.getCode());
                     break;
-                case LOCK:
                 case RETIRED:
                     account.setStatus(AccountStatusEnum.LOCK.getCode());
                     break;
@@ -271,6 +265,23 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeSelectDTOS.add(dto);
         }
         return employeeSelectDTOS;
+    }
+
+    @Override
+    public List<ResponseEmployeeSelectDTO> selectEmployeeForDepartment() {
+        String userCode = getCurrentUserCode();
+        Department department = departmentRepository.findByEmployeeCode(userCode).orElse(null);
+        List<ResponseEmployeeSelectDTO> response = new ArrayList<>();
+        if (department != null) {
+            List<Employee> employees = employeeRepository.findAllByStatusAndDepartmentCode(department.getDepartmentCode(), EmploymentStatus.EMPLOYMENT.getCode());
+            for (Employee employee : employees) {
+                ResponseEmployeeSelectDTO dto = new ResponseEmployeeSelectDTO();
+                dto.setEmployeeCode(employee.getCode());
+                dto.setEmployeeName(employee.getFullName());
+                response.add(dto);
+            }
+        }
+        return response;
     }
 
     @Override

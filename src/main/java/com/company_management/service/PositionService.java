@@ -23,5 +23,4 @@ public interface PositionService {
     void unlock(String positionCode);
 
     ResponsePage<ResponsePositionDTO> getListByStatus(ObjectStatus status,String keyword, RequestPage page);
-
 }

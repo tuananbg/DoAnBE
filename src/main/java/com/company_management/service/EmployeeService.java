@@ -35,5 +35,7 @@ public interface EmployeeService {
 
     List<ResponseEmployeeSelectDTO> selectEmployee();
 
+    List<ResponseEmployeeSelectDTO> selectEmployeeForDepartment();
+
     Employee getEmployee(String code);
 }

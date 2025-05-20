@@ -44,16 +44,24 @@ public class AttendanceServiceImpl extends BaseController implements AttendanceS
     @Override
     @Transactional(readOnly = true)
     public ResponsePage<ResponseAttendanceDTO> getList(RequestPage page, SearchAttendanceRequest search) {
-        Page<Attendance> responsePage = attendanceRepository.findAllAttendanceByWorkingDay(search.getWorkingDay(),page.toPageable());
-        List<ResponseAttendanceDTO> data = responsePage.getContent().stream().map(item->{
+        String userCode = getCurrentUserCode();
+        Page<Attendance> responsePage;
+        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+            responsePage = attendanceRepository.findAllAttendanceByWorkingDay(search.getWorkingDay(), page.toPageable());
+        } else {
+            Employee employee = employeeService.getEmployee(userCode);
+            responsePage = attendanceRepository.findAllAttendanceByWorkingDayV2(search.getWorkingDay(), employee.getDepartmentCode(), page.toPageable());
+        }
+
+        List<ResponseAttendanceDTO> data = responsePage.getContent().stream().map(item -> {
             ResponseAttendanceDTO dto = new ResponseAttendanceDTO();
-            MapperUtils.map(item,dto);
+            MapperUtils.map(item, dto);
             Employee employee = item.getEmployee();
             dto.setEmployeeCode(employee.getCode());
             dto.setEmployeeName(employee.getFullName());
             return dto;
         }).toList();
-        return new ResponsePage<>(data,page,responsePage.getTotalElements());
+        return new ResponsePage<>(data, page, responsePage.getTotalElements());
     }
 
     //Check in
@@ -62,25 +70,13 @@ public class AttendanceServiceImpl extends BaseController implements AttendanceS
     public void create(RequestAttendanceDTO request) {
         log.debug("Bắt đầu chấm công");
         Attendance attendance = new Attendance();
-        String userCode = getCurrentUserCode();
         Date now = DateUtils.getNow();
-        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
-            log.debug("Admin");
-            Employee employee = employeeService.getEmployee(request.getEmployeeCode());
-            attendance.setEmployee(employee);
-
-            attendance.setWorkingDay(now);
-            attendance.setCheckInTime(now);
-            attendance.setStatus(AttendanceStatusEnum.CHECKIN.getValue());
-            attendance.setTotalPenalty(totalPenaltyCheckIn(now));
-        } else {
-            Employee employee = employeeService.getEmployee(userCode);
-            attendance.setEmployee(employee);
-            attendance.setWorkingDay(now);
-            attendance.setCheckInTime(now);
-            attendance.setStatus(AttendanceStatusEnum.CHECKIN.getValue());
-            attendance.setTotalPenalty(totalPenaltyCheckIn(now));
-        }
+        Employee employee = employeeService.getEmployee(request.getEmployeeCode());
+        attendance.setEmployee(employee);
+        attendance.setWorkingDay(now);
+        attendance.setCheckInTime(now);
+        attendance.setStatus(AttendanceStatusEnum.CHECKIN.getValue());
+        attendance.setTotalPenalty(totalPenaltyCheckIn(now));
         attendanceRepository.save(attendance);
     }
 

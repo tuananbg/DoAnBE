@@ -50,15 +50,21 @@ public class AttendanceLeaveServiceImpl extends BaseController implements Attend
     public ResponsePage<ResponseAttendanceLeaveDTO> search(TableTabType status, String keyword, RequestPage page) {
         String userCode = getCurrentUserCode();
         keyword = CommonUtils.escapeLike(keyword);
-        Page<AttendanceLeave> attendanceLeaveDTOPage = attendanceLeaveRepository.findAllByKeywordV2(status.getCode(),keyword,userCode,page.toPageable());
-        List<ResponseAttendanceLeaveDTO> data = attendanceLeaveDTOPage.getContent().stream().map(item-> {
+        Page<AttendanceLeave> attendanceLeaveDTOPage;
+        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+            attendanceLeaveDTOPage = attendanceLeaveRepository.findAllByKeyword(status.getCode(), keyword, page.toPageable());
+        }
+        else {
+            attendanceLeaveDTOPage = attendanceLeaveRepository.findAllByKeywordV2(status.getCode(), keyword, userCode, page.toPageable());
+        }
+
+        List<ResponseAttendanceLeaveDTO> data = attendanceLeaveDTOPage.getContent().stream().map(item -> {
             ResponseAttendanceLeaveDTO dto = new ResponseAttendanceLeaveDTO();
-            MapperUtils.map(item,dto);
+            MapperUtils.map(item, dto);
             if (item.getEmployee() != null) {
                 dto.setEmployeeName(item.getEmployee().getFullName());
                 dto.setEmployeeCode(item.getEmployee().getCode());
-            }
-            else {
+            } else {
                 dto.setEmployeeName(Constants.ADMIN_NAME);
                 dto.setEmployeeCode(Constants.ADMIN);
             }
@@ -69,7 +75,7 @@ public class AttendanceLeaveServiceImpl extends BaseController implements Attend
             dto.setTotalTime(item.getTotalTime());
             return dto;
         }).toList();
-        return new ResponsePage<>(data,page,attendanceLeaveDTOPage.getTotalElements());
+        return new ResponsePage<>(data, page, attendanceLeaveDTOPage.getTotalElements());
     }
 
 
@@ -82,19 +88,23 @@ public class AttendanceLeaveServiceImpl extends BaseController implements Attend
         MapperUtils.map(request, attendanceLeave);
         if (!Constants.ADMIN.equalsIgnoreCase(userCode)) {
             Employee employee = employeeService.getEmployee(userCode);
-            Position position = positionRepository.findByDepartmentCodeAndPositionCategoryCode(employee.getDepartmentCode(), PositionCategoryEnum.DEPARTMENT_HEAD.getCode(), ObjectStatus.ACTIVE.getCode()).orElse(null);
+            Position position = positionRepository.
+                    findByDepartmentCodeAndPositionCategoryCode(employee.getDepartmentCode(), PositionCategoryEnum.DEPARTMENT_HEAD.getCode(), ObjectStatus.ACTIVE.getCode()).orElse(null);
             if (position != null) {
-                Employee reviewer = employeeRepository.findByPositionId(position.getId()).orElse(null);
-                if (reviewer != null) {
-                    attendanceLeave.setReviewer(reviewer);
+                Employee reviewer = employeeRepository.findByPositionId(position.getId())
+                        .orElseThrow(
+                                () -> new AppException("ERR01", "Phòng ban của bạn chưa có Trưởng Phòng để bạn đang ký Nghỉ phép")
+                        );
 
-                    //gửi mail
-                    sendEmailService.sendEmailAttendance(reviewer.getCode(), EmailTemplate.TEMPLATE_ATTENDANCE_LEAVE,attendanceLeave.getId());
-                }
+                attendanceLeave.setReviewer(reviewer);
+                attendanceLeave.setStatus(TableTabType.TODO.getCode());
+                attendanceLeave.setEmployee(employee);
+                attendanceLeaveRepository.save(attendanceLeave);
+                //gửi mail
+                sendEmailService.sendEmailAttendance(reviewer.getCode(), EmailTemplate.TEMPLATE_ATTENDANCE_LEAVE, attendanceLeave.getId());
+
             }
-            attendanceLeave.setStatus(TableTabType.TODO.getCode());
-            attendanceLeave.setEmployee(employee);
-            attendanceLeaveRepository.save(attendanceLeave);
+
         }
     }
 
@@ -102,11 +112,10 @@ public class AttendanceLeaveServiceImpl extends BaseController implements Attend
     @Transactional
     public void update(RequestUpdateAttendanceLeaveDTO request) {
         AttendanceLeave attendanceLeave = attendanceLeaveRepository.findById(request.getId()).orElseThrow(
-                ()-> new AppException("ERR01","Đơn nghỉ phép không tồn tại trong hệ thống"));
-        MapperUtils.mapOnlyNotNullProperty(request,attendanceLeave);
+                () -> new AppException("ERR01", "Đơn nghỉ phép không tồn tại trong hệ thống"));
+        MapperUtils.mapOnlyNotNullProperty(request, attendanceLeave);
         attendanceLeaveRepository.save(attendanceLeave);
     }
-
 
 
     @Override
@@ -117,7 +126,7 @@ public class AttendanceLeaveServiceImpl extends BaseController implements Attend
     @Override
     public void complete(RequestUpdateAttendanceLeaveDTO request) {
         AttendanceLeave attendanceLeave = attendanceLeaveRepository.findById(request.getId()).orElseThrow(
-                ()-> new AppException("ERR01","Đơn nghỉ phép không tồn tại trong hệ thống"));
+                () -> new AppException("ERR01", "Đơn nghỉ phép không tồn tại trong hệ thống"));
         attendanceLeave.setStatus(request.getStatus());
         attendanceLeaveRepository.save(attendanceLeave);
     }

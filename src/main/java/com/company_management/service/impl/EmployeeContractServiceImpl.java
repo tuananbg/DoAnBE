@@ -1,9 +1,11 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.Constants;
 import com.company_management.common.enums.ContractStatusEnum;
 import com.company_management.common.enums.ContractType;
 import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.common.enums.ObjectStatus;
+import com.company_management.controller.auth.BaseController;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.service.AccountService;
@@ -49,7 +51,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class EmployeeContractServiceImpl implements EmployeeContractService {
+public class EmployeeContractServiceImpl extends BaseController implements EmployeeContractService {
 
     private final EmployeeContractsRepository employeeContractRepository;
     private final EmployeeRepository employeeRepository;
@@ -68,8 +70,17 @@ public class EmployeeContractServiceImpl implements EmployeeContractService {
 
     @Override
     public ResponsePage<ResponseContractListDTO> getList(ContractStatusEnum status, String keyword, RequestPage page) {
+        String userCode = getCurrentUserCode();
         keyword = CommonUtils.escapeLike(keyword);
-        Page<EmployeeContracts> employeeContracts = employeeContractRepository.findAllByIsActive(status.getValue(), keyword, page.toPageable());
+        Page<EmployeeContracts> employeeContracts;
+        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+            employeeContracts= employeeContractRepository.findAllByIsActive(status.getValue(), keyword, page.toPageable());
+        }
+        else {
+            Employee employee = employeeService.getEmployee(userCode);
+            employeeContracts = employeeContractRepository.findAllByIsActiveV2(status.getValue(),employee.getDepartmentCode(),keyword,page.toPageable());
+        }
+
         List<ResponseContractListDTO> responseContractListDTOS = employeeContracts
                 .getContent()
                 .stream()

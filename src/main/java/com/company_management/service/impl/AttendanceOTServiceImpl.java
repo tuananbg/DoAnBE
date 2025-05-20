@@ -47,7 +47,13 @@ public class AttendanceOTServiceImpl extends BaseController implements Attendanc
     public ResponsePage<ResponseAttendanceOTDTO> getList(TableTabType status, String keyword, RequestPage page) {
         keyword = CommonUtils.escapeLike(keyword);
         String userCode = getCurrentUserCode();
-        Page<AttendanceOt> attendanceOtPage = attendanceOTRepository.findAllByKeywordV2(status.getCode(), keyword, userCode, page.toPageable());
+        Page<AttendanceOt> attendanceOtPage;
+        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+            attendanceOtPage = attendanceOTRepository.findAllByKeyword(status.getCode(), keyword, page.toPageable());
+        } else {
+            attendanceOtPage = attendanceOTRepository.findAllByKeywordV2(status.getCode(), keyword, userCode, page.toPageable());
+        }
+
         List<ResponseAttendanceOTDTO> data = attendanceOtPage.getContent().stream()
                 .map(item -> {
                     ResponseAttendanceOTDTO response = new ResponseAttendanceOTDTO();
@@ -80,18 +86,21 @@ public class AttendanceOTServiceImpl extends BaseController implements Attendanc
         if (!Constants.ADMIN.equalsIgnoreCase(userCode)) {
             Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR1", "CBNV không tồn tại trong hệ thống"));
             attendanceOT.setEmployee(employee);
-            Position position = positionRepository.findByDepartmentCodeAndPositionCategoryCode(employee.getDepartmentCode(), PositionCategoryEnum.DEPARTMENT_HEAD.getCode(), ObjectStatus.ACTIVE.getCode()).orElse(null);
+            Position position = positionRepository
+                    .findByDepartmentCodeAndPositionCategoryCode(employee.getDepartmentCode(), PositionCategoryEnum.DEPARTMENT_HEAD.getCode(), ObjectStatus.ACTIVE.getCode()).orElse(null);
             if (position != null) {
-                Employee follow = employeeRepository.findByPositionId(position.getId()).orElse(null);
-                if (follow != null) {
-                    attendanceOT.setEmployeeFollow(follow);
-                    sendEmailService.sendEmailAttendance(follow.getCode(), EmailTemplate.TEMPLATE_ATTENDANCE_OT, attendanceOT.getId());
-                }
-            }
-            attendanceOT.setStatus(TableTabType.TODO.getCode());
-            attendanceOTRepository.save(attendanceOT);
-        }
+                Employee follow = employeeRepository.findByPositionId(position.getId())
+                        .orElseThrow(
+                                () -> new AppException("ERR01", "Phòng ban của bạn chưa có Trưởng Phòng để bạn đang ký OT")
+                        );
 
+                attendanceOT.setEmployeeFollow(follow);
+                attendanceOT.setStatus(TableTabType.TODO.getCode());
+                attendanceOTRepository.save(attendanceOT);
+                sendEmailService.sendEmailAttendance(follow.getCode(), EmailTemplate.TEMPLATE_ATTENDANCE_OT, attendanceOT.getId());
+
+            }
+        }
     }
 
     @Override

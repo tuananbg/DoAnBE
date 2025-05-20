@@ -16,7 +16,6 @@ public interface AttendanceOTService {
 
     ResponsePage<ResponseAttendanceOTDTO> getList(TableTabType status, String keyword, RequestPage page);
 
-
     void create(RequestAttendanceOTDTO request);
 
     void update(RequestUpdateAttendanceOTDTO request);

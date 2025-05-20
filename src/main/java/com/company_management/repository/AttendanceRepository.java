@@ -24,4 +24,10 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
             "WHERE FUNCTION('DATE', a.workingDay) = FUNCTION('DATE', :workingDay)")
     Page<Attendance> findAllAttendanceByWorkingDay(@Param("workingDay") Date workingDay, Pageable page);
 
+    @Query("SELECT a FROM Attendance a JOIN Employee e ON a.employee.id = e.id " +
+            "WHERE FUNCTION('DATE', a.workingDay) = FUNCTION('DATE', :workingDay) AND e.departmentCode = :departmentCode")
+    Page<Attendance> findAllAttendanceByWorkingDayV2(@Param("workingDay") Date workingDay,
+                                                     @Param("departmentCode") String departmentCode,
+                                                     Pageable page);
+
 }

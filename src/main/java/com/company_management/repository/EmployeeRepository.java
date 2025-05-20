@@ -21,6 +21,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     List<Employee> findAllByStatus(Integer status);
 
+    List<Employee> findAllByStatusIn(List<Integer> status);
+
     @Query("SELECT e FROM Employee e " +
             "WHERE e.departmentCode = :departmentCode AND e.status =:status")
     List<Employee> findAllByStatusAndDepartmentCode(@Param("departmentCode") String departmentCode,
@@ -68,5 +70,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
 
     Optional<Employee> findByPositionId(Long positionId);
+
+    List<Employee> getAllByDepartmentCodeAndStatus(String departmentCode, Integer status);
+
+    List<Employee> getAllByDepartmentCodeAndStatusIn(String departmentCode, List<Integer> status);
 
 }

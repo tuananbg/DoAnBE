@@ -99,8 +99,13 @@ public class EmployeeController {
     @GetMapping("/select")
     public BaseResponse<List<ResponseEmployeeSelectDTO>> selectEmployee() {
         return BaseResponse.ok(employeeService.selectEmployee());
-
     }
+
+    @GetMapping("/select-contract")
+    public BaseResponse<List<ResponseEmployeeSelectDTO>> selectEmployeeContract() {
+        return BaseResponse.ok(employeeService.selectEmployeeContract());
+    }
+
 
     @GetMapping("/select-department")
     public BaseResponse<List<ResponseEmployeeSelectDTO>> selectEmployeeForDepartment() {

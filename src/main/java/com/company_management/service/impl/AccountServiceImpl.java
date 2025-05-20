@@ -38,6 +38,7 @@ public class AccountServiceImpl implements AccountService {
     private final RoleRepository roleRepository;
     private final EmployeeService employeeService;
     private final SendEmailService sendEmailService;
+    private final EmployeeInfoRepository employeeInfoRepository;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -53,8 +54,7 @@ public class AccountServiceImpl implements AccountService {
                 }
             }
         }
-        Employee employeePrivateEmail = employeeRepository.findByEmployeeInfoEmail(requestDTO.getEmail()).orElse(null);
-        if (employeePrivateEmail != null) {
+        if (employeeInfoRepository.existsByEmail(requestDTO.getEmail())) {
             throw new AppException(AppConstants.VALIDATE_EMAILEXISTS_CODE, AppConstants.VALIDATE_EMAILEXISTS_MESS);
         }
         String username = requestDTO.getEmail().split("@")[0];
@@ -65,38 +65,38 @@ public class AccountServiceImpl implements AccountService {
         updateEmployeeStatusAfterEmailSent(employee, username);
     }
 
-    private void updateEmployeeStatusAfterEmailSent(Employee employee, String username) {
-        Account account = accountRepository.findByEmployeeId(employee.getId()).orElse(null);
-        if (account != null) {
-            updateAccount(username, account);
-        } else {
-            // create new account
-            createNewAccount(username, employee);
+        private void updateEmployeeStatusAfterEmailSent(Employee employee, String username) {
+            Account account = accountRepository.findByEmployeeId(employee.getId()).orElse(null);
+            if (account != null) {
+                updateAccount(username, account);
+            } else {
+                // create new account
+                createNewAccount(username, employee);
+            }
         }
-    }
 
 
-    public void createNewAccount(String userName, Employee emp) {
-        //get config password expired date
-        int config = ConfigDataCode.SYSTEM_EXPIRED_PASSWORD;
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.set(Calendar.DATE, config);
+        public void createNewAccount(String userName, Employee emp) {
+            //get config password expired date
+            int config = ConfigDataCode.SYSTEM_EXPIRED_PASSWORD;
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            cal.set(Calendar.DATE, config);
 
-        Account acc = new Account();
-        acc.setCode(emp.getCode());
-        acc.setAccount(userName);
-        acc.setPassword(passwordEncoder.encode(AppConstants.DEFAULT_PASSWORD));
-        acc.setEmployee(emp);
-        acc.setStatus(AccountStatusEnum.ACTIVE.getCode());
-        acc.setNumPwWrong(0);
-        acc.setPwExpDate(cal.getTime());
+            Account acc = new Account();
+            acc.setCode(emp.getCode());
+            acc.setAccount(userName);
+            acc.setPassword(passwordEncoder.encode(AppConstants.DEFAULT_PASSWORD));
+            acc.setEmployee(emp);
+            acc.setStatus(AccountStatusEnum.ACTIVE.getCode());
+            acc.setNumPwWrong(0);
+            acc.setPwExpDate(cal.getTime());
 
-        accountRepository.save(acc);
+            accountRepository.save(acc);
 
-        sendEmailService.sendEmailForAccount(acc, EmailTemplate.TEMPLATE_CREATE_ACCOUNT_SUCCESS);
+            sendEmailService.sendEmailForAccount(acc, EmailTemplate.TEMPLATE_CREATE_ACCOUNT_SUCCESS);
 
-    }
+        }
 
     public void updateAccount(String code, Account acc) {
         acc.setCode(code);

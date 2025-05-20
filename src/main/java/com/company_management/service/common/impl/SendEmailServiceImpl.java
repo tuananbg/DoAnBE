@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -35,6 +36,7 @@ public class SendEmailServiceImpl implements SendEmailService {
     private final AttendanceOTRepository attendanceOTRepository;
     private final EmployeeService employeeService;
 
+    @Async
     @Override
     public void sendEmailAttendance(String code, EmailTemplate emailTemplate, long id) {
         Employee employee = employeeRepository.findByCode(code).orElse(null);
@@ -54,7 +56,9 @@ public class SendEmailServiceImpl implements SendEmailService {
                         helper.setText(processedContent, true);
                         emailSender.send(message);
                         hasSuccess = true;
-                    } catch (Exception ignored) {
+                        log.error("Gửi email thành công: {}", email);
+                    } catch (Exception ex) {
+                        log.error("Gửi email thất bại: {}", ex.getMessage(), ex);
                     }
                 }
             }
@@ -65,6 +69,7 @@ public class SendEmailServiceImpl implements SendEmailService {
     }
 
     @Override
+    @Async
     public void sendEmailForAccount(Account account,EmailTemplate emailTemplate) {
         Employee employee = account.getEmployee();
         boolean hasSuccess = false;
@@ -83,7 +88,9 @@ public class SendEmailServiceImpl implements SendEmailService {
                         helper.setText(processedContent, true);
                         emailSender.send(message);
                         hasSuccess = true;
-                    } catch (Exception ignored) {
+                        log.error("Gửi email thành công: {}", email);
+                    } catch (Exception ex) {
+                        log.error("Gửi email thất bại: {}", ex.getMessage(), ex);
                     }
                 }
             }

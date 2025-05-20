@@ -75,11 +75,14 @@ public class PositionServiceImpl implements PositionService {
     @Override
     public void update(RequestPositionDTO request) {
         Position position = positionRepository.findById(request.getId()).orElseThrow(() -> new AppException("ER01", "Chức danh không tồn tại trong hệ thống"));
+        String posCategoryCode = position.getPositionCategory().getCode();
         MapperUtils.mapOnlyNotNullProperty(request, position);
         Department department = departmentRepository.findByCode(request.getDepartmentCode())
                 .orElseThrow(() -> new AppException("ERR1", "Mã chức danh không tồn tại trong hệ thống!"));
         position.setDepartment(department);
-        checkDepartmentHead(department.getDepartmentCode(), request.getPositionCategory());
+        if (!PositionCategoryEnum.DEPARTMENT_HEAD.getCode().equals(posCategoryCode)) {
+            checkDepartmentHead(department.getDepartmentCode(), request.getPositionCategory());
+        }
         positionCategoryRepository.findByCode(request.getPositionCategory()).ifPresent(position::setPositionCategory);
         jobGroupRepository.findByCode(request.getJobGroup()).ifPresent(position::setJobGroup);
         positionRepository.save(position);

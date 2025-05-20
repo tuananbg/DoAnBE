@@ -56,7 +56,7 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
     public ResponsePage<ResponseListEmployeeDTO> findAllByKeywordAndStatus(String keyword, EmploymentStatus status, RequestPage page) {
         String userCode = getCurrentUserCode();
         keyword = CommonUtils.escapeLike(keyword);
-        Page<Employee> employees = null;
+        Page<Employee> employees;
         if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
             employees = employeeRepository.findAllByKeywordAndStatus(keyword, status.getCode(), page.toPageable());
         } else {
@@ -120,7 +120,7 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
     @Override
     @Transactional
     public void createEmployee(MultipartFile avatarFile, RequestEmployeeDetailDTO request) throws IOException {
-        validateCode(request.getCode());
+        validateCode(request);
 
         Employee employee = new Employee();
         MapperUtils.mapOnlyNotNullProperty(request, employee);
@@ -159,11 +159,21 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
         employeeRepository.save(employee);
     }
 
-    private void validateCode(String code) {
-        Employee employee = employeeRepository.findByCode(code).orElse(null);
+    private void validateCode(RequestEmployeeDetailDTO request) {
+        Employee employee = employeeRepository.findByCode(request.getCode()).orElse(null);
         if (employee != null) {
-            throw new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001);
+            throw new AppException(AppConstants.EMPLOYEE_CODE_002, AppConstants.EMPLOYEE_MESS_002);
         }
+        if (employeeInfoRepository.existsByAccountNumber(request.getAccountNumber())) {
+            throw new AppException(AppConstants.EMPLOYEE_CODE_002, "Số tài khoản đã tồn tại!");
+        }
+        if (employeeInfoRepository.existsByTaxCode(request.getTaxCode())) {
+            throw new AppException(AppConstants.EMPLOYEE_CODE_002, "Mã số thuế đã tồn tại");
+        }
+        if (employeeInfoRepository.existsByIdentityNumber(request.getIdentityNumber())) {
+            throw new AppException(AppConstants.EMPLOYEE_CODE_002, "Số CCCD đã tồn tại");
+        }
+
     }
 
     @Override
@@ -256,15 +266,32 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
 
     @Override
     public List<ResponseEmployeeSelectDTO> selectEmployee() {
-        List<Employee> employees = employeeRepository.findAllByStatus(EmploymentStatus.EMPLOYMENT.getCode());
-        List<ResponseEmployeeSelectDTO> employeeSelectDTOS = new ArrayList<>();
-        for (Employee employee : employees) {
-            ResponseEmployeeSelectDTO dto = new ResponseEmployeeSelectDTO();
-            dto.setEmployeeCode(employee.getCode());
-            dto.setEmployeeName(employee.getFullName());
-            employeeSelectDTOS.add(dto);
+        String userCode = getCurrentUserCode();
+        List<Employee> employees;
+        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+            employees  = employeeRepository.findAllByStatus(EmploymentStatus.EMPLOYMENT.getCode());
         }
-        return employeeSelectDTOS;
+        else {
+            Employee user = employeeRepository.findByCode(userCode).orElseThrow(()-> new AppException("ERR01","Tài khoản của bạn không còn tồn tại trong hệ thống"));
+            employees = employeeRepository.getAllByDepartmentCodeAndStatus(user.getDepartmentCode(),EmploymentStatus.EMPLOYMENT.getCode());
+        }
+
+        return processResponseSelect(employees);
+    }
+
+    @Override
+    public List<ResponseEmployeeSelectDTO> selectEmployeeContract() {
+        String userCode = getCurrentUserCode();
+        List<Integer> status = Arrays.asList(EmploymentStatus.EMPLOYMENT.getCode(),EmploymentStatus.WAITING_FOR_SIGNING.getCode());
+        List<Employee> employees;
+        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+            employees  = employeeRepository.findAllByStatusIn(status);
+        }
+        else {
+            Employee user = employeeRepository.findByCode(userCode).orElseThrow(()-> new AppException("ERR01","Tài khoản của bạn không còn tồn tại trong hệ thống"));
+            employees = employeeRepository.getAllByDepartmentCodeAndStatusIn(user.getDepartmentCode(),status);
+        }
+        return processResponseSelect(employees);
     }
 
     @Override
@@ -290,5 +317,15 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
     public Employee getEmployee(String code) {
         return employeeRepository.findByCode(code)
                 .orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
+    }
+    private List<ResponseEmployeeSelectDTO> processResponseSelect(List<Employee> employees){
+        List<ResponseEmployeeSelectDTO> employeeSelectDTOS = new ArrayList<>();
+        for (Employee employee : employees) {
+            ResponseEmployeeSelectDTO dto = new ResponseEmployeeSelectDTO();
+            dto.setEmployeeCode(employee.getCode());
+            dto.setEmployeeName(employee.getFullName());
+            employeeSelectDTOS.add(dto);
+        }
+        return employeeSelectDTOS;
     }
 }

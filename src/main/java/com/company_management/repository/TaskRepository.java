@@ -29,6 +29,19 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "ORDER BY t.priority ASC")
     Page<Task> findByStatus(@Param("status") Integer status,@Param("keyword") String keyword, Pageable pageable);
 
+    @Query(value = "SELECT t FROM Task t  WHERE " +
+            "(:keyword IS NULL OR " +
+            "UPPER(t.taskCode) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
+            "UPPER(t.taskName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
+            "UPPER(t.employee.code) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
+            "UPPER(t.employee.fullName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
+            "AND t.status = :status AND t.managerCode = :managerCode " +
+            "ORDER BY t.priority ASC")
+    Page<Task> findByStatusV2(@Param("status") Integer status,
+                              @Param("managerCode") String managerCode,
+                              @Param("keyword") String keyword,
+                              Pageable pageable);
+
     @Query(value = "SELECT t FROM Task t JOIN t.employee e WHERE " +
             "(:keyword IS NULL OR " +
             "UPPER(t.taskCode) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
@@ -61,6 +74,16 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     long countAllTasks();
 
     Optional<Task> findByTaskCode(String taskCode);
+
+    @Query(value = "SELECT t.TASK_CODE\n" +
+            "            FROM task t\n" +
+            "            ORDER BY  t.TASK_CODE DESC\n" +
+            "            LIMIT 1", nativeQuery = true)
+    String taskCodeMax();
+
+    @Query("SELECT COUNT(t) FROM Task t WHERE t.employee.code =:employeeCode AND t.status IN :status")
+    Long countByEmployeeCode(@Param("employeeCode") String employeeCode, @Param("status") List<Integer> status);
+
 
 
 }

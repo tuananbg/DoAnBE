@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -40,11 +41,11 @@ import java.util.*;
 public class EmployeeServiceImpl extends BaseController implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final DepartmentRepository departmentRepository;
     private final PositionRepository positionRepository;
     private final EmployeeInfoRepository employeeInfoRepository;
-    private final EmployeeContractsRepository employeeContractsRepository;
     private final AccountRepository accountRepository;
+    private final AttendanceRepository attendanceRepository;
+    private final TaskRepository taskRepository;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -244,20 +245,23 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
     @Override
     public TotalEmployeeDTO totalEmployee(String code) {
         TotalEmployeeDTO totalEmployeeDTO = new TotalEmployeeDTO();
-        List<Employee> employees = employeeRepository.findAllByStatus(EmploymentStatus.EMPLOYMENT.getCode());
-        if (employees != null) {
-            totalEmployeeDTO.setTotalEmployee(employees.size());
-        } else {
-            totalEmployeeDTO.setTotalEmployee(0);
-        }
+        int month = LocalDate.now().getMonthValue();
+        int year = LocalDate.now().getYear();
+        List<Integer> employeeStatus = Arrays.asList(EmploymentStatus.EMPLOYMENT.getCode(),EmploymentStatus.WAITING_FOR_SIGNING.getCode(),EmploymentStatus.WAITING_FOR_ONBOARD.getCode());
+        List<Integer> taskStatus = Arrays.asList(TaskStatusEnum.PROCESSING.getCode(),TaskStatusEnum.TODO.getCode());
+
+        Long totalEmployee = employeeRepository.countByStatusIn(employeeStatus);
+        totalEmployeeDTO.setTotalEmployee( Objects.requireNonNullElse(totalEmployee,0L));
+
         Long totalEmployeeBirths = employeeRepository.countActiveEmployeesWithBirthdayInCurrentMonth(EmploymentStatus.EMPLOYMENT.getCode());
-        if (totalEmployeeBirths != null) {
-            totalEmployeeDTO.setTotalBirthDayMonth(totalEmployeeBirths);
-        } else {
-            totalEmployeeDTO.setTotalBirthDayMonth(0L);
-        }
-        totalEmployeeDTO.setTotalLateWork(2);
-        totalEmployeeDTO.setTotalLeaveWork(3);
+        totalEmployeeDTO.setTotalBirthDayMonth(Objects.requireNonNullElse(totalEmployeeBirths, 0L));
+
+        Long totalLateWork = attendanceRepository.countAttendanceByEmployeeCode(code, month, year);
+        totalEmployeeDTO.setTotalLateWork( Objects.requireNonNullElse(totalLateWork,0L));
+
+        Long totalTaskProcess = taskRepository.countByEmployeeCode(code,taskStatus);
+        totalEmployeeDTO.setTotalTaskProcess(Objects.requireNonNullElse(totalTaskProcess,0L));
+
         return totalEmployeeDTO;
     }
 

@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,5 +30,28 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     Page<Attendance> findAllAttendanceByWorkingDayV2(@Param("workingDay") Date workingDay,
                                                      @Param("departmentCode") String departmentCode,
                                                      Pageable page);
+
+    @Query("""
+    SELECT a FROM Attendance a
+    WHERE a.totalPenalty > 0
+      AND a.employee.code = :employeeCode
+      AND FUNCTION('MONTH', a.workingDay) = :month
+      AND FUNCTION('YEAR', a.workingDay) = :year
+""")
+    List<Attendance> findPenaltyInCurrentMonth(@Param("employeeCode") String employeeCode,
+                                               @Param("month") int month,
+                                               @Param("year") int year);
+@Query("""
+    SELECT COUNT(a) FROM Attendance a
+    WHERE a.totalPenalty > 0
+      AND a.employee.code = :employeeCode
+      AND FUNCTION('MONTH', a.workingDay) = :month
+      AND FUNCTION('YEAR', a.workingDay) = :year
+""")
+   Long countAttendanceByEmployeeCode(@Param("employeeCode") String employeeCode,
+                                               @Param("month") int month,
+                                               @Param("year") int year);
+
+
 
 }

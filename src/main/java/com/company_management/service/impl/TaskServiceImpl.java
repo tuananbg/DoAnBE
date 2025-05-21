@@ -42,12 +42,15 @@ public class TaskServiceImpl extends BaseController implements TaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void createTask(RequestCreateTaskDTO request) {
-        checkTaskCode(request.getTaskCode());
+        String userCode = getCurrentUserCode();
         Task task = new Task();
+        String taskCodeMax = taskRepository.taskCodeMax();
+        String taskCodeNext = CommonUtils.generateNextCode(taskCodeMax);
         MapperUtils.map(request, task);
         Employee employee = employeeService.getEmployee(request.getEmployeeCode());
         task.setEmployee(employee);
-
+        task.setTaskCode(taskCodeNext);
+        task.setManagerCode(userCode);
         Project project = projectRepository.findByProjectCode(request.getProjectCode())
                 .orElseThrow(() -> new AppException("ER002", "Dự án không tồn tại trong hệ thống!"));
         task.setProject(project);
@@ -58,7 +61,14 @@ public class TaskServiceImpl extends BaseController implements TaskService {
     @Override
     public ResponsePage<ResponseListTaskDTO> getTasks(TaskStatusEnum status, String keyword, RequestPage page) {
         keyword = CommonUtils.escapeLike(keyword);
-        Page<Task> taskPage = taskRepository.findByStatus(status.getCode(), keyword, page.toPageable());
+        String userCode = getCurrentUserCode();
+        Page<Task> taskPage;
+        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+            taskPage = taskRepository.findByStatus(status.getCode(), keyword, page.toPageable());
+        } else {
+            taskPage = taskRepository.findByStatusV2(status.getCode(), userCode, keyword, page.toPageable());
+        }
+
         List<ResponseListTaskDTO> data = getDataTask(taskPage);
         return new ResponsePage<>(data, page, taskPage.getTotalElements());
     }
@@ -77,11 +87,6 @@ public class TaskServiceImpl extends BaseController implements TaskService {
         return new ResponsePage<>(data, page, taskPage.getTotalElements());
     }
 
-    private void checkTaskCode(String taskCode) {
-        if (taskRepository.existsByTaskCode(taskCode)) {
-            throw new AppException("ERR", "Mã nhiệm vụ đã tồn tại");
-        }
-    }
 
     @Override
     public List<ResponseProjectDashboardTO> getListDashboard() {
@@ -97,7 +102,7 @@ public class TaskServiceImpl extends BaseController implements TaskService {
             dto.setNumberOfTasks((int) tasksOfProject);
             dto.setNumberOfTasksDone((int) taskDoneOfProject);
             double percent = 0.0;
-            if (taskDoneOfProject!= 0 && tasksOfProject!=0){
+            if (taskDoneOfProject != 0 && tasksOfProject != 0) {
                 percent = (double) taskDoneOfProject / tasksOfProject;
             }
 

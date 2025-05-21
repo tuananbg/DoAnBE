@@ -25,4 +25,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Page<Project> findAllByIsActiveAndKeyword(@Param("status") Integer isActive,@Param("keyword") String keyword, Pageable pageable);
 
     List<Project> findAllByStatus(Integer status);
+
+    List<Project> findAllByProjectManagerCode(String projectManagerCode);
 }

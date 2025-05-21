@@ -75,4 +75,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     List<Employee> getAllByDepartmentCodeAndStatusIn(String departmentCode, List<Integer> status);
 
+    @Query("""
+                SELECT COUNT(e) FROM Employee e
+                WHERE e.status IN :statusList
+            """)
+    Long countByStatusIn(@Param("statusList") List<Integer> statusList);
+
+
 }

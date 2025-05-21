@@ -56,7 +56,7 @@ public class SendEmailServiceImpl implements SendEmailService {
                         helper.setText(processedContent, true);
                         emailSender.send(message);
                         hasSuccess = true;
-                        log.error("Gửi email thành công: {}", email);
+                        log.info("Gửi email thành công: {}", email);
                     } catch (Exception ex) {
                         log.error("Gửi email thất bại: {}", ex.getMessage(), ex);
                     }
@@ -88,7 +88,7 @@ public class SendEmailServiceImpl implements SendEmailService {
                         helper.setText(processedContent, true);
                         emailSender.send(message);
                         hasSuccess = true;
-                        log.error("Gửi email thành công: {}", email);
+                        log.info("Gửi email thành công: {}", email);
                     } catch (Exception ex) {
                         log.error("Gửi email thất bại: {}", ex.getMessage(), ex);
                     }

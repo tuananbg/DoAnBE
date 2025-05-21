@@ -1,8 +1,10 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.AppConstants;
+import com.company_management.common.Constants;
 import com.company_management.common.enums.ProjectStatus;
 import com.company_management.common.enums.TaskStatusEnum;
+import com.company_management.controller.auth.BaseController;
 import com.company_management.dto.request.projcet.RequestProjectDTO;
 import com.company_management.dto.response.project.*;
 import com.company_management.entity.Project;
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ProjectServiceImpl implements ProjectService {
+public class ProjectServiceImpl extends BaseController implements ProjectService {
 
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
@@ -42,7 +44,15 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public List<ResponseListProjectDTO> getList() {
-        List<Project> projectPage = projectRepository.findAll();
+        String userCode = getCurrentUserCode();
+        List<Project> projectPage;
+        if (Constants.ADMIN.equals(userCode)) {
+            projectPage = projectRepository.findAll();
+        }
+        else {
+            projectPage = projectRepository.findAllByProjectManagerCode(userCode);
+        }
+
         List<ResponseListProjectDTO> data = new ArrayList<>();
         for (Project project : projectPage) {
             ResponseListProjectDTO dto = new ResponseListProjectDTO();

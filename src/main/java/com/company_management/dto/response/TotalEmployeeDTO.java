@@ -10,8 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TotalEmployeeDTO {
-    private int totalEmployee;
+    private Long totalEmployee;
     private Long totalBirthDayMonth;
-    private int totalLateWork;
-    private int totalLeaveWork;
+    private Long totalLateWork;
+    private Long totalTaskProcess;
 }

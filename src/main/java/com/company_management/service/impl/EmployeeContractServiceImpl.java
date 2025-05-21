@@ -4,7 +4,6 @@ import com.company_management.common.Constants;
 import com.company_management.common.enums.ContractStatusEnum;
 import com.company_management.common.enums.ContractType;
 import com.company_management.common.enums.EmploymentStatus;
-import com.company_management.common.enums.ObjectStatus;
 import com.company_management.controller.auth.BaseController;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
@@ -18,19 +17,14 @@ import com.company_management.dto.response.ResponseTotalDTO;
 import com.company_management.entity.Employee;
 import com.company_management.entity.EmployeeContracts;
 import com.company_management.exception.AppException;
-import com.company_management.dto.ContractDTO;
-import com.company_management.dto.UserDetailContractDTO;
 import com.company_management.dto.response.pa.ResponseEmployeeContractsDetail;
-import com.company_management.dto.common.DataPage;
 import com.company_management.repository.*;
 import com.company_management.service.EmployeeContractService;
-import com.company_management.utils.DataUtils;
 import com.company_management.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -42,7 +36,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,13 +53,6 @@ public class EmployeeContractServiceImpl extends BaseController implements Emplo
 
     @Value("${upload.path}")
     private String fileUpload;
-
-    @Override
-    @Transactional(readOnly = true)
-    public DataPage<ContractDTO> searchForEmployee(ContractDTO contractDTO, Pageable page) {
-//        return employeeContractReponsitory.search(contractDTO, pageable);
-        return null;
-    }
 
     @Override
     public ResponsePage<ResponseContractListDTO> getList(ContractStatusEnum status, String keyword, RequestPage page) {

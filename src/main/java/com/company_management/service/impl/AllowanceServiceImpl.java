@@ -50,12 +50,6 @@ public class AllowanceServiceImpl implements AllowanceService {
     private String fileUpload;
 
     @Override
-    @Transactional(readOnly = true)
-    public DataPage<WageDTO> searchForEmployee(WageDTO wageDTO, Pageable pageable) {
-        return null;
-    }
-
-    @Override
     public ResponsePage<ResponseAllowanceListDTO> getList(ObjectStatus status, String keyword, RequestPage page) {
         keyword = CommonUtils.escapeLike(keyword);
         Page<Allowance> wages = allowanceRepository.findAllByIsActive(status.getCode(), keyword, page.toPageable());

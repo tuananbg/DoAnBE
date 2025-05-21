@@ -1,14 +1,9 @@
 package com.company_management.controller.pa;
 
 import com.company_management.common.AppConstants;
-import com.company_management.common.ErrorCode;
-import com.company_management.common.ObjectError;
 import com.company_management.common.ResultResp;
 import com.company_management.common.enums.ContractStatusEnum;
-import com.company_management.common.enums.ObjectStatus;
 import com.company_management.common.enums.ReportType;
-import com.company_management.dto.ContractDTO;
-import com.company_management.dto.UserDetailContractDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
@@ -22,19 +17,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -74,10 +61,6 @@ public class ContractController {
         return jasperReportService.baseDownload(bytes,fileName);
     }
 
-    @PostMapping(value = "/searchForEmployee")
-    public ResultResp<Object> searchForEmployee(@RequestBody ContractDTO contractDTO, Pageable pageable) {
-        return ResultResp.success(contractService.searchForEmployee(contractDTO, pageable));
-    }
 
     @GetMapping(value = "/detail/{id}")
     public ResultResp<Object> detail(@PathVariable Long id) {

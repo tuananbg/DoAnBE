@@ -7,7 +7,6 @@ import com.company_management.common.ResultResp;
 import com.company_management.common.enums.ObjectStatus;
 import com.company_management.dto.response.pa.ResponseAllowanceEmployeeDetailDTO;
 import com.company_management.dto.UserDetailWageDTO;
-import com.company_management.dto.WageDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
@@ -21,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -64,11 +62,6 @@ public class AllowanceController {
     public BaseResponse<ResponsePage<ResponseAllowanceListDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword,
                                                                         @PathVariable("status") ObjectStatus status, RequestPage page) {
         return BaseResponse.ok(allowanceService.getList(status, keyword, page));
-    }
-
-    @PostMapping(value = "/searchForEmployee")
-    public ResultResp<Object> searchForEmployee(@RequestBody WageDTO wageDTO, Pageable pageable) {
-        return ResultResp.success(allowanceService.searchForEmployee(wageDTO, pageable));
     }
 
     @GetMapping(value = "/select")

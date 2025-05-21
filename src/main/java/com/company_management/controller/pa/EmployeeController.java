@@ -1,15 +1,11 @@
 package com.company_management.controller.pa;
 
 import com.company_management.common.AppConstants;
-import com.company_management.common.ErrorCode;
-import com.company_management.common.ResultResp;
 import com.company_management.common.enums.EmploymentStatus;
 import com.company_management.common.enums.ReportType;
-import com.company_management.dto.UserDetailDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
-import com.company_management.dto.request.pa.SearchEmployeeRequest;
 import com.company_management.dto.request.pa.employee.RequestEmployeeDetailDTO;
 import com.company_management.dto.response.TotalEmployeeDTO;
 import com.company_management.dto.response.pa.employee.ResponseEmployeeDetailDTO;
@@ -22,9 +18,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,17 +26,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.ITemplateEngine;
-import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController

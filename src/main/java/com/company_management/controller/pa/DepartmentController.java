@@ -4,7 +4,7 @@ import com.company_management.common.AppConstants;
 import com.company_management.common.ErrorCode;
 import com.company_management.common.ResultResp;
 import com.company_management.common.enums.ObjectStatus;
-import com.company_management.dto.DepartmentDTO;
+import com.company_management.dto.request.pa.RequestDepartmentDTO;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
@@ -37,8 +37,8 @@ public class DepartmentController {
     }
 
     @PostMapping("/create")
-    public ResultResp<Object> createDepartment(@Valid @RequestBody DepartmentDTO departmentDTO) {
-        departmentService.addDepartment(departmentDTO);
+    public ResultResp<Object> createDepartment(@Valid @RequestBody RequestDepartmentDTO requestDepartmentDTO) {
+        departmentService.addDepartment(requestDepartmentDTO);
         return ResultResp.success(ErrorCode.CREATED_OK, null);
     }
 
@@ -49,9 +49,9 @@ public class DepartmentController {
 
     @PostMapping("/update/{id}")
     public ResultResp<Object> updateDepartment(@PathVariable("id") Long id,
-                                               @Valid @RequestBody DepartmentDTO departmentDTO) {
-        departmentDTO.setDepartmentId(id);
-        departmentService.editDepartment(departmentDTO);
+                                               @Valid @RequestBody RequestDepartmentDTO requestDepartmentDTO) {
+        requestDepartmentDTO.setDepartmentId(id);
+        departmentService.editDepartment(requestDepartmentDTO);
         return ResultResp.success(ErrorCode.UPDATED_OK, null);
     }
 

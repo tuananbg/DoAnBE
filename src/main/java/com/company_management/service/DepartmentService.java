@@ -1,7 +1,7 @@
 package com.company_management.service;
 
 import com.company_management.common.enums.ObjectStatus;
-import com.company_management.dto.DepartmentDTO;
+import com.company_management.dto.request.pa.RequestDepartmentDTO;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.response.pa.ResponseDepartmentDTO;
@@ -13,9 +13,9 @@ public interface DepartmentService {
 
     ResponsePage<ResponseDepartmentDTO> findAllPage(ObjectStatus status, String keyword, RequestPage pageable);
 
-    void addDepartment(DepartmentDTO departmentDTO);
+    void addDepartment(RequestDepartmentDTO requestDepartmentDTO);
 
-    void editDepartment(DepartmentDTO departmentDTO);
+    void editDepartment(RequestDepartmentDTO requestDepartmentDTO);
 
     void lock(String departmentCode);
 

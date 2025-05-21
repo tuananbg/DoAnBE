@@ -6,7 +6,6 @@ import com.company_management.common.enums.PositionCategoryEnum;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.entity.Position;
-import com.company_management.entity.PositionCategory;
 import com.company_management.repository.PositionCategoryRepository;
 import com.company_management.repository.PositionRepository;
 import com.company_management.service.PositionService;
@@ -15,7 +14,7 @@ import com.company_management.dto.response.pa.ResponseDepartmentDTO;
 import com.company_management.dto.response.ResponseTotalDTO;
 import com.company_management.entity.Employee;
 import com.company_management.exception.AppException;
-import com.company_management.dto.DepartmentDTO;
+import com.company_management.dto.request.pa.RequestDepartmentDTO;
 import com.company_management.entity.Department;
 import com.company_management.repository.DepartmentRepository;
 import com.company_management.repository.EmployeeRepository;
@@ -60,20 +59,20 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     @Transactional
-    public void addDepartment(DepartmentDTO departmentDTO) {
-        Optional<Department> existingDepartment = departmentRepository.findByCode(departmentDTO.getDepartmentCode());
+    public void addDepartment(RequestDepartmentDTO requestDepartmentDTO) {
+        Optional<Department> existingDepartment = departmentRepository.findByCode(requestDepartmentDTO.getDepartmentCode());
         if (existingDepartment.isPresent()) {
             throw new AppException("ERO01", "Trùng mã phòng ban");
         }
         Department department = new Department();
-        MapperUtils.map(departmentDTO, department);
+        MapperUtils.map(requestDepartmentDTO, department);
         departmentRepository.save(department);
         String positionCodeMax = positionRepository.positionCodeMax();
         String positionCode = CommonUtils.generateNextCode(positionCodeMax);
         Position position = new Position();
         position.setPositionCode(positionCode);
         positionCategoryRepository.findByCode(PositionCategoryEnum.DEPARTMENT_HEAD.getCode()).ifPresent(position::setPositionCategory);
-        position.setPositionName(PositionCategoryEnum.DEPARTMENT_HEAD.getName());
+        position.setPositionName(PositionCategoryEnum.DEPARTMENT_HEAD.getName()+"-"+ requestDepartmentDTO.getDepartmentCode());
         position.setDepartment(department);
         position.setStatus(ObjectStatus.ACTIVE.getCode());
         positionRepository.save(position);
@@ -82,15 +81,15 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     @Transactional
-    public void editDepartment(DepartmentDTO departmentDTO) {
-        Department department = departmentRepository.findById(departmentDTO.getDepartmentId()).orElseThrow(
+    public void editDepartment(RequestDepartmentDTO requestDepartmentDTO) {
+        Department department = departmentRepository.findById(requestDepartmentDTO.getDepartmentId()).orElseThrow(
                 () -> new AppException("ERR01", "Không tìm thấy phòng ban")
         );
-        if (!DataUtils.isNullOrEmpty(departmentDTO.getDepartmentName())) {
-            department.setDepartmentName(departmentDTO.getDepartmentName());
+        if (!DataUtils.isNullOrEmpty(requestDepartmentDTO.getDepartmentName())) {
+            department.setDepartmentName(requestDepartmentDTO.getDepartmentName());
         }
-        if (!DataUtils.isNullOrEmpty(departmentDTO.getStatus())) {
-            department.setStatus(departmentDTO.getStatus());
+        if (!DataUtils.isNullOrEmpty(requestDepartmentDTO.getStatus())) {
+            department.setStatus(requestDepartmentDTO.getStatus());
         }
         departmentRepository.save(department);
     }

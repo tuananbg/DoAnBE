@@ -12,5 +12,7 @@ public interface JasperReportService {
 
     byte[] department(ObjectStatus status);
 
+    byte[] timeSheetEmployeeExcessReportData(String monthCode);
+
     ResponseEntity<Resource> baseDownload(byte[] bytes, String fileName);
 }

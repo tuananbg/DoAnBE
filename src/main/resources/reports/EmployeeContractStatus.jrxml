@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.0.4.final using JasperReports Library version 6.0.4  -->
-<!-- 2025-04-28T08:36:10 -->
+<!-- 2025-05-22T22:20:21 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EmployeeInfoDetail" pageWidth="2000" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="24b9deda-9e92-4278-91ed-b358184188fd">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="header" mode="Opaque" forecolor="#1C4587" backcolor="#E2F4F5" hTextAlign="Center" vTextAlign="Middle" fontName="Times New Roman" fontSize="11" isBold="true">
@@ -71,7 +71,7 @@
 		<band height="50" splitType="Stretch">
 			<staticText>
 				<reportElement style="Title" x="-20" y="0" width="2000" height="50" uuid="ff69098b-9e1d-4457-bb29-470a1f3f714e"/>
-				<text><![CDATA[Danh sách cán bộ nhân viên]]></text>
+				<text><![CDATA[Danh sách hợp đồng]]></text>
 			</staticText>
 		</band>
 	</title>

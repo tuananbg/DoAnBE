@@ -2,21 +2,18 @@ package com.company_management.service.common.impl;
 
 import com.company_management.common.AppConstants;
 import com.company_management.common.enums.*;
+import com.company_management.dto.report.ReportAttendanceWork;
 import com.company_management.dto.report.ReportDepartmentDTO;
 import com.company_management.dto.report.ReportEmployeeContractDTO;
 import com.company_management.dto.report.ReportEmployeeDTO;
-import com.company_management.entity.Department;
-import com.company_management.entity.Employee;
-import com.company_management.entity.EmployeeContracts;
-import com.company_management.entity.EmployeeInfo;
+import com.company_management.entity.*;
 import com.company_management.exception.AppException;
-import com.company_management.repository.DepartmentRepository;
-import com.company_management.repository.EmployeeContractsRepository;
-import com.company_management.repository.EmployeeRepository;
-import com.company_management.repository.PositionRepository;
+import com.company_management.repository.*;
 import com.company_management.service.common.JasperReportService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.mapper.MapperUtils;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
@@ -25,6 +22,7 @@ import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -34,12 +32,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -50,10 +51,11 @@ public class JasperReportServiceImpl implements JasperReportService {
     private final DepartmentRepository departmentRepository;
     private final PositionRepository positionRepository;
     private final EmployeeContractsRepository employeeContractsRepository;
+    private final AttendanceRepository attendanceRepository;
 
     @Override
     public byte[] employeeFullInformation() {
-        String path = "report/EmployeeStatus.jrxml";
+        String path = "reports/EmployeeStatus.jrxml";
         List<Employee> employees = employeeRepository.findAll();
         List<ReportEmployeeDTO> data = new ArrayList<>();
         for (Employee employee : employees) {
@@ -86,7 +88,7 @@ public class JasperReportServiceImpl implements JasperReportService {
     @Override
     public byte[] contractStatus(ContractStatusEnum status) {
         List<EmployeeContracts> employeeContractsList = employeeContractsRepository.findAllByStatus(status.getValue());
-        String path = "report/EmployeeContractStatus.jrxml";
+        String path = "reports/EmployeeContractStatus.jrxml";
         List<ReportEmployeeContractDTO> data = new ArrayList<>();
         for (EmployeeContracts employeeContracts : employeeContractsList) {
             Employee employee = employeeContracts.getEmployee();
@@ -105,14 +107,14 @@ public class JasperReportServiceImpl implements JasperReportService {
         try {
             return exportReport(ReportType.XLSX, path, data, null);
         } catch (Exception e) {
-            throw new AppException(AppConstants.DOWNLOAD_DATA_NULL_CODE_EX01,AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01);
+            throw new AppException(AppConstants.DOWNLOAD_DATA_NULL_CODE_EX01, AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01);
         }
     }
 
     @Override
     public byte[] department(ObjectStatus status) {
         List<Department> departments = departmentRepository.findAllByStatus(status.getCode());
-        String path = "report/Department.jrxml";
+        String path = "reports/Department.jrxml";
         List<ReportDepartmentDTO> data = new ArrayList<>();
         for (Department department : departments) {
             ReportDepartmentDTO dto = new ReportDepartmentDTO();
@@ -125,6 +127,61 @@ public class JasperReportServiceImpl implements JasperReportService {
             throw new RuntimeException(AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01, e);
         }
 
+    }
+
+    public byte[] timeSheetEmployeeExcessReportData(String monthCode) {
+        String path ="reports/AttendanceMonthSummary.jrxml";
+        int year = Integer.parseInt(monthCode.substring(0, 4));
+        int month = Integer.parseInt(monthCode.substring(4, 6));
+
+        List<Attendance> attendances = attendanceRepository.findByMonth(month, year);
+
+        Map<Employee, List<Attendance>> grouped = attendances.stream()
+                .collect(Collectors.groupingBy(Attendance::getEmployee));
+
+        List<ReportAttendanceWork> data = new ArrayList<>();
+        for (Map.Entry<Employee, List<Attendance>> entry : grouped.entrySet()) {
+            Employee emp = entry.getKey();
+            List<Attendance> empAtt = entry.getValue();
+
+            Map<Integer, Double> dayToPoint = empAtt.stream()
+                    .collect(Collectors.toMap(
+                            a -> LocalDate.ofInstant(a.getWorkingDay().toInstant(), ZoneId.of("Asia/Ho_Chi_Minh")).getDayOfMonth(),
+                            a -> Optional.ofNullable(a.getWorkingPoint()).orElse(0.0)
+                    ));
+
+            ReportAttendanceWork dto = new ReportAttendanceWork();
+            dto.setEmployeeCode(emp.getCode());
+            dto.setEmployeeName(emp.getFullName());
+
+            double total = 0;
+            for (int i = 1; i <= 31; i++) {
+                Double val = dayToPoint.get(i);
+                if (val == null || val == 0) {
+                    try {
+                        BeanUtils.setProperty(dto, "day" + i, "");
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    total += val;
+                    String mark = val >= 1.0 ? "x" : "x/" + (1.0 / val);
+                    try {
+                        BeanUtils.setProperty(dto, "day" + i, mark);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            dto.setTotalWork(String.valueOf(total));
+            data.add(dto);
+        }
+
+        try {
+            return exportReport(ReportType.XLSX, path, data, null);
+        } catch (Exception e) {
+            throw new RuntimeException(AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01, e);
+        }
     }
 
     @Override
@@ -218,6 +275,7 @@ public class JasperReportServiceImpl implements JasperReportService {
     public static BigDecimal convertToBigDecimal(Long value) {
         return value != null ? BigDecimal.valueOf(value) : BigDecimal.ZERO;
     }
+
     public static BigDecimal convertToBigDecimal(Float value) {
         return value != null ? BigDecimal.valueOf(value) : BigDecimal.ZERO;
     }

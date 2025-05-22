@@ -52,6 +52,10 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
                                                @Param("month") int month,
                                                @Param("year") int year);
 
+    @Query("SELECT a FROM Attendance a WHERE MONTH(a.workingDay) = :month AND YEAR(a.workingDay) = :year")
+    List<Attendance> findByMonth(@Param("month") Integer month, @Param("year") Integer year);
+
+
 
 
 }

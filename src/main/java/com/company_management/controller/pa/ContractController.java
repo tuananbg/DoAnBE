@@ -1,6 +1,8 @@
 package com.company_management.controller.pa;
 
 import com.company_management.common.AppConstants;
+import com.company_management.common.ErrorCode;
+import com.company_management.common.ObjectError;
 import com.company_management.common.ResultResp;
 import com.company_management.common.enums.ContractStatusEnum;
 import com.company_management.common.enums.ReportType;
@@ -17,11 +19,18 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -54,13 +63,35 @@ public class ContractController {
         return BaseResponse.ok(contractService.getListEmployeeCode(employeeCode, page));
     }
 
-    @GetMapping(value = "/download/{status}")
+        @GetMapping(value = "/download-xlsx/{status}")
     public ResponseEntity<Resource> download(@PathVariable("status") ContractStatusEnum status) {
         byte[] bytes = jasperReportService.contractStatus(status);
-        String fileName = "[DTDI] HRM_Danh sach hop dong_" + CommonUtils.getCurrentDate("ddMMyyyy") + "." + ReportType.XLSX.getCode();
+        String fileName = "DTDI_HRM_Danh sach hop dong_" + CommonUtils.getCurrentDate("ddMMyyyy") + "." + ReportType.XLSX.getCode();
         return jasperReportService.baseDownload(bytes,fileName);
     }
 
+    @PostMapping("/download")
+    public ResponseEntity<Object> downloadWordFile(@RequestParam("fileName") String fileName) {
+        try {
+            // Đọc tệp Word từ máy
+            Path filePath = Paths.get(this.fileUpload + fileName);
+            byte[] fileContent = Files.readAllBytes(filePath);
+            ByteArrayResource resource = new ByteArrayResource(fileContent);
+
+            // Thiết lập các header cho phản hồi
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentLength(fileContent.length)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(resource);
+        } catch (IOException ex) {
+            log.error("{Error export file}: " + ex.getMessage());
+            return ResultResp.badRequest(new ObjectError(ErrorCode.SELECT_FAIL.getCode(), ex.getMessage()));
+        }
+    }
 
     @GetMapping(value = "/detail/{id}")
     public ResultResp<Object> detail(@PathVariable Long id) {

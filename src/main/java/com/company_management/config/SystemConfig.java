@@ -27,7 +27,7 @@ public class SystemConfig {
     }
 
     @Bean
-    public AuditorAware<Long> auditorProvider() {
+    AuditorAware<String> auditorProvider() {
         return new AuditorAwareImpl();
     }
 

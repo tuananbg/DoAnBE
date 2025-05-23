@@ -22,7 +22,7 @@ import java.util.Date;
 @NoArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseEntity implements Serializable {
+public class BaseEntity {
 
     @CreatedBy
     @Column(name = "CREATED_BY", updatable = false)

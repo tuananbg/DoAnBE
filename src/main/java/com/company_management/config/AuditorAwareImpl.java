@@ -1,25 +1,14 @@
 package com.company_management.config;
 
-import com.company_management.entity.Account;
-import com.company_management.exception.UserNotFoundException;
+import com.company_management.controller.auth.BaseController;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
-public class AuditorAwareImpl implements AuditorAware<Long> {
+public class AuditorAwareImpl extends BaseController implements AuditorAware<String> {
+
     @Override
-    public Optional<Long> getCurrentAuditor() throws UserNotFoundException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication!=null){
-            Object principal = authentication.getPrincipal();
-            if (!(principal instanceof Account)) {
-                return Optional.ofNullable(1000L);
-            }
-            Account userCustom = (Account) principal;
-            return Optional.ofNullable(userCustom.getId());
-        }
-        return Optional.ofNullable(1000L);
+    public Optional<String> getCurrentAuditor() {
+        return Optional.of(getCurrentUserCode() == null ? "SYSTEM" : getCurrentUserCode());
     }
 }

@@ -31,7 +31,7 @@ public interface EmployeeContractsRepository extends JpaRepository<EmployeeContr
             "UPPER(ec.employee.fullName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
             "UPPER(ec.contractTypeDisplay) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
             "AND ec.status = :status " +
-            "ORDER BY ec.createdDate ASC")
+            "ORDER BY ec.contractEffectiveDate ASC")
     Page<EmployeeContracts> findAllByIsActive(@Param("status") Integer isActive,
                                               @Param("keyword") String keyword,
                                               Pageable pageable);
@@ -44,7 +44,7 @@ public interface EmployeeContractsRepository extends JpaRepository<EmployeeContr
             "UPPER(e.fullName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
             "UPPER(ec.contractTypeDisplay) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
             "AND ec.status = :status AND e.departmentCode = :departmentCode " +
-            "ORDER BY ec.createdDate ASC")
+            "ORDER BY ec.contractEffectiveDate ASC")
     Page<EmployeeContracts> findAllByIsActiveV2(@Param("status") Integer isActive,
                                                 @Param("departmentCode") String departmentCode,
                                                 @Param("keyword") String keyword,
@@ -79,4 +79,9 @@ public interface EmployeeContractsRepository extends JpaRepository<EmployeeContr
             @Param("status") Integer status);
 
 
+    @Query(value = "SELECT ec FROM EmployeeContracts ec "
+            + "JOIN Employee e ON ec.employee.id = e.id "
+            + "WHERE ec.status = :status AND e.departmentCode = :departmentCode")
+    List<EmployeeContracts> findAllByStatusAndDepartmentCode(@Param("status") Integer status,
+                                                             @Param("departmentCode") String departmentCode);
 }

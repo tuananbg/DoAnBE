@@ -15,12 +15,6 @@ import java.util.List;
 @Repository
 public interface QualificationRepository extends JpaRepository<Qualification, Long> {
 
-//    Page<Qualification> findByUserDetailId(Long userDetailId, Pageable pageable);
-
-    @Modifying
-    @Query(value = "update Qualification q set q.status = 0, q.updatedDate = now(), q.updatedBy = :user where q.id = :id and q.status = 1 or q.status = 2 ")
-    int updateById(Long id, Long user);
-
     @Query(value = "SELECT q FROM Qualification q JOIN Employee e ON q.employee.id = e.id WHERE e.code = :code")
    Page<Qualification> findAllByEmployeeCode(@Param("code") String code, Pageable pageable);
 }

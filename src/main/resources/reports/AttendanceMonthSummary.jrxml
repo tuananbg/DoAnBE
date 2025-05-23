@@ -261,19 +261,19 @@
 			</textField>
 			<textField>
 				<reportElement style="text" x="30" y="0" width="80" height="30" uuid="14cd2b2c-a9dc-4acd-ae78-15b0d423f7b4"/>
-				<textFieldExpression><![CDATA[$F{employeeCode}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{employeeCode} != null ? $F{employeeCode} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="110" y="0" width="110" height="30" uuid="919cab2d-46d1-4883-8879-21177c6398ca"/>
-				<textFieldExpression><![CDATA[$F{employeeName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{employeeName} != null ? $F{employeeName} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="220" y="0" width="110" height="30" uuid="23a2c9db-b301-44b7-9236-ae71feab6db2"/>
-				<textFieldExpression><![CDATA[$F{departmentName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{departmentName} != null ? $F{departmentName} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="330" y="0" width="110" height="30" uuid="1e9f9c13-3cb0-4720-8814-f7923fa45e88"/>
-				<textFieldExpression><![CDATA[$F{positionName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{positionName} != null ? $F{positionName} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="date" x="440" y="0" width="110" height="30" uuid="aed9e26d-0e5e-4e9e-8479-c43718245eb3"/>

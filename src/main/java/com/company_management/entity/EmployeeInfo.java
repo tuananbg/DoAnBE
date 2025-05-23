@@ -16,6 +16,10 @@ import java.util.Date;
 @Entity
 @Table(name = "EMPLOYEE_INFO") //Chi tiết CBNV
 public class EmployeeInfo extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
 
     @Column(name = "DATE_OF_BIRTH")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")

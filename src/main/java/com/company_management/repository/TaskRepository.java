@@ -85,5 +85,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     Long countByEmployeeCode(@Param("employeeCode") String employeeCode, @Param("status") List<Integer> status);
 
 
+    List<Task> findAllByManagerCodeAndStatus(String managerCode, Integer status);
+
+
+    List<Task> findAllByStatus(Integer status);
 
 }

@@ -1,5 +1,6 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.AuthConstants;
 import com.company_management.common.Constants;
 import com.company_management.common.enums.ContractStatusEnum;
 import com.company_management.common.enums.ContractType;
@@ -59,7 +60,7 @@ public class EmployeeContractServiceImpl extends BaseController implements Emplo
         String userCode = getCurrentUserCode();
         keyword = CommonUtils.escapeLike(keyword);
         Page<EmployeeContracts> employeeContracts;
-        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
             employeeContracts= employeeContractRepository.findAllByIsActive(status.getValue(), keyword, page.toPageable());
         }
         else {

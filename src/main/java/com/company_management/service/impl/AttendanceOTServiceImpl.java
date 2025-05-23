@@ -1,5 +1,6 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.AuthConstants;
 import com.company_management.common.Constants;
 import com.company_management.common.enums.EmailTemplate;
 import com.company_management.common.enums.ObjectStatus;
@@ -48,7 +49,7 @@ public class AttendanceOTServiceImpl extends BaseController implements Attendanc
         keyword = CommonUtils.escapeLike(keyword);
         String userCode = getCurrentUserCode();
         Page<AttendanceOt> attendanceOtPage;
-        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
             attendanceOtPage = attendanceOTRepository.findAllByKeyword(status.getCode(), keyword, page.toPageable());
         } else {
             attendanceOtPage = attendanceOTRepository.findAllByKeywordV2(status.getCode(), keyword, userCode, page.toPageable());
@@ -62,8 +63,8 @@ public class AttendanceOTServiceImpl extends BaseController implements Attendanc
                         response.setEmployeeName(item.getEmployee().getFullName());
                         response.setEmployeeCode(item.getEmployee().getCode());
                     } else {
-                        response.setEmployeeName(Constants.ADMIN_NAME);
-                        response.setEmployeeCode(Constants.ADMIN);
+                        response.setEmployeeName(AuthConstants.ADMIN_NAME);
+                        response.setEmployeeCode(AuthConstants.ADMIN);
                     }
                     if (item.getEmployeeFollow() != null) {
                         response.setFollowName(item.getEmployeeFollow().getFullName());
@@ -83,7 +84,7 @@ public class AttendanceOTServiceImpl extends BaseController implements Attendanc
         AttendanceOt attendanceOT = new AttendanceOt();
         String userCode = getCurrentUserCode();
         MapperUtils.map(request, attendanceOT);
-        if (!Constants.ADMIN.equalsIgnoreCase(userCode)) {
+        if (!AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
             Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR1", "CBNV không tồn tại trong hệ thống"));
             attendanceOT.setEmployee(employee);
             Position position = positionRepository

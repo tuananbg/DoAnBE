@@ -25,8 +25,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Query("SELECT e FROM Employee e " +
             "WHERE e.departmentCode = :departmentCode AND e.status =:status")
-    List<Employee> findAllByStatusAndDepartmentCode(@Param("departmentCode") String departmentCode,
-                                                    @Param("status") Integer status);
+    List<Employee> findAllByStatusAndDepartmentCode(@Param("status") Integer status,
+                                                    @Param("departmentCode") String departmentCode);
 
     @Query(value = "SELECT e FROM Employee e " +
             "JOIN Position p ON p.id = e.position.id " +
@@ -76,8 +76,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> getAllByDepartmentCodeAndStatusIn(String departmentCode, List<Integer> status);
 
     @Query("""
-                SELECT COUNT(e) FROM Employee e
-                WHERE e.status IN :statusList
+            SELECT COUNT(e) FROM Employee e
+            WHERE e.status IN :statusList
             """)
     Long countByStatusIn(@Param("statusList") List<Integer> statusList);
 

@@ -140,51 +140,60 @@
 			</textField>
 			<textField>
 				<reportElement style="text" x="30" y="0" width="137" height="30" uuid="fd844d79-f9b6-4496-9b4f-2e82e035c45f"/>
-				<textFieldExpression><![CDATA[$F{employeeCode}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{employeeCode} != null ? $F{employeeCode} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="167" y="0" width="163" height="30" uuid="6759bc10-cfc4-4385-89ea-ae38b915356b"/>
-				<textFieldExpression><![CDATA[$F{fullName}]]></textFieldExpression>
+
+				<textFieldExpression><![CDATA[$F{fullName} != null ? $F{fullName} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="330" y="0" width="163" height="30" uuid="d89c4c23-56b1-41ad-869d-9ab6ba63c3d5"/>
-				<textFieldExpression><![CDATA[$F{contractNumber}]]></textFieldExpression>
+
+				<textFieldExpression><![CDATA[$F{contractNumber} != null ? $F{contractNumber} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="493" y="0" width="163" height="30" uuid="4ff19ee8-5996-40d5-b531-9ac410b48a65"/>
-				<textFieldExpression><![CDATA[$F{contractType}]]></textFieldExpression>
+
+				<textFieldExpression><![CDATA[$F{contractType} != null ? $F{contractType} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="656" y="0" width="163" height="30" uuid="4a4befcb-0754-47b1-81fb-be5da32a041b"/>
-				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+
+				<textFieldExpression><![CDATA[$F{description} != null ? $F{description} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="date" x="819" y="0" width="163" height="30" uuid="0a0264a0-6ba1-4c13-91ca-628ae30e1259"/>
-				<textFieldExpression><![CDATA[$F{contractSignDate}]]></textFieldExpression>
+
+				<textFieldExpression><![CDATA[$F{contractSignDate} != null ? new SimpleDateFormat("dd/MM/yyyy").format($F{contractSignDate}) : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="date" x="982" y="0" width="163" height="30" uuid="c90afa0c-f682-42ee-9382-8a3f59b3e182"/>
-				<textFieldExpression><![CDATA[$F{contractEffectiveDate}]]></textFieldExpression>
+
+				<textFieldExpression><![CDATA[$F{contractEffectiveDate} != null ? new SimpleDateFormat("dd/MM/yyyy").format($F{contractEffectiveDate}) : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="date" x="1145" y="0" width="163" height="30" uuid="0a7f8109-636f-436e-8c54-a566d3183241"/>
-				<textFieldExpression><![CDATA[$F{contractEndDate}]]></textFieldExpression>
+
+				<textFieldExpression><![CDATA[$F{contractEndDate} != null ? new SimpleDateFormat("dd/MM/yyyy").format($F{contractEndDate}) : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="1308" y="0" width="163" height="30" uuid="3c7d7975-8477-4680-9cd6-831a9be80c3d"/>
-				<textFieldExpression><![CDATA[$F{salaryRate}]]></textFieldExpression>
+
+				<textFieldExpression><![CDATA[$F{salaryRate} != null ? $F{salaryRate} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="number" x="1471" y="0" width="163" height="30" uuid="79b635b8-4c71-4976-90d0-1cca2c2efe51"/>
-				<textFieldExpression><![CDATA[$F{basicSalaryInsurance}]]></textFieldExpression>
+
+				<textFieldExpression><![CDATA[$F{basicSalaryInsurance} != null ? $F{basicSalaryInsurance} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="number" x="1634" y="0" width="163" height="30" uuid="6939b4ca-f944-4d2f-82fd-cca827e36be4"/>
-				<textFieldExpression><![CDATA[$F{basicSalary}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{basicSalary} != null ? $F{basicSalary} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="1797" y="0" width="163" height="30" uuid="88d34aa1-7901-4c62-9b55-b20600519dda"/>
-				<textFieldExpression><![CDATA[$F{statusName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{statusName} != null ? $F{statusName} : ""]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

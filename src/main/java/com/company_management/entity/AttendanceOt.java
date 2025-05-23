@@ -16,6 +16,10 @@ import java.util.Date;
 @AllArgsConstructor
 @Table(name = "ATTENDANCE_OT") // bảng chấm công ot
 public class AttendanceOt extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
 
     @Column(name = "START_DAY")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
@@ -43,4 +47,6 @@ public class AttendanceOt extends BaseEntity {
     @Column(name = "DESCRIPTION_OT")
     private String descriptionOt;  //mô tả công việc cần ot
 
+    @Column(name = "STATUS")
+    private Integer status ;
 }

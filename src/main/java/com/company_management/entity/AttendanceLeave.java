@@ -16,6 +16,10 @@ import java.util.Date;
 @Entity
 @Table(name = "ATTENDANCE_LEAVE") // bảng xin nghỉ phép
 public class AttendanceLeave extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
 
     @Column(name = "LEAVE_CATEGORY")
     private String leaveCategory; // loại nghỉ phép nghỉ tính phép, nghỉ không tính phép)
@@ -42,4 +46,6 @@ public class AttendanceLeave extends BaseEntity {
     @JoinColumn(name = "REVIEWER_ID", referencedColumnName = "id")
     private Employee reviewer;  //người phe duyệt
 
+    @Column(name = "STATUS")
+    private Integer status ;
 }

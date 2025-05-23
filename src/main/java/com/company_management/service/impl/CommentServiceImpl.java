@@ -1,5 +1,6 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.AuthConstants;
 import com.company_management.common.Constants;
 import com.company_management.common.enums.ConfigDataCode;
 import com.company_management.dto.request.projcet.RequestCreateCommentDTO;
@@ -54,7 +55,7 @@ public class CommentServiceImpl implements CommentService {
             ResponseCommentDTO response = new ResponseCommentDTO();
             response.setContent(comment.getContent());
             if (ConfigDataCode.ADMIN.equalsIgnoreCase(comment.getEmployeeCode())) {
-                response.setEmployeeName(Constants.ADMIN_NAME);
+                response.setEmployeeName(AuthConstants.ADMIN_NAME);
             }
             else {
                 if (comment.getEmployee() != null) {

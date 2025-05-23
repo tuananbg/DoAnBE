@@ -13,6 +13,10 @@ import lombok.Setter;
 @Entity
 @Table(name = "POSITION") // Chức danh
 public class Position extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
 
     @Column(name = "POSITION_CODE")
     private String positionCode;
@@ -36,4 +40,6 @@ public class Position extends BaseEntity {
     @JoinColumn(name = "job_group_id")
     private JobGroup jobGroup;
 
+    @Column(name = "STATUS")
+    private Integer status ;
 }

@@ -15,6 +15,10 @@ import java.util.Date;
 @Entity
 @Table(name = "QUALIFICATION") // Bằng cấp chứng chỉ
 public class Qualification extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
 
     @Column(name = "LEVEL")
     private String level;  //loại, trình độ bằng cấp (, cử nhân, thạc sĩ, tiến sĩ, )
@@ -33,4 +37,7 @@ public class Qualification extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Employee employee;
+
+    @Column(name = "STATUS")
+    private Integer status ;
 }

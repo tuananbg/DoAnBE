@@ -1,5 +1,6 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.AuthConstants;
 import com.company_management.common.Constants;
 import com.company_management.common.enums.TaskStatusEnum;
 import com.company_management.controller.auth.BaseController;
@@ -63,7 +64,7 @@ public class TaskServiceImpl extends BaseController implements TaskService {
         keyword = CommonUtils.escapeLike(keyword);
         String userCode = getCurrentUserCode();
         Page<Task> taskPage;
-        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
             taskPage = taskRepository.findByStatus(status.getCode(), keyword, page.toPageable());
         } else {
             taskPage = taskRepository.findByStatusV2(status.getCode(), userCode, keyword, page.toPageable());
@@ -78,7 +79,7 @@ public class TaskServiceImpl extends BaseController implements TaskService {
         String useCode = getCurrentUserCode();
         keyword = CommonUtils.escapeLike(keyword);
         Page<Task> taskPage;
-        if (Constants.ADMIN.equalsIgnoreCase(useCode)) {
+        if (AuthConstants.ADMIN.equalsIgnoreCase(useCode)) {
             taskPage = taskRepository.findByStatus(status.getCode(), keyword, page.toPageable());
         } else {
             taskPage = taskRepository.findByStatusAndEmployeeCode(status.getCode(), useCode, keyword, page.toPageable());

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.0.4.final using JasperReports Library version 6.0.4  -->
-<!-- 2025-04-21T16:41:25 -->
+<!-- 2025-05-23T15:50:28 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EmployeeInfoDetail" pageWidth="3500" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="24b9deda-9e92-4278-91ed-b358184188fd">
 	<style name="header" mode="Opaque" forecolor="#1C4587" backcolor="#E2F4F5" hTextAlign="Center" vTextAlign="Middle" fontName="Times New Roman" fontSize="11" isBold="true">
 		<pen lineColor="#E1E1E1"/>
@@ -77,7 +77,7 @@
 	<title>
 		<band height="50" splitType="Stretch">
 			<staticText>
-				<reportElement style="Title" x="-20" y="0" width="3480" height="50" uuid="ff69098b-9e1d-4457-bb29-470a1f3f714e"/>
+				<reportElement style="Title" x="-20" y="0" width="3307" height="50" uuid="ff69098b-9e1d-4457-bb29-470a1f3f714e"/>
 				<text><![CDATA[Danh sách cán bộ nhân viên]]></text>
 			</staticText>
 		</band>
@@ -162,11 +162,7 @@
 				<text><![CDATA[Số điện thoại]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="header" x="3114" y="0" width="173" height="30" uuid="286a6b3e-0de2-4a53-b15f-27372d4d7a0c"/>
-				<text><![CDATA[Quốc gia]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="header" x="3287" y="0" width="173" height="30" uuid="2b2f6692-0c5c-4e08-8b7f-8a1bc8d3d437"/>
+				<reportElement style="header" x="3114" y="0" width="173" height="30" uuid="2b2f6692-0c5c-4e08-8b7f-8a1bc8d3d437"/>
 				<text><![CDATA[Trạng thái]]></text>
 			</staticText>
 		</band>
@@ -250,11 +246,7 @@
 				<textFieldExpression><![CDATA[$F{mobile} == null ? "" : $F{mobile}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="text" x="3114" y="0" width="173" height="30" uuid="fdf5a4f5-d6a0-4162-9f00-878ce6737809"/>
-				<textFieldExpression><![CDATA[$F{nation} == null ? "" : $F{nation}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement style="text" x="3287" y="0" width="173" height="30" uuid="449c1d90-1362-4316-92b4-7f74c24b675d"/>
+				<reportElement style="text" x="3114" y="0" width="173" height="30" uuid="449c1d90-1362-4316-92b4-7f74c24b675d"/>
 				<textFieldExpression><![CDATA[$F{statusName} == null ? "" : $F{statusName}]]></textFieldExpression>
 			</textField>
 		</band>

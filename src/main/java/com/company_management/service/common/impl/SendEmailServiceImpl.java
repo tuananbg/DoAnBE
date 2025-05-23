@@ -1,6 +1,7 @@
 package com.company_management.service.common.impl;
 
 import com.company_management.common.AppConstants;
+import com.company_management.common.AuthConstants;
 import com.company_management.common.Constants;
 import com.company_management.common.enums.EmailTemplate;
 import com.company_management.entity.*;
@@ -127,8 +128,8 @@ public class SendEmailServiceImpl implements SendEmailService {
                 params.put("employeeCode",employee.getCode());
             }
             else {
-                params.put("employeeName",Constants.ADMIN_NAME);
-                params.put("employeeCode", Constants.ADMIN);
+                params.put("employeeName", AuthConstants.ADMIN_NAME);
+                params.put("employeeCode", AuthConstants.ADMIN);
             }
             Employee reviewer = attendanceLeave.getReviewer();
             if (reviewer != null) {
@@ -153,8 +154,8 @@ public class SendEmailServiceImpl implements SendEmailService {
                 params.put("employeeCode",employee.getCode());
             }
             else {
-                params.put("employeeName",Constants.ADMIN_NAME);
-                params.put("employeeCode", Constants.ADMIN);
+                params.put("employeeName",AuthConstants.ADMIN_NAME);
+                params.put("employeeCode", AuthConstants.ADMIN);
             }
             Employee follower = attendanceOt.getEmployeeFollow();
             if (follower != null){

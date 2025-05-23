@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.0.4.final using JasperReports Library version 6.0.4  -->
+<!-- 2025-05-23T15:42:01 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EmployeeInfoDetail" pageWidth="2000" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="24b9deda-9e92-4278-91ed-b358184188fd">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="header" mode="Opaque" forecolor="#1C4587" backcolor="#E2F4F5" hTextAlign="Center" vTextAlign="Middle" fontName="Times New Roman" fontSize="11" isBold="true">
+		<pen lineColor="#E1E1E1"/>
+		<box>
+			<topPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<leftPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<bottomPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<rightPen lineWidth="0.5" lineColor="#E1E1E1"/>
+		</box>
+	</style>
+	<style name="Title" mode="Opaque" forecolor="#FFFFFF" backcolor="#4285F4" hTextAlign="Left" vTextAlign="Middle" fontName="Times New Roman" fontSize="18" isBold="true">
+		<pen lineColor="#E1E1E1"/>
+		<box>
+			<topPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<leftPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<bottomPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<rightPen lineWidth="0.5" lineColor="#E1E1E1"/>
+		</box>
+	</style>
+	<style name="text" mode="Transparent" hTextAlign="Left" vTextAlign="Middle" fontName="Times New Roman" fontSize="11">
+		<pen lineColor="#E1E1E1"/>
+		<box>
+			<topPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<leftPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<bottomPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<rightPen lineWidth="0.5" lineColor="#E1E1E1"/>
+		</box>
+	</style>
+	<style name="number" hTextAlign="Right" vTextAlign="Middle" fontName="Times New Roman" fontSize="11">
+		<pen lineColor="#E1E1E1"/>
+		<box>
+			<topPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<leftPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<bottomPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<rightPen lineWidth="0.5" lineColor="#E1E1E1"/>
+		</box>
+	</style>
+	<style name="stt" hTextAlign="Center" vTextAlign="Middle" fontName="Times New Roman" fontSize="11">
+		<pen lineColor="#E1E1E1"/>
+		<box>
+			<topPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<leftPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<bottomPen lineWidth="0.5" lineColor="#E1E1E1"/>
+			<rightPen lineWidth="0.5" lineColor="#E1E1E1"/>
+		</box>
+	</style>
+	<style name="date" style="number" hTextAlign="Center" vTextAlign="Middle"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="employeeCode" class="java.lang.String"/>
+	<field name="employeeName" class="java.lang.String"/>
+	<field name="positionName" class="java.lang.String"/>
+	<field name="departmentName" class="java.lang.String"/>
+	<field name="leaveCategory" class="java.lang.String"/>
+	<field name="startDay" class="java.util.Date"/>
+	<field name="endDay" class="java.util.Date"/>
+	<field name="totalTime" class="java.lang.Long"/>
+	<field name="description" class="java.lang.String"/>
+	<field name="reviewerCode" class="java.lang.String"/>
+	<field name="reviewerName" class="java.lang.String"/>
+	<field name="statusName" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="50" splitType="Stretch">
+			<staticText>
+				<reportElement style="Title" x="-20" y="0" width="1979" height="50" uuid="ff69098b-9e1d-4457-bb29-470a1f3f714e"/>
+				<text><![CDATA[Danh sách nghỉ phép]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
+			<staticText>
+				<reportElement style="header" x="-20" y="0" width="50" height="30" uuid="1af577d2-ba7d-47de-8d03-7f2ab0497116"/>
+				<text><![CDATA[STT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="30" y="0" width="137" height="30" uuid="3f445ca9-4d15-49a0-aef7-bad6a3b69279"/>
+				<text><![CDATA[Mã CBNV]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="167" y="0" width="163" height="30" uuid="ac054f21-7fed-49ad-80da-7007519564f7"/>
+				<text><![CDATA[Họ và Tên]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="330" y="0" width="163" height="30" uuid="8db04586-28dd-423d-8ff8-f25c19a92008"/>
+				<text><![CDATA[Chức vụ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="493" y="0" width="163" height="30" uuid="1ceefb86-62b7-4fe9-94ce-37c794fae733"/>
+				<text><![CDATA[Phòng ban]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="656" y="0" width="163" height="30" uuid="ef80e326-350a-4d40-9c9f-c6af703b9c4a"/>
+				<text><![CDATA[Loại nghỉ phép]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="819" y="0" width="163" height="30" uuid="9aabf065-7a75-4c29-a477-ea021eb18f73"/>
+				<text><![CDATA[Ngày bắt đầu]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="982" y="0" width="163" height="30" uuid="e26f0eda-77d4-4724-b355-ad797b33a78d"/>
+				<text><![CDATA[Ngày kết thúc]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="1145" y="0" width="163" height="30" uuid="d7886892-519c-4c2b-b643-c79925c6db78"/>
+				<text><![CDATA[Tổng ngày nghỉ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="1308" y="0" width="163" height="30" uuid="626730da-9697-424a-88cc-88b0a139b25a"/>
+				<text><![CDATA[Nội dung nghỉ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="1471" y="0" width="163" height="30" uuid="7396c0e3-f62c-4ed3-bd8a-9fcc8d165cbb"/>
+				<text><![CDATA[Mã người duyệt đơn]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="1634" y="0" width="163" height="30" uuid="bf5104f5-98cd-42b4-8b7a-4d795c8674cb"/>
+				<text><![CDATA[Tên người duyệt đơn]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="header" x="1797" y="0" width="163" height="30" uuid="17341afc-450a-41b0-b131-3bd13880d198"/>
+				<text><![CDATA[Trạng thái]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement key="" style="stt" x="-20" y="0" width="50" height="30" uuid="ce9cb385-f681-4e2b-a107-3e78225a5bd0"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="30" y="0" width="137" height="30" uuid="84835141-7308-49b4-938c-b890afbf34f4"/>
+				<textFieldExpression><![CDATA[$F{employeeCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="167" y="0" width="163" height="30" uuid="33d34e23-0c0d-452e-b461-d0c80d19ddde"/>
+				<textFieldExpression><![CDATA[$F{employeeName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="330" y="0" width="163" height="30" uuid="8710bd02-d2c1-489d-a2dc-0bbcf42c5700"/>
+				<textFieldExpression><![CDATA[$F{positionName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="493" y="0" width="163" height="30" uuid="ef779d02-a53f-4979-baaa-aceb8b5545c1"/>
+				<textFieldExpression><![CDATA[$F{departmentName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="656" y="0" width="163" height="30" uuid="1ebee2b0-7a24-4b14-9b85-234a344eb226"/>
+				<textFieldExpression><![CDATA[$F{leaveCategory}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="date" x="819" y="0" width="163" height="30" uuid="f939b655-659e-46f9-8849-dd7ba5a07df5"/>
+				<textFieldExpression><![CDATA[$F{startDay}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="date" x="982" y="0" width="163" height="30" uuid="dc480c96-11d4-4346-9d54-4bdb35bf6c1c"/>
+				<textFieldExpression><![CDATA[$F{endDay}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="1145" y="0" width="163" height="30" uuid="81fb373d-8722-4830-be06-c5d2fde810ab"/>
+				<textFieldExpression><![CDATA[$F{totalTime}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="1308" y="0" width="163" height="30" uuid="9dd2f765-a167-477f-a726-9c1740115090"/>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="1471" y="0" width="163" height="30" uuid="e9f7723f-e26b-4d54-969b-bdbd40c518e6"/>
+				<textFieldExpression><![CDATA[$F{reviewerCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="1634" y="0" width="163" height="30" uuid="b0e95fae-de85-43dd-a778-b4ff930260df"/>
+				<textFieldExpression><![CDATA[$F{reviewerName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="text" x="1797" y="0" width="163" height="30" uuid="5ed2e676-4c2a-42bd-bda6-5d58d7a95a14"/>
+				<textFieldExpression><![CDATA[$F{statusName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

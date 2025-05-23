@@ -16,6 +16,11 @@ import java.util.Set;
 @Entity
 @Table(name = "ALLOWANCE") //Lương phụ cấp
 public class Allowance extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
+
     @Column(name = "ALLOWANCE_CODE")
     private String allowanceCode;
 
@@ -33,4 +38,7 @@ public class Allowance extends BaseEntity {
 
     @ManyToMany(mappedBy = "allowances", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Employee> employees;
+
+    @Column(name = "STATUS")
+    private Integer status ;
 }

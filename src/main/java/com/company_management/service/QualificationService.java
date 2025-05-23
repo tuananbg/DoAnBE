@@ -8,15 +8,11 @@ import com.company_management.dto.response.pa.ResponseQualificationDTO;
 import com.company_management.dto.response.pa.ResponseQualificationEmployeeDetailDTO;
 
 public interface QualificationService {
-//    Page<QualificationDTO> search(Long userDetailId, Pageable pageable);
-
     ResponseQualificationDTO detail(Long id);
 
     void update(QualificationDTO qualificationDTO);
 
     void create(RequestQualificationDTO request);
-
-    void deleteByIds(Long id);
 
     ResponsePage<ResponseQualificationEmployeeDetailDTO> getDetailEmployees(String employeeCode,RequestPage page);
 }

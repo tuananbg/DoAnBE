@@ -1,19 +1,16 @@
 package com.company_management.service.common.impl;
 
 import com.company_management.common.AppConstants;
+import com.company_management.common.AuthConstants;
 import com.company_management.common.enums.*;
-import com.company_management.dto.report.ReportAttendanceWork;
-import com.company_management.dto.report.ReportDepartmentDTO;
-import com.company_management.dto.report.ReportEmployeeContractDTO;
-import com.company_management.dto.report.ReportEmployeeDTO;
+import com.company_management.controller.auth.BaseController;
+import com.company_management.dto.report.*;
 import com.company_management.entity.*;
 import com.company_management.exception.AppException;
 import com.company_management.repository.*;
 import com.company_management.service.common.JasperReportService;
 import com.company_management.utils.CommonUtils;
 import com.company_management.utils.mapper.MapperUtils;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
@@ -32,7 +29,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -45,18 +41,28 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class JasperReportServiceImpl implements JasperReportService {
+public class JasperReportServiceImpl extends BaseController implements JasperReportService {
 
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
     private final PositionRepository positionRepository;
     private final EmployeeContractsRepository employeeContractsRepository;
     private final AttendanceRepository attendanceRepository;
+    private final TaskRepository taskRepository;
+    private final AttendanceLeaveRepository attendanceLeaveRepository;
+    private final AttendanceOTRepository attendanceOTRepository;
 
     @Override
-    public byte[] employeeFullInformation() {
+    public byte[] employeeFullInformation(EmploymentStatus status) {
         String path = "reports/EmployeeStatus.jrxml";
-        List<Employee> employees = employeeRepository.findAll();
+        String userCode = getCurrentUserCode();
+        List<Employee> employees;
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
+            employees = employeeRepository.findAllByStatus(status.getCode());
+        } else {
+            Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản của bạn không còn tồn tại trong hệ thống!"));
+            employees = employeeRepository.findAllByStatusAndDepartmentCode(status.getCode(), employee.getDepartmentCode());
+        }
         List<ReportEmployeeDTO> data = new ArrayList<>();
         for (Employee employee : employees) {
             ReportEmployeeDTO item = new ReportEmployeeDTO();
@@ -64,6 +70,16 @@ public class JasperReportServiceImpl implements JasperReportService {
             MapperUtils.map(employee, item);
             item.setEmployeeCode(employee.getCode());
             item.setEmployeeName(employee.getFullName());
+            Position position = employee.getPosition();
+            if (position != null) {
+                item.setPositionCode(position.getPositionCode());
+                item.setPositionName(position.getPositionName());
+                Department department = position.getDepartment();
+                if (department != null) {
+                    item.setDepartmentCode(department.getDepartmentCode());
+                    item.setDepartmentName(department.getDepartmentName());
+                }
+            }
 
             if (employeeInfo != null) {
                 MapperUtils.map(employee.getEmployeeInfo(), item);
@@ -71,15 +87,12 @@ public class JasperReportServiceImpl implements JasperReportService {
                 item.setDateOfBirth(employee.getEmployeeInfo().getDateOfBirth());
                 item.setYearOld(calculateAge(employee.getEmployeeInfo().getDateOfBirth()) + " tuổi");
             }
-            EmploymentStatus status = EmploymentStatus.findByCodeStatus(employee.getStatus());
-            if (status != null) {
-                item.setStatusName(status.getDescription());
-            }
+            item.setStatusName(status.getDescription());
 
             data.add(item);
         }
         try {
-            return exportReport(ReportType.XLSX, path, data, null);
+            return exportReport(path, data, null);
         } catch (Exception e) {
             throw new RuntimeException(AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01, e);
         }
@@ -87,8 +100,17 @@ public class JasperReportServiceImpl implements JasperReportService {
 
     @Override
     public byte[] contractStatus(ContractStatusEnum status) {
-        List<EmployeeContracts> employeeContractsList = employeeContractsRepository.findAllByStatus(status.getValue());
         String path = "reports/EmployeeContractStatus.jrxml";
+        String userCode = getCurrentUserCode();
+        List<EmployeeContracts> employeeContractsList;
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
+          employeeContractsList = employeeContractsRepository.findAllByStatus(status.getValue());
+        }
+        else {
+            Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản của bạn không còn tồn tại trong hệ thống!"));
+            employeeContractsList = employeeContractsRepository.findAllByStatusAndDepartmentCode(status.getValue(), employee.getDepartmentCode());
+        }
+
         List<ReportEmployeeContractDTO> data = new ArrayList<>();
         for (EmployeeContracts employeeContracts : employeeContractsList) {
             Employee employee = employeeContracts.getEmployee();
@@ -105,35 +127,172 @@ public class JasperReportServiceImpl implements JasperReportService {
             data.add(dto);
         }
         try {
-            return exportReport(ReportType.XLSX, path, data, null);
+            return exportReport(path, data, null);
         } catch (Exception e) {
             throw new AppException(AppConstants.DOWNLOAD_DATA_NULL_CODE_EX01, AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01);
         }
     }
 
     @Override
-    public byte[] department(ObjectStatus status) {
-        List<Department> departments = departmentRepository.findAllByStatus(status.getCode());
-        String path = "reports/Department.jrxml";
-        List<ReportDepartmentDTO> data = new ArrayList<>();
-        for (Department department : departments) {
-            ReportDepartmentDTO dto = new ReportDepartmentDTO();
-            MapperUtils.map(department, dto);
+    public byte[] positionStatus(ObjectStatus status) {
+        String path = "reports/PositionStatusReport.jrxml";
+        String userCode = getCurrentUserCode();
+        List<ReportPositionStatusDTO> data = new ArrayList<>();
+        List<Position> positions;
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
+            positions = positionRepository.findByStatus(status.getCode());
+        }else {
+            Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản của bạn không còn tồn tại trong hệ thống!"));
+            positions = positionRepository.findByDepartmentCodeAndStatus(employee.getDepartmentCode(), status.getCode());
+        }
+        for (Position position : positions) {
+            ReportPositionStatusDTO dto = new ReportPositionStatusDTO();
+            MapperUtils.map(position, dto);
+            Department department = position.getDepartment();
+            if (department != null) {
+                dto.setDepartmentCode(department.getDepartmentCode());
+                dto.setDepartmentName(department.getDepartmentName());
+            }
+            dto.setStatus(status.getDescription());
             data.add(dto);
         }
         try {
-            return exportReport(ReportType.XLSX, path, data, null);
+            return exportReport(path, data, null);
         } catch (Exception e) {
-            throw new RuntimeException(AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01, e);
+            throw new AppException(AppConstants.DOWNLOAD_DATA_NULL_CODE_EX01, AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01);
         }
-
     }
 
+    @Override
+    public byte[] attendanceLeave(AttendanceLeaveStatus status) {
+        String path = "reports/AttendanceLeaveReport.jrxml";
+        String userCode = getCurrentUserCode();
+        List<ReportAttendanceLeaveDTO> data = new ArrayList<>();
+        List<AttendanceLeave> attendanceLeaves;
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
+            attendanceLeaves = attendanceLeaveRepository.findAllByStatus(status.getCode());
+        }
+        else {
+            Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản của bạn không còn tồn tại trong hệ thống!"));
+            attendanceLeaves = attendanceLeaveRepository.findAllByDepartmentCode(employee.getDepartmentCode(), status.getCode());
+        }
+        for (AttendanceLeave attendanceLeave : attendanceLeaves) {
+            ReportAttendanceLeaveDTO dto = new ReportAttendanceLeaveDTO();
+            MapperUtils.map(attendanceLeave, dto);
+            Employee employee = attendanceLeave.getEmployee();
+            if (employee != null) {
+                dto.setEmployeeCode(employee.getCode());
+                dto.setEmployeeName(employee.getFullName());
+                Position position = employee.getPosition();
+                if (position != null) {
+                    dto.setPositionName(position.getPositionName());
+                    Department department = position.getDepartment();
+                    if (department != null) {
+                        dto.setDepartmentName(department.getDepartmentName());
+                    }
+                }
+            }
+            Employee reviewer = attendanceLeave.getReviewer();
+            if (reviewer != null) {
+                dto.setReviewerName(reviewer.getFullName());
+                dto.setReviewerCode(reviewer.getCode());
+            }
+            data.add(dto);
+        }
+        try {
+            return exportReport(path, data, null);
+        } catch (Exception e) {
+            throw new AppException(AppConstants.DOWNLOAD_DATA_NULL_CODE_EX01, AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01);
+        }
+    }
+
+    @Override
+    public byte[] attendanceOt(AttendanceLeaveStatus status) {
+        String path = "reports/AttendanceOTReport.jrxml";
+        String userCode = getCurrentUserCode();
+        List<ReportAttendanceOTDTO> data = new ArrayList<>();
+        List<AttendanceOt> attendanceOts;
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
+            attendanceOts = attendanceOTRepository.findAllByStatus(status.getCode());
+        }
+        else {
+            Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản của bạn không còn tồn tại trong hệ thống!"));
+            attendanceOts = attendanceOTRepository.findAllByDepartmentCode(employee.getDepartmentCode(), status.getCode());
+        }
+        for (AttendanceOt attendanceOt : attendanceOts) {
+            ReportAttendanceOTDTO dto = new ReportAttendanceOTDTO();
+            MapperUtils.map(attendanceOt, dto);
+            Employee employee = attendanceOt.getEmployee();
+            if (employee != null) {
+                dto.setEmployeeCode(employee.getCode());
+                dto.setEmployeeName(employee.getFullName());
+                Position position = employee.getPosition();
+                if (position != null) {
+                    dto.setPositionName(position.getPositionName());
+                    Department department = position.getDepartment();
+                    if (department != null) {
+                        dto.setDepartmentName(department.getDepartmentName());
+
+                    }
+                }
+            }
+            Employee employeeFollow = attendanceOt.getEmployeeFollow();
+            if (employeeFollow != null) {
+                dto.setFollowCode(employeeFollow.getCode());
+                dto.setFollowName(employeeFollow.getFullName());
+            }
+            dto.setStatus(status.getDescription());
+            data.add(dto);
+        }
+        try {
+            return exportReport(path, data, null);
+        } catch (Exception e) {
+            throw new AppException(AppConstants.DOWNLOAD_DATA_NULL_CODE_EX01, AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01);
+        }
+    }
+
+    @Override
+    public byte[] taskStatus(TaskStatusEnum status) {
+        String path = "reports/TaskReport.jrxml";
+        String userCode = getCurrentUserCode();
+        List<ReportTaskStatusDTO> data = new ArrayList<>();
+        List<Task> tasks;
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
+            tasks = taskRepository.findAllByStatus(status.getCode());
+        }
+        else {
+            tasks = taskRepository.findAllByManagerCodeAndStatus(userCode, status.getCode());
+        }
+        for (Task task : tasks) {
+            ReportTaskStatusDTO dto = new ReportTaskStatusDTO();
+            MapperUtils.map(task, dto);
+            Employee employee = task.getEmployee();
+            if (employee != null) {
+                dto.setEmployeeCode(employee.getCode());
+                dto.setEmployeeName(employee.getFullName());
+                Position position = employee.getPosition();
+                if (position != null) {
+                    dto.setPositionName(position.getPositionName());
+                    Department department = position.getDepartment();
+                    if (department != null) {
+                        dto.setDepartmentName(department.getDepartmentName());
+                    }
+                }
+            }
+        }
+        try {
+            return exportReport(path, data, null);
+        } catch (Exception e) {
+            throw new AppException(AppConstants.DOWNLOAD_DATA_NULL_CODE_EX01, AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01);
+        }
+    }
+
+
     public byte[] timeSheetEmployeeExcessReportData(String monthCode) {
-        String path ="reports/AttendanceMonthSummary.jrxml";
+        String path = "reports/AttendanceMonthSummary.jrxml";
         int year = Integer.parseInt(monthCode.substring(0, 4));
         int month = Integer.parseInt(monthCode.substring(4, 6));
-
+        String titleName = "Bảng chấm công tháng " + month + " năm " + year;
         List<Attendance> attendances = attendanceRepository.findByMonth(month, year);
 
         Map<Employee, List<Attendance>> grouped = attendances.stream()
@@ -151,9 +310,17 @@ public class JasperReportServiceImpl implements JasperReportService {
                     ));
 
             ReportAttendanceWork dto = new ReportAttendanceWork();
+            dto.setTitleName(titleName);
             dto.setEmployeeCode(emp.getCode());
             dto.setEmployeeName(emp.getFullName());
-
+            Position position = emp.getPosition();
+            if (position != null) {
+                dto.setPositionName(position.getPositionName());
+                Department department = position.getDepartment();
+                if (department != null) {
+                    dto.setDepartmentName(department.getDepartmentName());
+                }
+            }
             double total = 0;
             for (int i = 1; i <= 31; i++) {
                 Double val = dayToPoint.get(i);
@@ -178,7 +345,7 @@ public class JasperReportServiceImpl implements JasperReportService {
         }
 
         try {
-            return exportReport(ReportType.XLSX, path, data, null);
+            return exportReport(path, data, null);
         } catch (Exception e) {
             throw new RuntimeException(AppConstants.DOWNLOAD_DATA_NULL_MESS_EX01, e);
         }
@@ -197,7 +364,7 @@ public class JasperReportServiceImpl implements JasperReportService {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
     }
 
-    private byte[] exportReport(ReportType type, String path, Object dataExport, String reportTitle)
+    private byte[] exportReport(String path, Object dataExport, String reportTitle)
             throws JRException, IOException {
         JRBeanCollectionDataSource dataSource = createDataSource(dataExport);
         JasperReport jasperReport
@@ -208,7 +375,7 @@ public class JasperReportServiceImpl implements JasperReportService {
         }
         JasperPrint jasperPrint
                 = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-        return exportReportByType(type, jasperPrint);
+        return exportReportByType(jasperPrint);
     }
 
     private JRBeanCollectionDataSource createDataSource(Object dataExport) {
@@ -223,16 +390,8 @@ public class JasperReportServiceImpl implements JasperReportService {
         }
     }
 
-    private byte[] exportReportByType(ReportType type, JasperPrint jasperPrint)
-            throws JRException, IOException {
-        switch (type) {
-            case PDF:
-                return JasperExportManager.exportReportToPdf(jasperPrint);
-            case XLSX:
-                return exportToXlsx(jasperPrint);
-            default:
-                throw new IllegalArgumentException("Unsupported report type: " + type);
-        }
+    private byte[] exportReportByType(JasperPrint jasperPrint) throws JRException, IOException {
+        return exportToXlsx(jasperPrint);
     }
 
     private byte[] exportToXlsx(JasperPrint jasperPrint) throws JRException, IOException {

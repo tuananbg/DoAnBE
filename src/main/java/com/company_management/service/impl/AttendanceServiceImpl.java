@@ -1,5 +1,6 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.AuthConstants;
 import com.company_management.common.Constants;
 import com.company_management.common.enums.AttendanceStatusEnum;
 import com.company_management.controller.auth.BaseController;
@@ -46,7 +47,7 @@ public class AttendanceServiceImpl extends BaseController implements AttendanceS
     public ResponsePage<ResponseAttendanceDTO> getList(RequestPage page, SearchAttendanceRequest search) {
         String userCode = getCurrentUserCode();
         Page<Attendance> responsePage;
-        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
             responsePage = attendanceRepository.findAllAttendanceByWorkingDay(search.getWorkingDay(), page.toPageable());
         } else {
             Employee employee = employeeService.getEmployee(userCode);
@@ -115,7 +116,7 @@ public class AttendanceServiceImpl extends BaseController implements AttendanceS
     public ResponseAttendanceStatusDTO getAttendanceId(String employeeCode) {
         ResponseAttendanceStatusDTO dto = new ResponseAttendanceStatusDTO();
         String userCode = getCurrentUserCode();
-        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
             Attendance attendance = attendanceRepository.findTodayAttendanceByEmployeeCode(employeeCode).orElse(null);
             if (attendance != null) {
                 dto.setId(attendance.getId());

@@ -67,13 +67,13 @@ public class QualificationServiceImpl implements QualificationService {
         qualificationRepository.save(qualification);
     }
 
-    @Override
-    @Transactional
-    public void deleteByIds(Long id) {
-        if (qualificationRepository.updateById(id, CommonUtils.getUserLoginName()) <= 0) {
-            throw new AppException("ERR01", "Bằng cấp này không tồn tại hoặc đã bị xóa");
-        }
-    }
+//    @Override
+//    @Transactional
+//    public void deleteByIds(Long id) {
+//        if (qualificationRepository.updateById(id, CommonUtils.getUserLoginName()) <= 0) {
+//            throw new AppException("ERR01", "Bằng cấp này không tồn tại hoặc đã bị xóa");
+//        }
+//    }
 
     @Override
     public ResponsePage<ResponseQualificationEmployeeDetailDTO> getDetailEmployees(String employeeCode, RequestPage page) {

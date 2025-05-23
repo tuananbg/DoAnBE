@@ -16,6 +16,10 @@ import java.util.Date;
 @Entity
 @Table(name = "EMPLOYEE_CONTRACTS")  //Hợp đồng
 public class EmployeeContracts extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Employee employee;
@@ -65,5 +69,6 @@ public class EmployeeContracts extends BaseEntity {
     @Column(name = "ATTACH_FILE")
     private String attachFile; // Lưu đường dẫn file hoặc tên file
 
-
+    @Column(name = "STATUS")
+    private Integer status ;
 }

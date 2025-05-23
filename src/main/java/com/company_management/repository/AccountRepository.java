@@ -26,7 +26,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Boolean existsByOtp(String otp);
 
-
     @Query(value = "SELECT acc FROM account acc JOIN Employee e on acc.employee.id = e.id"
             + " WHERE ((:keyword IS NULL OR UPPER(e.code) LIKE CONCAT('%', UPPER(:keyword), '%') ESCAPE '\\' ) "
             + " OR (:keyword IS NULL OR UPPER(e.fullName) LIKE CONCAT('%', UPPER(:keyword), '%') ESCAPE '\\' ) "

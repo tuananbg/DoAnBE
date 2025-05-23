@@ -16,6 +16,10 @@ import java.util.Date;
 @Entity
 @Table(name = "TASK")  // bang cong viec
 public class Task extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
 
     @Column(name = "TASK_NAME")
     private String taskName;  // ten cong viec
@@ -48,4 +52,6 @@ public class Task extends BaseEntity {
     @Column(name = "PRIORITY")
     private int priority;  //do uu tien
 
+    @Column(name = "STATUS")
+    private Integer status ;
 }

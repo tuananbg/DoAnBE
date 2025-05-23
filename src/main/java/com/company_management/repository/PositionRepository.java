@@ -47,4 +47,8 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
                                                                    @Param("positionCategoryCode") String positionCategoryCode,
                                                                    @Param("status") Integer status);
 
+    @Query(value = "SELECT p FROM Position p JOIN Department d ON p.department.id = d.id WHERE d.departmentCode = :departmentCode AND p.status = :status")
+    List<Position> findByDepartmentCodeAndStatus(@Param("departmentCode") String departmentCode, @Param("status") Integer status);
+
+
 }

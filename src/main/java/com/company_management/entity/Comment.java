@@ -13,6 +13,11 @@ import lombok.Setter;
 @Entity
 @Table(name = "COMMENT") // bình luận
 public class Comment extends BaseEntity{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
+
     @Column(name = "CONTENT", columnDefinition = "TEXT", nullable = false)
     private String content;
 
@@ -30,4 +35,6 @@ public class Comment extends BaseEntity{
     @Column(name = "TASK_CODE")
     private String taskCode;
 
+    @Column(name = "STATUS")
+    private Integer status ;
 }

@@ -32,30 +32,28 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
                                                      Pageable page);
 
     @Query("""
-    SELECT a FROM Attendance a
-    WHERE a.totalPenalty > 0
-      AND a.employee.code = :employeeCode
-      AND FUNCTION('MONTH', a.workingDay) = :month
-      AND FUNCTION('YEAR', a.workingDay) = :year
-""")
+                SELECT a FROM Attendance a
+                WHERE a.totalPenalty > 0
+                  AND a.employee.code = :employeeCode
+                  AND FUNCTION('MONTH', a.workingDay) = :month
+                  AND FUNCTION('YEAR', a.workingDay) = :year
+            """)
     List<Attendance> findPenaltyInCurrentMonth(@Param("employeeCode") String employeeCode,
                                                @Param("month") int month,
                                                @Param("year") int year);
-@Query("""
-    SELECT COUNT(a) FROM Attendance a
-    WHERE a.totalPenalty > 0
-      AND a.employee.code = :employeeCode
-      AND FUNCTION('MONTH', a.workingDay) = :month
-      AND FUNCTION('YEAR', a.workingDay) = :year
-""")
-   Long countAttendanceByEmployeeCode(@Param("employeeCode") String employeeCode,
-                                               @Param("month") int month,
-                                               @Param("year") int year);
+
+    @Query("""
+                SELECT COUNT(a) FROM Attendance a
+                WHERE a.totalPenalty > 0
+                  AND a.employee.code = :employeeCode
+                  AND FUNCTION('MONTH', a.workingDay) = :month
+                  AND FUNCTION('YEAR', a.workingDay) = :year
+            """)
+    Long countAttendanceByEmployeeCode(@Param("employeeCode") String employeeCode,
+                                       @Param("month") int month,
+                                       @Param("year") int year);
 
     @Query("SELECT a FROM Attendance a WHERE MONTH(a.workingDay) = :month AND YEAR(a.workingDay) = :year")
     List<Attendance> findByMonth(@Param("month") Integer month, @Param("year") Integer year);
-
-
-
 
 }

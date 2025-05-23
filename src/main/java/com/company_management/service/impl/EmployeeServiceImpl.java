@@ -1,6 +1,7 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.AppConstants;
+import com.company_management.common.AuthConstants;
 import com.company_management.common.Constants;
 import com.company_management.common.enums.*;
 import com.company_management.controller.auth.BaseController;
@@ -55,7 +56,7 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
         String userCode = getCurrentUserCode();
         keyword = CommonUtils.escapeLike(keyword);
         Page<Employee> employees;
-        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
             employees = employeeRepository.findAllByKeywordAndStatus(keyword, status.getCode(), page.toPageable());
         } else {
             Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản không còn tồn tại trong hệ thống!"));
@@ -269,7 +270,7 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
     public List<ResponseEmployeeSelectDTO> selectEmployee() {
         String userCode = getCurrentUserCode();
         List<Employee> employees;
-        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
             employees  = employeeRepository.findAllByStatus(EmploymentStatus.EMPLOYMENT.getCode());
         }
         else {
@@ -285,7 +286,7 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
         String userCode = getCurrentUserCode();
         List<Integer> status = Arrays.asList(EmploymentStatus.EMPLOYMENT.getCode(),EmploymentStatus.WAITING_FOR_SIGNING.getCode());
         List<Employee> employees;
-        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
             employees  = employeeRepository.findAllByStatusIn(status);
         }
         else {
@@ -301,7 +302,7 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
         List<ResponseEmployeeSelectDTO> response = new ArrayList<>();
         Employee empDepart = employeeRepository.findByCode(userCode).orElse(null);
         if (empDepart != null) {
-            List<Employee> employees = employeeRepository.findAllByStatusAndDepartmentCode(empDepart.getDepartmentCode(), EmploymentStatus.EMPLOYMENT.getCode());
+            List<Employee> employees = employeeRepository.findAllByStatusAndDepartmentCode( EmploymentStatus.EMPLOYMENT.getCode(),empDepart.getDepartmentCode());
             for (Employee employee : employees) {
                 ResponseEmployeeSelectDTO dto = new ResponseEmployeeSelectDTO();
                 dto.setEmployeeCode(employee.getCode());

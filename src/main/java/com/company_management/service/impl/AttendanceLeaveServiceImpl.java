@@ -1,5 +1,6 @@
 package com.company_management.service.impl;
 
+import com.company_management.common.AuthConstants;
 import com.company_management.common.Constants;
 import com.company_management.common.enums.EmailTemplate;
 import com.company_management.common.enums.ObjectStatus;
@@ -51,7 +52,7 @@ public class AttendanceLeaveServiceImpl extends BaseController implements Attend
         String userCode = getCurrentUserCode();
         keyword = CommonUtils.escapeLike(keyword);
         Page<AttendanceLeave> attendanceLeaveDTOPage;
-        if (Constants.ADMIN.equalsIgnoreCase(userCode)) {
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
             attendanceLeaveDTOPage = attendanceLeaveRepository.findAllByKeyword(status.getCode(), keyword, page.toPageable());
         }
         else {
@@ -65,8 +66,8 @@ public class AttendanceLeaveServiceImpl extends BaseController implements Attend
                 dto.setEmployeeName(item.getEmployee().getFullName());
                 dto.setEmployeeCode(item.getEmployee().getCode());
             } else {
-                dto.setEmployeeName(Constants.ADMIN_NAME);
-                dto.setEmployeeCode(Constants.ADMIN);
+                dto.setEmployeeName(AuthConstants.ADMIN_NAME);
+                dto.setEmployeeCode(AuthConstants.ADMIN);
             }
             if (item.getReviewer() != null) {
                 dto.setReviewerName(item.getReviewer().getFullName());
@@ -86,7 +87,7 @@ public class AttendanceLeaveServiceImpl extends BaseController implements Attend
         log.debug("// Them moi đơn nghỉ phép");
         String userCode = getCurrentUserCode();
         MapperUtils.map(request, attendanceLeave);
-        if (!Constants.ADMIN.equalsIgnoreCase(userCode)) {
+        if (!AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
             Employee employee = employeeService.getEmployee(userCode);
             Position position = positionRepository.
                     findByDepartmentCodeAndPositionCategoryCode(employee.getDepartmentCode(), PositionCategoryEnum.DEPARTMENT_HEAD.getCode(), ObjectStatus.ACTIVE.getCode()).orElse(null);

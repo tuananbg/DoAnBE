@@ -1,11 +1,12 @@
 package com.company_management.entity;
 
 
-import com.company_management.common.Constants;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -14,72 +15,31 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 
-@Setter
 @Getter
+@Setter
+@SuperBuilder
+@NoArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
 
-//    @CreatedBy
+    @CreatedBy
     @Column(name = "CREATED_BY", updatable = false)
     private String createdBy;
 
-//    @CreatedDate
+    @CreatedDate
     @Column(name = "CREATED_DATE", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Date createdDate;
 
-//    @LastModifiedBy
+    @LastModifiedBy
     @Column(name = "MODIFIED_BY")
-    private String updatedBy;
+    private String modifiedBy;
 
-//    @LastModifiedDate
+    @LastModifiedDate
     @Column(name = "MODIFIED_DATE")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-    private Date updatedDate;
-
-    @Column(name = "STATUS")
-    private Integer status ;
-
-    @Override
-    public String toString() {
-        return "[id:" + this.getId() + "]";
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (obj == this) return true;
-        if (obj instanceof BaseEntity) {
-            if (this.getId() != null) {
-                return this.getId().equals(((BaseEntity) obj).getId());
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, createdDate, createdBy, updatedDate, updatedBy, status);
-    }
-
-    @PrePersist
-    protected void prePersist() {
-        if (this.createdBy == null) {
-            this.createdBy = Constants.ADMIN;
-        }
-        if (this.createdDate == null) {
-            this.createdDate = new Date();
-        }
-        if (this.status == null) {
-            this.status = 1; // Giả sử 1 là active
-        }
-    }
+    private Date modifiedDate;
 
 }

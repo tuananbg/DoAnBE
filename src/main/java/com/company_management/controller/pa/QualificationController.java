@@ -46,11 +46,11 @@ public class QualificationController {
         return ResultResp.success(null);
     }
 
-    @DeleteMapping("/{id}")
-    public ResultResp<Object> delete(@PathVariable Long id) {
-        qualificationService.deleteByIds(id);
-        return ResultResp.success(null);
-    }
+//    @DeleteMapping("/{id}")
+//    public ResultResp<Object> delete(@PathVariable Long id) {
+//        qualificationService.deleteByIds(id);
+//        return ResultResp.success(null);
+//    }
 
     @GetMapping(value = "/employee-detail/{employeeCode}")
     public BaseResponse<ResponsePage<ResponseQualificationEmployeeDetailDTO>> getDetail(@PathVariable("employeeCode") String employeeCode, RequestPage page) {

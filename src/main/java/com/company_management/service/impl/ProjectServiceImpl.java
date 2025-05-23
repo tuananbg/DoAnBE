@@ -1,6 +1,7 @@
 package com.company_management.service.impl;
 
 import com.company_management.common.AppConstants;
+import com.company_management.common.AuthConstants;
 import com.company_management.common.Constants;
 import com.company_management.common.enums.ProjectStatus;
 import com.company_management.common.enums.TaskStatusEnum;
@@ -46,7 +47,7 @@ public class ProjectServiceImpl extends BaseController implements ProjectService
     public List<ResponseListProjectDTO> getList() {
         String userCode = getCurrentUserCode();
         List<Project> projectPage;
-        if (Constants.ADMIN.equals(userCode)) {
+        if (AuthConstants.ADMIN.equals(userCode)) {
             projectPage = projectRepository.findAll();
         }
         else {

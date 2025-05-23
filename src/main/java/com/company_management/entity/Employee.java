@@ -16,6 +16,10 @@ import java.util.Set;
 @Entity
 @Table(name = "EMPLOYEE") // Bảng CBNV
 public class Employee extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
 
     @Column(name = "CODE")
     private String code;
@@ -54,4 +58,7 @@ public class Employee extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "ALLOWANCE_ID")
     )
     private Set<Allowance> allowances;
+
+    @Column(name = "STATUS")
+    private Integer status ;
 }

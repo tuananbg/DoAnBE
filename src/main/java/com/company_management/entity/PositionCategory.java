@@ -15,6 +15,10 @@ import java.util.List;
 @Entity(name = "POSITION_CATEGORY") // Loại chức danh
 @EntityListeners(AuditingEntityListener.class)
 public class PositionCategory extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
 
     @Column(name = "CODE")
     private String code; // Mã loại chức danh
@@ -28,4 +32,6 @@ public class PositionCategory extends BaseEntity {
     @OneToMany(mappedBy = "positionCategory", fetch = FetchType.LAZY)
     private List<Position> positions;
 
+    @Column(name = "STATUS")
+    private Integer status ;
 }

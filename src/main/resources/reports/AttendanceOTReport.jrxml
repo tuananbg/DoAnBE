@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.0.4.final using JasperReports Library version 6.0.4  -->
-<!-- 2025-05-23T15:45:18 -->
+<!-- 2025-05-24T16:31:22 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EmployeeInfoDetail" pageWidth="2000" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="24b9deda-9e92-4278-91ed-b358184188fd">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="header" mode="Opaque" forecolor="#1C4587" backcolor="#E2F4F5" hTextAlign="Center" vTextAlign="Middle" fontName="Times New Roman" fontSize="11" isBold="true">
@@ -84,51 +84,51 @@
 			</staticText>
 			<staticText>
 				<reportElement style="header" x="30" y="0" width="137" height="30" uuid="89673784-cd4a-40df-af2d-c84974c34565"/>
-				<text><![CDATA[employeeCode]]></text>
+				<text><![CDATA[Mã CBNV]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="header" x="167" y="0" width="163" height="30" uuid="97c3b2af-21b8-4d99-a32e-61a978dfaf6b"/>
-				<text><![CDATA[employeeName]]></text>
+				<text><![CDATA[Họ và Tên]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="header" x="330" y="0" width="163" height="30" uuid="fc63e88b-36cd-4e37-b188-e62b8b910109"/>
-				<text><![CDATA[positionName]]></text>
+				<text><![CDATA[Chức vụ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="header" x="493" y="0" width="163" height="30" uuid="a5e5196c-71cf-436a-b754-82afdf254321"/>
-				<text><![CDATA[departmentName]]></text>
+				<text><![CDATA[Phòng ban]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="header" x="656" y="0" width="163" height="30" uuid="b75084bf-342c-47f5-a12d-a770b04262f2"/>
-				<text><![CDATA[startDay]]></text>
+				<text><![CDATA[Ngày tăng ca]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="header" x="819" y="0" width="163" height="30" uuid="ee638962-4fc1-4bcd-811a-72d10b27b193"/>
-				<text><![CDATA[startTime]]></text>
+				<text><![CDATA[Thời gian bắt đầu]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="header" x="982" y="0" width="163" height="30" uuid="a2b81580-0a8f-460c-b6fd-833455eefed7"/>
-				<text><![CDATA[endTime]]></text>
+				<text><![CDATA[Thời gian kết thúc]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="header" x="1145" y="0" width="163" height="30" uuid="ac9a14fa-dd57-4822-b177-9d1512ef1dc3"/>
-				<text><![CDATA[totalTime]]></text>
+				<text><![CDATA[Tổng thời gian]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="header" x="1308" y="0" width="163" height="30" uuid="d783dce2-5479-4468-bf77-ed1bca277694"/>
-				<text><![CDATA[descriptionOt]]></text>
+				<text><![CDATA[Nội dung tăng ca]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="header" x="1471" y="0" width="163" height="30" uuid="8f7bb644-09aa-46ae-9f4b-7972b5b5f0eb"/>
-				<text><![CDATA[followCode]]></text>
+				<text><![CDATA[Mã người duyệt]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="header" x="1634" y="0" width="163" height="30" uuid="eb2ccf6c-46de-4988-b2ff-8351e3f16dc8"/>
-				<text><![CDATA[followName]]></text>
+				<text><![CDATA[Tên người duyệt]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="header" x="1797" y="0" width="163" height="30" uuid="fdeae915-a701-4206-a898-457c671e51b3"/>
-				<text><![CDATA[status]]></text>
+				<text><![CDATA[Trạng thái]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -140,51 +140,51 @@
 			</textField>
 			<textField>
 				<reportElement style="text" x="30" y="0" width="137" height="30" uuid="ad8f52a7-a38b-4020-9f2c-e2c44e4e5674"/>
-				<textFieldExpression><![CDATA[$F{employeeCode}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{employeeCode} != null ? $F{employeeCode} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="167" y="0" width="163" height="30" uuid="32722c56-d68d-44e6-8bee-29c8d1bc1ef7"/>
-				<textFieldExpression><![CDATA[$F{employeeName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{employeeName} != null ? $F{employeeName} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="330" y="0" width="163" height="30" uuid="2250cb65-4555-493a-b502-c34b2a72edeb"/>
-				<textFieldExpression><![CDATA[$F{positionName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{positionName} != null ? $F{positionName} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="493" y="0" width="163" height="30" uuid="953ce463-8139-4a02-be6c-995a816940ea"/>
-				<textFieldExpression><![CDATA[$F{departmentName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{departmentName} != null ? $F{departmentName} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="date" x="656" y="0" width="163" height="30" uuid="64a40e8a-659a-407a-a94d-00098626363a"/>
-				<textFieldExpression><![CDATA[$F{startDay}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{startDay} != null ? new SimpleDateFormat("dd/MM/yyyy").format($F{startDay}) : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="date" x="819" y="0" width="163" height="30" uuid="e17e4c98-96d5-445e-8a0d-8eb580edf2b8"/>
-				<textFieldExpression><![CDATA[$F{startTime}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{startTime} != null ? new java.text.SimpleDateFormat("HH:mm").format($F{startTime}) : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="date" x="982" y="0" width="163" height="30" uuid="52a7be5f-a2db-4126-831a-6139a21543ce"/>
-				<textFieldExpression><![CDATA[$F{endTime}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{endTime} != null ? new java.text.SimpleDateFormat("HH:mm").format($F{endTime}) : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="1145" y="0" width="163" height="30" uuid="01174bee-2ba0-4a7b-b6e9-41c5f3e2760e"/>
-				<textFieldExpression><![CDATA[$F{totalTime}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{totalTime} != null ? $F{totalTime} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="1308" y="0" width="163" height="30" uuid="c2508353-f90e-485e-95ca-bccaffaed313"/>
-				<textFieldExpression><![CDATA[$F{descriptionOt}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{descriptionOt} != null ? $F{descriptionOt} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="1471" y="0" width="163" height="30" uuid="a60e140f-d735-4794-96c2-49ec9538ede6"/>
-				<textFieldExpression><![CDATA[$F{followCode}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{followCode} != null ? $F{followCode} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="1634" y="0" width="163" height="30" uuid="5e97a8cc-1849-4295-95f4-96a66ed7f14b"/>
-				<textFieldExpression><![CDATA[$F{followName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{followName} != null ? $F{followName} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="1797" y="0" width="163" height="30" uuid="f7093633-5022-49cf-b3f0-25615e1e099e"/>
-				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{status} != null ? $F{status} : ""]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

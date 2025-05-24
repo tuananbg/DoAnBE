@@ -118,8 +118,4 @@ public class AttendanceOTServiceImpl extends BaseController implements Attendanc
         attendanceOTRepository.save(attendanceOt);
     }
 
-    @Override
-    public ByteArrayInputStream exportExcel(SearchAttendanceOTRequest searchOTRequest, Pageable pageable) {
-        return null;
-    }
 }

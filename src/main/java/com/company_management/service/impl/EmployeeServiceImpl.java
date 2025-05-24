@@ -147,6 +147,9 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
         employee.setEmployeeInfo(employeeInfo);
 
         //upload file ảnh
+        if (avatarFile == null){
+            throw new AppException(AppConstants.UPLOAD_FILE_IMAGE_CODE_001, AppConstants.UPLOAD_FILE_IMAGE_MESS_001);
+        }
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(avatarFile.getOriginalFilename()));
         if (fileName.contains("..")) {
             throw new AppException(AppConstants.UPLOAD_FILE_IMAGE_CODE_001, AppConstants.UPLOAD_FILE_IMAGE_MESS_001);

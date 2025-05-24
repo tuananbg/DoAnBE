@@ -132,6 +132,7 @@ public class AllowanceServiceImpl implements AllowanceService {
                 throw new AppException("ERO02", "Lỗi xảy ra khi xử lý file");
             }
         }
+        allowance.setStatus(ObjectStatus.ACTIVE.getCode());
         allowanceRepository.save(allowance);
     }
 

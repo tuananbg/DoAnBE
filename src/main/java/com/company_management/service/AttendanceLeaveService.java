@@ -19,7 +19,6 @@ public interface AttendanceLeaveService {
 
     void update(RequestUpdateAttendanceLeaveDTO request);
 
-    ByteArrayInputStream exportExcel(SearchLeaveRequest searchLeaveRequest, Pageable pageable);
 
     void complete(RequestUpdateAttendanceLeaveDTO request);
 }

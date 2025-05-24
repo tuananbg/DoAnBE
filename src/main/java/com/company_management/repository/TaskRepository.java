@@ -87,7 +87,11 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findAllByManagerCodeAndStatus(String managerCode, Integer status);
 
+    List<Task> findAllByManagerCodeAndStatusOrderByPriorityAsc(String managerCode, Integer status);
+
 
     List<Task> findAllByStatus(Integer status);
+
+    List<Task> findAllByStatusOrderByPriorityAsc(Integer status);
 
 }

@@ -1,29 +1,24 @@
 package com.company_management.controller.quanlychamcong;
 
 import com.company_management.common.AppConstants;
-import com.company_management.common.ErrorCode;
-import com.company_management.common.ResultResp;
+import com.company_management.common.enums.AttendanceLeaveStatus;
+import com.company_management.common.enums.ReportType;
 import com.company_management.common.enums.TableTabType;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
 import com.company_management.dto.common.ResponsePage;
 import com.company_management.dto.request.attendace.RequestAttendanceOTDTO;
 import com.company_management.dto.request.attendace.RequestUpdateAttendanceOTDTO;
-import com.company_management.dto.request.pa.SearchAttendanceOTRequest;
 import com.company_management.dto.response.attendance.ResponseAttendanceOTDTO;
 import com.company_management.service.AttendanceOTService;
+import com.company_management.service.common.JasperReportService;
 import com.company_management.utils.CommonUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayInputStream;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +26,8 @@ import java.io.ByteArrayInputStream;
 public class AttendanceOTController {
 
     private final AttendanceOTService attendanceOTService;
+
+    private final JasperReportService jasperReportService;
 
     @GetMapping("/list/{status}")
     public BaseResponse<ResponsePage<ResponseAttendanceOTDTO>> getList(@RequestParam(name = "keyword", required = false) String keyword,
@@ -62,21 +59,12 @@ public class AttendanceOTController {
     }
 
 
-    @PostMapping(value = "/download")
-    public ResponseEntity<Object> exportExcel(@RequestBody SearchAttendanceOTRequest searchAttendanceOTRequest, Pageable pageable) {
-        ByteArrayInputStream result = attendanceOTService.exportExcel(searchAttendanceOTRequest, pageable);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        String fileName = CommonUtils.getFileNameReportUpdate("EXPORT_OT");
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-        return new ResponseEntity<>(new InputStreamResource(result), headers, HttpStatus.OK);
+    @GetMapping(value = "/download-xlsx/{status}")
+    public ResponseEntity<Resource> download(@PathVariable("status") AttendanceLeaveStatus status) {
+        byte[] bytes = jasperReportService.attendanceOt(status);
+        String fileName = "DTDI_HRM_Danh sach don tang ca_" + CommonUtils.getCurrentDate("ddMMyyyy") + "." + ReportType.XLSX.getCode();
+        return jasperReportService.baseDownload(bytes, fileName);
     }
-
-//    @DeleteMapping("/delete/{id}")
-//    public ResultResp<Object> deleteOT(@PathVariable("id") Long id) {
-//        attendanceOTService.deleteOT(id);
-//        return ResultResp.success(ErrorCode.DELETED_OK, null);
-//    }
 
 
 

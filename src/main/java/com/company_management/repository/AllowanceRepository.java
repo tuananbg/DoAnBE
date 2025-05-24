@@ -20,7 +20,7 @@ public interface AllowanceRepository extends JpaRepository<Allowance, Long> {
             + "UPPER(a.allowanceCode) LIKE CONCAT('%', UPPER(:keyword), '%') OR "
             + "UPPER(a.allowanceName) LIKE CONCAT('%', UPPER(:keyword), '%')) "
             + "AND a.status = :status " +
-            "ORDER BY a.modifiedDate ASC")
+            "ORDER BY a.modifiedDate DESC")
     Page<Allowance> findAllByIsActive(@Param("status") Integer active, @Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT a FROM Allowance a JOIN a.employees e WHERE e.code = :employeeCode")

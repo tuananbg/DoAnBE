@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.0.4.final using JasperReports Library version 6.0.4  -->
-<!-- 2025-05-23T15:49:06 -->
+<!-- 2025-05-24T16:29:42 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EmployeeInfoDetail" pageWidth="2000" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="24b9deda-9e92-4278-91ed-b358184188fd">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="header" mode="Opaque" forecolor="#1C4587" backcolor="#E2F4F5" hTextAlign="Center" vTextAlign="Middle" fontName="Times New Roman" fontSize="11" isBold="true">
@@ -68,7 +68,7 @@
 		<band height="50" splitType="Stretch">
 			<staticText>
 				<reportElement style="Title" x="-20" y="0" width="1980" height="50" uuid="ff69098b-9e1d-4457-bb29-470a1f3f714e"/>
-				<text><![CDATA[Danh sách hợp đồng]]></text>
+				<text><![CDATA[Danh sách chức vụ]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -125,39 +125,39 @@
 			</textField>
 			<textField>
 				<reportElement style="text" x="30" y="0" width="194" height="30" uuid="8f02ae0d-81fa-44b5-b6d2-a343814fdaea"/>
-				<textFieldExpression><![CDATA[$F{positionCode}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{positionCode} != null ? $F{positionCode} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="224" y="0" width="217" height="30" uuid="4be09985-08ba-4d23-9e8b-b7365c030265"/>
-				<textFieldExpression><![CDATA[$F{positionName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{positionName} != null ? $F{positionName} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="441" y="0" width="217" height="30" uuid="646de892-567f-4ec0-9b02-5273dced6146"/>
-				<textFieldExpression><![CDATA[$F{positionDescription}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{positionDescription} != null ? $F{positionDescription} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="658" y="0" width="217" height="30" uuid="1b9726aa-5509-41bf-b003-f9f385794685"/>
-				<textFieldExpression><![CDATA[$F{departmentCode}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{departmentCode} != null ? $F{departmentCode} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="875" y="0" width="217" height="30" uuid="c4d57be7-de8c-47d2-8be0-5eca67f5fbe3"/>
-				<textFieldExpression><![CDATA[$F{departmentName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{departmentName} != null ? $F{departmentName} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="1092" y="0" width="217" height="30" uuid="a1cda235-e10b-4385-b71c-57f329aa887a"/>
-				<textFieldExpression><![CDATA[$F{positionCategoryName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{positionCategoryName} != null ? $F{positionCategoryName} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="1309" y="0" width="217" height="30" uuid="877146e5-9be1-4200-b0b5-7e99a4beb23c"/>
-				<textFieldExpression><![CDATA[$F{jobGroupName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{jobGroupName} != null ? $F{jobGroupName} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="1526" y="0" width="217" height="30" uuid="ee7b1e26-a3e4-49a5-a817-86f25c6b3b75"/>
-				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{status} != null ? $F{status} : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="text" x="1743" y="0" width="217" height="30" uuid="ad6e1fa4-9420-46c9-b199-6e670114d423"/>
-				<textFieldExpression><![CDATA[$F{totalEmployee}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{totalEmployee} != null ? $F{totalEmployee} : ""]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

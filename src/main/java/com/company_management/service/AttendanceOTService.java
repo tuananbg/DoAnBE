@@ -22,7 +22,5 @@ public interface AttendanceOTService {
 
     void complete(RequestUpdateAttendanceOTDTO request);
 
-    ByteArrayInputStream exportExcel(SearchAttendanceOTRequest searchAttendanceOTRequest, Pageable pageable);
-
 
 }

@@ -118,12 +118,6 @@ public class AttendanceLeaveServiceImpl extends BaseController implements Attend
         attendanceLeaveRepository.save(attendanceLeave);
     }
 
-
-    @Override
-    public ByteArrayInputStream exportExcel(SearchLeaveRequest searchLeaveRequest, Pageable pageable) {
-        return null;
-    }
-
     @Override
     public void complete(RequestUpdateAttendanceLeaveDTO request) {
         AttendanceLeave attendanceLeave = attendanceLeaveRepository.findById(request.getId()).orElseThrow(

@@ -41,8 +41,9 @@ public interface AttendanceOTRepository extends JpaRepository<AttendanceOt, Long
 
     @Query(value = "SELECT al FROM AttendanceOt  al "
             + "JOIN Employee er ON er.id = al.employeeFollow.id "
-            + "WHERE er.departmentCode = :departmentCode AND al.status =:status")
+            + "WHERE er.departmentCode = :departmentCode AND al.status =:status ORDER BY al.modifiedDate DESC ")
     List<AttendanceOt> findAllByDepartmentCode(@Param("departmentCode") String departmentCode, @Param("status") Integer status);
 
-    List<AttendanceOt> findAllByStatus(Integer status);
+
+    List<AttendanceOt> findAllByStatusOrderByModifiedDate(Integer status);
 }

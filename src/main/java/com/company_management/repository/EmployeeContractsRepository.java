@@ -20,6 +20,8 @@ public interface EmployeeContractsRepository extends JpaRepository<EmployeeContr
 
     List<EmployeeContracts> findAllByStatus(Integer status);
 
+    List<EmployeeContracts> findAllByStatusOrderByContractEffectiveDateDesc(Integer status);
+
     List<EmployeeContracts> findAllByStatusIn(List<Integer> status);
 
     List<EmployeeContracts> findAllByEmployeeId(Long id);
@@ -31,7 +33,7 @@ public interface EmployeeContractsRepository extends JpaRepository<EmployeeContr
             "UPPER(ec.employee.fullName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
             "UPPER(ec.contractTypeDisplay) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
             "AND ec.status = :status " +
-            "ORDER BY ec.contractEffectiveDate ASC")
+            "ORDER BY ec.contractEffectiveDate DESC ")
     Page<EmployeeContracts> findAllByIsActive(@Param("status") Integer isActive,
                                               @Param("keyword") String keyword,
                                               Pageable pageable);
@@ -44,7 +46,7 @@ public interface EmployeeContractsRepository extends JpaRepository<EmployeeContr
             "UPPER(e.fullName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
             "UPPER(ec.contractTypeDisplay) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
             "AND ec.status = :status AND e.departmentCode = :departmentCode " +
-            "ORDER BY ec.contractEffectiveDate ASC")
+            "ORDER BY ec.contractEffectiveDate DESC ")
     Page<EmployeeContracts> findAllByIsActiveV2(@Param("status") Integer isActive,
                                                 @Param("departmentCode") String departmentCode,
                                                 @Param("keyword") String keyword,
@@ -83,5 +85,12 @@ public interface EmployeeContractsRepository extends JpaRepository<EmployeeContr
             + "JOIN Employee e ON ec.employee.id = e.id "
             + "WHERE ec.status = :status AND e.departmentCode = :departmentCode")
     List<EmployeeContracts> findAllByStatusAndDepartmentCode(@Param("status") Integer status,
+                                                             @Param("departmentCode") String departmentCode);
+
+    @Query(value = "SELECT ec FROM EmployeeContracts ec "
+            + "JOIN Employee e ON ec.employee.id = e.id "
+            + "WHERE ec.status = :status AND e.departmentCode = :departmentCode " +
+            "ORDER BY ec.contractEffectiveDate DESC ")
+    List<EmployeeContracts> findAllByStatusAndDepartmentCodeOrderByContractEffectiveDateDesc(@Param("status") Integer status,
                                                              @Param("departmentCode") String departmentCode);
 }

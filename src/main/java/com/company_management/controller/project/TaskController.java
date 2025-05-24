@@ -1,6 +1,8 @@
 package com.company_management.controller.project;
 
 import com.company_management.common.AppConstants;
+import com.company_management.common.enums.ContractStatusEnum;
+import com.company_management.common.enums.ReportType;
 import com.company_management.common.enums.TaskStatusEnum;
 import com.company_management.dto.common.BaseResponse;
 import com.company_management.dto.common.RequestPage;
@@ -12,9 +14,13 @@ import com.company_management.dto.response.project.ResponseListTaskDTO;
 import com.company_management.dto.response.project.ResponseProjectDashboardTO;
 import com.company_management.exception.AppException;
 import com.company_management.service.TaskService;
+import com.company_management.service.common.JasperReportService;
+import com.company_management.utils.CommonUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +32,8 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService;
+    private final JasperReportService jasperReportService;
+
     @PostMapping(value = "/create")
     public BaseResponse<Object> create(@RequestBody  @Valid RequestCreateTaskDTO request) {
         taskService.createTask(request);
@@ -62,5 +70,12 @@ public class TaskController {
         } catch (AppException ex) {
             return BaseResponse.error(AppConstants.CODE_400, ex.getMessage());
         }
+    }
+
+    @GetMapping(value = "/download-xlsx/{status}")
+    public ResponseEntity<Resource> download(@PathVariable("status") TaskStatusEnum status) {
+        byte[] bytes = jasperReportService.taskStatus(status);
+        String fileName = "DTDI_HRM_Danh sach nhiem vu_" + CommonUtils.getCurrentDate("ddMMyyyy") + "." + ReportType.XLSX.getCode();
+        return jasperReportService.baseDownload(bytes, fileName);
     }
 }

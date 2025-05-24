@@ -63,11 +63,11 @@ public class ContractController {
         return BaseResponse.ok(contractService.getListEmployeeCode(employeeCode, page));
     }
 
-        @GetMapping(value = "/download-xlsx/{status}")
+    @GetMapping(value = "/download-xlsx/{status}")
     public ResponseEntity<Resource> download(@PathVariable("status") ContractStatusEnum status) {
         byte[] bytes = jasperReportService.contractStatus(status);
         String fileName = "DTDI_HRM_Danh sach hop dong_" + CommonUtils.getCurrentDate("ddMMyyyy") + "." + ReportType.XLSX.getCode();
-        return jasperReportService.baseDownload(bytes,fileName);
+        return jasperReportService.baseDownload(bytes, fileName);
     }
 
     @PostMapping("/download")
@@ -101,7 +101,7 @@ public class ContractController {
     @PutMapping("disable/{id}")
     public BaseResponse<Object> delete(@PathVariable("id") Long id) {
         contractService.disable(id);
-        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202,AppConstants.CREATE_SUCCESS_MESS_201);
+        return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202, AppConstants.CREATE_SUCCESS_MESS_201);
     }
 
     @GetMapping("/statistical")

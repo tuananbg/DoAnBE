@@ -21,7 +21,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "UPPER(pr.projectCode) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%') OR " +
             "UPPER(pr.projectName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
             "AND pr.status = :status " +
-            "ORDER BY pr.createdDate ASC")
+            "ORDER BY pr.modifiedDate DESC")
     Page<Project> findAllByIsActiveAndKeyword(@Param("status") Integer isActive,@Param("keyword") String keyword, Pageable pageable);
 
     List<Project> findAllByStatus(Integer status);

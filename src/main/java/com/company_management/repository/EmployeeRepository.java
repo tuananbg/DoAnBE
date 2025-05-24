@@ -21,12 +21,16 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     List<Employee> findAllByStatus(Integer status);
 
+    List<Employee> findAllByStatusOrderByModifiedDateDesc(Integer status);
+
     List<Employee> findAllByStatusIn(List<Integer> status);
 
     @Query("SELECT e FROM Employee e " +
             "WHERE e.departmentCode = :departmentCode AND e.status =:status")
     List<Employee> findAllByStatusAndDepartmentCode(@Param("status") Integer status,
                                                     @Param("departmentCode") String departmentCode);
+
+    List<Employee> findAllByStatusAndDepartmentCodeOrderByModifiedDateDesc(Integer status, String departmentCode);
 
     @Query(value = "SELECT e FROM Employee e " +
             "JOIN Position p ON p.id = e.position.id " +

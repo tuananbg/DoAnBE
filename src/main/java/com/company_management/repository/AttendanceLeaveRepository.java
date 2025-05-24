@@ -19,7 +19,7 @@ public interface AttendanceLeaveRepository extends JpaRepository<AttendanceLeave
             "WHERE ((:keyword IS NULL OR UPPER(al.reviewer.fullName) LIKE CONCAT('%', UPPER(:keyword), '%')) "
             + " OR (:keyword IS NULL OR UPPER(al.reviewer.code) LIKE CONCAT('%', UPPER(:keyword), '%')))"
             + "AND (al.status = :status)" +
-            "ORDER BY al.modifiedDate ASC")
+            "ORDER BY al.modifiedDate DESC")
     Page<AttendanceLeave> findAllByKeyword(@Param("status") Integer status,
                                            @Param("keyword") String keyword,
                                            Pageable pageable);
@@ -33,7 +33,7 @@ public interface AttendanceLeaveRepository extends JpaRepository<AttendanceLeave
             ") " +
             "AND al.status = :status " +
             "AND (al.employee.code = :userCode OR al.reviewer.code = :userCode OR upper(:userCode) = 'ADMIN')" +
-            "ORDER BY al.modifiedDate ASC")
+            "ORDER BY al.modifiedDate DESC")
     Page<AttendanceLeave> findAllByKeywordV2(@Param("status") Integer status,
                                              @Param("keyword") String keyword,
                                              @Param("userCode") String userCode,
@@ -43,5 +43,12 @@ public interface AttendanceLeaveRepository extends JpaRepository<AttendanceLeave
             + "WHERE er.departmentCode = :departmentCode AND al.status =:status")
     List<AttendanceLeave> findAllByDepartmentCode(@Param("departmentCode") String departmentCode, @Param("status") Integer status);
 
+    @Query(value = "SELECT al FROM AttendanceLeave  al "
+            + "JOIN Employee er ON er.id = al.reviewer.id "
+            + "WHERE er.departmentCode = :departmentCode AND al.status =:status ORDER BY al.modifiedDate DESC ")
+    List<AttendanceLeave> findAllByDepartmentCodeOrderByModifiedDateDesc(@Param("departmentCode") String departmentCode, @Param("status") Integer status);
+
     List<AttendanceLeave> findAllByStatus(Integer status);
+
+    List<AttendanceLeave> findAllByStatusOrderByModifiedDateDesc(Integer status);
 }

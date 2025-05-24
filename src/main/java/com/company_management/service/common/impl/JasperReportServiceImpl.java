@@ -58,10 +58,10 @@ public class JasperReportServiceImpl extends BaseController implements JasperRep
         String userCode = getCurrentUserCode();
         List<Employee> employees;
         if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
-            employees = employeeRepository.findAllByStatus(status.getCode());
+            employees = employeeRepository.findAllByStatusOrderByModifiedDateDesc(status.getCode());
         } else {
             Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản của bạn không còn tồn tại trong hệ thống!"));
-            employees = employeeRepository.findAllByStatusAndDepartmentCode(status.getCode(), employee.getDepartmentCode());
+            employees = employeeRepository.findAllByStatusAndDepartmentCodeOrderByModifiedDateDesc(status.getCode(), employee.getDepartmentCode());
         }
         List<ReportEmployeeDTO> data = new ArrayList<>();
         for (Employee employee : employees) {
@@ -104,11 +104,11 @@ public class JasperReportServiceImpl extends BaseController implements JasperRep
         String userCode = getCurrentUserCode();
         List<EmployeeContracts> employeeContractsList;
         if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
-          employeeContractsList = employeeContractsRepository.findAllByStatus(status.getValue());
+          employeeContractsList = employeeContractsRepository.findAllByStatusOrderByContractEffectiveDateDesc(status.getValue());
         }
         else {
             Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản của bạn không còn tồn tại trong hệ thống!"));
-            employeeContractsList = employeeContractsRepository.findAllByStatusAndDepartmentCode(status.getValue(), employee.getDepartmentCode());
+            employeeContractsList = employeeContractsRepository.findAllByStatusAndDepartmentCodeOrderByContractEffectiveDateDesc(status.getValue(), employee.getDepartmentCode());
         }
 
         List<ReportEmployeeContractDTO> data = new ArrayList<>();
@@ -140,10 +140,10 @@ public class JasperReportServiceImpl extends BaseController implements JasperRep
         List<ReportPositionStatusDTO> data = new ArrayList<>();
         List<Position> positions;
         if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
-            positions = positionRepository.findByStatus(status.getCode());
+            positions = positionRepository.findByStatusOrderByModifiedDateDesc(status.getCode());
         }else {
             Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản của bạn không còn tồn tại trong hệ thống!"));
-            positions = positionRepository.findByDepartmentCodeAndStatus(employee.getDepartmentCode(), status.getCode());
+            positions = positionRepository.findByDepartmentCodeAndStatusOrderByModifiedDateDesc(employee.getDepartmentCode(), status.getCode());
         }
         for (Position position : positions) {
             ReportPositionStatusDTO dto = new ReportPositionStatusDTO();
@@ -170,11 +170,11 @@ public class JasperReportServiceImpl extends BaseController implements JasperRep
         List<ReportAttendanceLeaveDTO> data = new ArrayList<>();
         List<AttendanceLeave> attendanceLeaves;
         if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
-            attendanceLeaves = attendanceLeaveRepository.findAllByStatus(status.getCode());
+            attendanceLeaves = attendanceLeaveRepository.findAllByStatusOrderByModifiedDateDesc(status.getCode());
         }
         else {
             Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản của bạn không còn tồn tại trong hệ thống!"));
-            attendanceLeaves = attendanceLeaveRepository.findAllByDepartmentCode(employee.getDepartmentCode(), status.getCode());
+            attendanceLeaves = attendanceLeaveRepository.findAllByDepartmentCodeOrderByModifiedDateDesc(employee.getDepartmentCode(), status.getCode());
         }
         for (AttendanceLeave attendanceLeave : attendanceLeaves) {
             ReportAttendanceLeaveDTO dto = new ReportAttendanceLeaveDTO();
@@ -213,7 +213,7 @@ public class JasperReportServiceImpl extends BaseController implements JasperRep
         List<ReportAttendanceOTDTO> data = new ArrayList<>();
         List<AttendanceOt> attendanceOts;
         if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
-            attendanceOts = attendanceOTRepository.findAllByStatus(status.getCode());
+            attendanceOts = attendanceOTRepository.findAllByStatusOrderByModifiedDate(status.getCode());
         }
         else {
             Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản của bạn không còn tồn tại trong hệ thống!"));
@@ -258,10 +258,10 @@ public class JasperReportServiceImpl extends BaseController implements JasperRep
         List<ReportTaskStatusDTO> data = new ArrayList<>();
         List<Task> tasks;
         if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
-            tasks = taskRepository.findAllByStatus(status.getCode());
+            tasks = taskRepository.findAllByStatusOrderByPriorityAsc(status.getCode());
         }
         else {
-            tasks = taskRepository.findAllByManagerCodeAndStatus(userCode, status.getCode());
+            tasks = taskRepository.findAllByManagerCodeAndStatusOrderByPriorityAsc(userCode, status.getCode());
         }
         for (Task task : tasks) {
             ReportTaskStatusDTO dto = new ReportTaskStatusDTO();

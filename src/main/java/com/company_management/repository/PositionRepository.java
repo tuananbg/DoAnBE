@@ -25,10 +25,12 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
             "UPPER(p.positionCategory.name) LIKE CONCAT('%', UPPER(:keyword), '%') OR " +
             "UPPER(p.positionName) LIKE CONCAT('%', UPPER(COALESCE(:keyword, '')), '%')) " +
             "AND p.status = :status " +
-            "ORDER BY p.createdDate ASC")
+            "ORDER BY p.createdDate DESC ")
     Page<Position> findAllByKeyword(@Param("status") Integer isActive,@Param("keyword") String keyword, Pageable pageable);
 
     List<Position> findByStatus(Integer status);
+
+    List<Position> findByStatusOrderByModifiedDateDesc(Integer status);
 
     Boolean existsByDepartmentId(Long departmentId);
 
@@ -47,8 +49,14 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
                                                                    @Param("positionCategoryCode") String positionCategoryCode,
                                                                    @Param("status") Integer status);
 
-    @Query(value = "SELECT p FROM Position p JOIN Department d ON p.department.id = d.id WHERE d.departmentCode = :departmentCode AND p.status = :status")
+    @Query(value = "SELECT p FROM Position p " +
+            "JOIN Department d ON p.department.id = d.id " +
+            "WHERE d.departmentCode = :departmentCode AND p.status = :status")
     List<Position> findByDepartmentCodeAndStatus(@Param("departmentCode") String departmentCode, @Param("status") Integer status);
 
+    @Query(value = "SELECT p FROM Position p " +
+            "JOIN Department d ON p.department.id = d.id " +
+            "WHERE d.departmentCode = :departmentCode AND p.status = :status ORDER BY p.createdDate DESC ")
+    List<Position> findByDepartmentCodeAndStatusOrderByModifiedDateDesc(@Param("departmentCode") String departmentCode, @Param("status") Integer status);
 
 }

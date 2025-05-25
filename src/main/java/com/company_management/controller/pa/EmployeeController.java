@@ -96,7 +96,15 @@ public class EmployeeController {
     public BaseResponse<List<ResponseEmployeeSelectDTO>> selectEmployeeContract() {
         return BaseResponse.ok(employeeService.selectEmployeeContract());
     }
+    @GetMapping("/select-department-head")
+    public BaseResponse<List<ResponseEmployeeSelectDTO>> selectEmployeeDepartmentHead() {
+        return BaseResponse.ok(employeeService.selectEmployeeForManager());
+    }
 
+    @GetMapping("/select-create-account")
+    public BaseResponse<List<ResponseEmployeeSelectDTO>> selectEmployeeCreateAccount() {
+        return BaseResponse.ok(employeeService.selectEmployeeCreateAccount());
+    }
 
     @GetMapping("/select-department")
     public BaseResponse<List<ResponseEmployeeSelectDTO>> selectEmployeeForDepartment() {

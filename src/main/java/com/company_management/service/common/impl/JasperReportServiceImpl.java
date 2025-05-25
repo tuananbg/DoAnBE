@@ -140,10 +140,10 @@ public class JasperReportServiceImpl extends BaseController implements JasperRep
         List<ReportPositionStatusDTO> data = new ArrayList<>();
         List<Position> positions;
         if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
-            positions = positionRepository.findByStatusOrderByModifiedDateDesc(status.getCode());
+            positions = positionRepository.findByStatusOrderByModifiedDateAsc(status.getCode());
         }else {
             Employee employee = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản của bạn không còn tồn tại trong hệ thống!"));
-            positions = positionRepository.findByDepartmentCodeAndStatusOrderByModifiedDateDesc(employee.getDepartmentCode(), status.getCode());
+            positions = positionRepository.findByDepartmentCodeAndStatusOrderByModifiedDateAsc(employee.getDepartmentCode(), status.getCode());
         }
         for (Position position : positions) {
             ReportPositionStatusDTO dto = new ReportPositionStatusDTO();

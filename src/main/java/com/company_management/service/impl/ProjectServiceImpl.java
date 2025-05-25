@@ -47,7 +47,7 @@ public class ProjectServiceImpl extends BaseController implements ProjectService
     public List<ResponseListProjectDTO> getList() {
         String userCode = getCurrentUserCode();
         List<Project> projectPage;
-        if (AuthConstants.ADMIN.equals(userCode)) {
+        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
             projectPage = projectRepository.findAll();
         }
         else {

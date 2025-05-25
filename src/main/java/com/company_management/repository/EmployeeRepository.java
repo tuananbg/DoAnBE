@@ -85,5 +85,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             """)
     Long countByStatusIn(@Param("statusList") List<Integer> statusList);
 
+    List<Employee> findAllByPositionIdIn(List<Long> positionIds);
+
+    @Query("SELECT e FROM Employee e WHERE e.id NOT IN (SELECT a.employee.id FROM account a) AND e.status IN :status")
+    List<Employee> findEmployeesWithoutAccount(@Param("status") List<Integer> status);
 
 }

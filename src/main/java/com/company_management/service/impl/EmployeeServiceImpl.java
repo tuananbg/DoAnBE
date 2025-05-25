@@ -147,7 +147,7 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
         employee.setEmployeeInfo(employeeInfo);
 
         //upload file ảnh
-        if (avatarFile == null){
+        if (avatarFile == null) {
             throw new AppException(AppConstants.UPLOAD_FILE_IMAGE_CODE_001, AppConstants.UPLOAD_FILE_IMAGE_MESS_001);
         }
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(avatarFile.getOriginalFilename()));
@@ -251,20 +251,20 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
         TotalEmployeeDTO totalEmployeeDTO = new TotalEmployeeDTO();
         int month = LocalDate.now().getMonthValue();
         int year = LocalDate.now().getYear();
-        List<Integer> employeeStatus = Arrays.asList(EmploymentStatus.EMPLOYMENT.getCode(),EmploymentStatus.WAITING_FOR_SIGNING.getCode(),EmploymentStatus.WAITING_FOR_ONBOARD.getCode());
-        List<Integer> taskStatus = Arrays.asList(TaskStatusEnum.PROCESSING.getCode(),TaskStatusEnum.TODO.getCode());
+        List<Integer> employeeStatus = Arrays.asList(EmploymentStatus.EMPLOYMENT.getCode(), EmploymentStatus.WAITING_FOR_SIGNING.getCode(), EmploymentStatus.WAITING_FOR_ONBOARD.getCode());
+        List<Integer> taskStatus = Arrays.asList(TaskStatusEnum.PROCESSING.getCode(), TaskStatusEnum.TODO.getCode());
 
         Long totalEmployee = employeeRepository.countByStatusIn(employeeStatus);
-        totalEmployeeDTO.setTotalEmployee( Objects.requireNonNullElse(totalEmployee,0L));
+        totalEmployeeDTO.setTotalEmployee(Objects.requireNonNullElse(totalEmployee, 0L));
 
         Long totalEmployeeBirths = employeeRepository.countActiveEmployeesWithBirthdayInCurrentMonth(EmploymentStatus.EMPLOYMENT.getCode());
         totalEmployeeDTO.setTotalBirthDayMonth(Objects.requireNonNullElse(totalEmployeeBirths, 0L));
 
         Long totalLateWork = attendanceRepository.countAttendanceByEmployeeCode(code, month, year);
-        totalEmployeeDTO.setTotalLateWork( Objects.requireNonNullElse(totalLateWork,0L));
+        totalEmployeeDTO.setTotalLateWork(Objects.requireNonNullElse(totalLateWork, 0L));
 
-        Long totalTaskProcess = taskRepository.countByEmployeeCode(code,taskStatus);
-        totalEmployeeDTO.setTotalTaskProcess(Objects.requireNonNullElse(totalTaskProcess,0L));
+        Long totalTaskProcess = taskRepository.countByEmployeeCode(code, taskStatus);
+        totalEmployeeDTO.setTotalTaskProcess(Objects.requireNonNullElse(totalTaskProcess, 0L));
 
         return totalEmployeeDTO;
     }
@@ -274,11 +274,10 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
         String userCode = getCurrentUserCode();
         List<Employee> employees;
         if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
-            employees  = employeeRepository.findAllByStatus(EmploymentStatus.EMPLOYMENT.getCode());
-        }
-        else {
-            Employee user = employeeRepository.findByCode(userCode).orElseThrow(()-> new AppException("ERR01","Tài khoản của bạn không còn tồn tại trong hệ thống"));
-            employees = employeeRepository.getAllByDepartmentCodeAndStatus(user.getDepartmentCode(),EmploymentStatus.EMPLOYMENT.getCode());
+            employees = employeeRepository.findAllByStatus(EmploymentStatus.EMPLOYMENT.getCode());
+        } else {
+            Employee user = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản của bạn không còn tồn tại trong hệ thống"));
+            employees = employeeRepository.getAllByDepartmentCodeAndStatus(user.getDepartmentCode(), EmploymentStatus.EMPLOYMENT.getCode());
         }
 
         return processResponseSelect(employees);
@@ -287,15 +286,27 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
     @Override
     public List<ResponseEmployeeSelectDTO> selectEmployeeContract() {
         String userCode = getCurrentUserCode();
-        List<Integer> status = Arrays.asList(EmploymentStatus.EMPLOYMENT.getCode(),EmploymentStatus.WAITING_FOR_SIGNING.getCode());
+        List<Integer> status = Arrays.asList(EmploymentStatus.EMPLOYMENT.getCode(), EmploymentStatus.WAITING_FOR_SIGNING.getCode());
         List<Employee> employees;
         if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
-            employees  = employeeRepository.findAllByStatusIn(status);
+            employees = employeeRepository.findAllByStatusIn(status);
+        } else {
+            Employee user = employeeRepository.findByCode(userCode).orElseThrow(() -> new AppException("ERR01", "Tài khoản của bạn không còn tồn tại trong hệ thống"));
+            employees = employeeRepository.getAllByDepartmentCodeAndStatusIn(user.getDepartmentCode(), status);
         }
-        else {
-            Employee user = employeeRepository.findByCode(userCode).orElseThrow(()-> new AppException("ERR01","Tài khoản của bạn không còn tồn tại trong hệ thống"));
-            employees = employeeRepository.getAllByDepartmentCodeAndStatusIn(user.getDepartmentCode(),status);
-        }
+        return processResponseSelect(employees);
+    }
+
+    @Override
+    public List<ResponseEmployeeSelectDTO> selectEmployeeForManager() {
+        List<Long> positionIds = positionRepository.findAllByPositionCategoryCode(PositionCategoryEnum.DEPARTMENT_HEAD.getCode()).stream().map(Position::getId).toList();
+        List<Employee> employees = employeeRepository.findAllByPositionIdIn(positionIds);
+        return processResponseSelect(employees);
+    }
+
+    @Override
+    public List<ResponseEmployeeSelectDTO> selectEmployeeCreateAccount() {
+        List<Employee> employees = employeeRepository.findEmployeesWithoutAccount(Arrays.asList(EmploymentStatus.EMPLOYMENT.getCode(), EmploymentStatus.WAITING_FOR_SIGNING.getCode(),EmploymentStatus.WAITING_FOR_ONBOARD.getCode()));
         return processResponseSelect(employees);
     }
 
@@ -305,7 +316,7 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
         List<ResponseEmployeeSelectDTO> response = new ArrayList<>();
         Employee empDepart = employeeRepository.findByCode(userCode).orElse(null);
         if (empDepart != null) {
-            List<Employee> employees = employeeRepository.findAllByStatusAndDepartmentCode( EmploymentStatus.EMPLOYMENT.getCode(),empDepart.getDepartmentCode());
+            List<Employee> employees = employeeRepository.findAllByStatusAndDepartmentCode(EmploymentStatus.EMPLOYMENT.getCode(), empDepart.getDepartmentCode());
             for (Employee employee : employees) {
                 ResponseEmployeeSelectDTO dto = new ResponseEmployeeSelectDTO();
                 dto.setEmployeeCode(employee.getCode());
@@ -323,7 +334,8 @@ public class EmployeeServiceImpl extends BaseController implements EmployeeServi
         return employeeRepository.findByCode(code)
                 .orElseThrow(() -> new AppException(AppConstants.EMPLOYEE_CODE_001, AppConstants.EMPLOYEE_MESS_001));
     }
-    private List<ResponseEmployeeSelectDTO> processResponseSelect(List<Employee> employees){
+
+    private List<ResponseEmployeeSelectDTO> processResponseSelect(List<Employee> employees) {
         List<ResponseEmployeeSelectDTO> employeeSelectDTOS = new ArrayList<>();
         for (Employee employee : employees) {
             ResponseEmployeeSelectDTO dto = new ResponseEmployeeSelectDTO();

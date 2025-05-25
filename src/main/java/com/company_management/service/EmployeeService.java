@@ -32,6 +32,10 @@ public interface EmployeeService {
 
     List<ResponseEmployeeSelectDTO> selectEmployeeContract();
 
+    List<ResponseEmployeeSelectDTO> selectEmployeeForManager();
+
+    List<ResponseEmployeeSelectDTO> selectEmployeeCreateAccount();
+
     List<ResponseEmployeeSelectDTO> selectEmployeeForDepartment();
 
     Employee getEmployee(String code);

@@ -72,7 +72,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         Position position = new Position();
         position.setPositionCode(positionCode);
         positionCategoryRepository.findByCode(PositionCategoryEnum.DEPARTMENT_HEAD.getCode()).ifPresent(position::setPositionCategory);
-        position.setPositionName(PositionCategoryEnum.DEPARTMENT_HEAD.getName()+"-"+ requestDepartmentDTO.getDepartmentCode());
+        position.setPositionName(PositionCategoryEnum.DEPARTMENT_HEAD.getName()+"-"+ requestDepartmentDTO.getDepartmentName());
         position.setDepartment(department);
         position.setStatus(ObjectStatus.ACTIVE.getCode());
         positionRepository.save(position);
@@ -97,8 +97,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public void lock(String departmentCode) {
         Department department = departmentRepository.findByCode(departmentCode).orElseThrow(() -> new RuntimeException("Mã phòng ban không tồn tại trong hệ thống!"));
-        if (positionRepository.existsByDepartmentId(department.getId())) {
-            throw new RuntimeException("Vui lòng vô hiệu các chức vụ của phòng ban này trước khi vô hiệu");
+        List<Position> positions = positionRepository.findAllByDepartmentCode(departmentCode);
+        for (Position position : positions) {
+            if (ObjectStatus.ACTIVE.getCode().equals(position.getStatus())) {
+                throw new AppException("ERR1","Vui lòng vô hiệu các chức vụ của phòng ban này trước khi vô hiệu");
+            }
         }
         department.setStatus(ObjectStatus.INACTIVE.getCode());
         departmentRepository.save(department);

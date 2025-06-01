@@ -115,19 +115,10 @@ public class AttendanceServiceImpl extends BaseController implements AttendanceS
     @Transactional(readOnly = true)
     public ResponseAttendanceStatusDTO getAttendanceId(String employeeCode) {
         ResponseAttendanceStatusDTO dto = new ResponseAttendanceStatusDTO();
-        String userCode = getCurrentUserCode();
-        if (AuthConstants.ADMIN.equalsIgnoreCase(userCode)) {
-            Attendance attendance = attendanceRepository.findTodayAttendanceByEmployeeCode(employeeCode).orElse(null);
-            if (attendance != null) {
-                dto.setId(attendance.getId());
-                dto.setStatus(attendance.getStatus());
-            }
-        } else {
-            Attendance attendance = attendanceRepository.findTodayAttendanceByEmployeeCode(userCode).orElse(null);
-            if (attendance != null) {
-                dto.setId(attendance.getId());
-                dto.setStatus(attendance.getStatus());
-            }
+        Attendance attendance = attendanceRepository.findTodayAttendanceByEmployeeCode(employeeCode).orElse(null);
+        if (attendance != null) {
+            dto.setId(attendance.getId());
+            dto.setStatus(attendance.getStatus());
         }
         return dto;
     }

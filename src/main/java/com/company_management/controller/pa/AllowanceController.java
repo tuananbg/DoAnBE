@@ -95,9 +95,9 @@ public class AllowanceController {
         return BaseResponse.ok(AppConstants.UPDATE_SUCCESS_CODE_202,AppConstants.UPDATE_SUCCESS_MESS_202);
     }
 
-    @DeleteMapping("deleteForEmployee/{id}")
-    public ResultResp<Object> deleteForEmployee(@PathVariable Long id) {
-        allowanceService.deleteForEmployeeByIds(id);
+    @DeleteMapping("deleteForEmployee/{employeeCode}/{allowanceCode}")
+    public ResultResp<Object> deleteForEmployee(@PathVariable String employeeCode, @PathVariable String allowanceCode) {
+        allowanceService.deleteForEmployeeByIds(employeeCode,allowanceCode);
         return ResultResp.success(null);
     }
 

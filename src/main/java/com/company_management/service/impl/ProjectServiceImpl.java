@@ -98,7 +98,7 @@ public class ProjectServiceImpl extends BaseController implements ProjectService
         List<ResponseListTaskOfProjectDTO> data = new ArrayList<>();
         for (Integer status : statusList) {
             ResponseListTaskOfProjectDTO dto = new ResponseListTaskOfProjectDTO();
-            dto.setName(TaskStatusEnum.findByCode(status).getName());
+            dto.setName(TaskStatusEnum.findByCode(status).getDescription()  );
             List<ResponseDetailListTaskDTO> taskDTOList = new ArrayList<>();
             for (Task task : tasks) {
                 if (task.getStatus().equals(status)) {

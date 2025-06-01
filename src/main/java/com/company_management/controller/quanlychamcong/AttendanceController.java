@@ -52,7 +52,7 @@ public class AttendanceController {
     @GetMapping(value = "/download/{monthCode}")
     public ResponseEntity<Resource> exportExcel(@PathVariable("monthCode") String monthCode) {
         byte[] bytes = jasperReportService.timeSheetEmployeeExcessReportData(monthCode);
-        String fileName = "DTDI_HRM_Danh sach CBNV_ " + CommonUtils.getCurrentDate("ddMMyyyy") + "." + ReportType.XLSX.getCode();
+        String fileName = "DTDI_HRM_Danh sach cham cong_ " + CommonUtils.getCurrentDate("ddMMyyyy") + "." + ReportType.XLSX.getCode();
         return jasperReportService.baseDownload(bytes,fileName);
     }
 

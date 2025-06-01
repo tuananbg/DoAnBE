@@ -163,7 +163,7 @@ public class AllowanceServiceImpl implements AllowanceService {
     @Override
     @Transactional
     public void lock(String allowanceCode) {
-        Allowance allowance = allowanceRepository.findByAllowanceCode(allowanceCode).orElseThrow(()-> new RuntimeException("Mã phụ cấp không tồn tại trong hệ thông !"));
+        Allowance allowance = allowanceRepository.findByAllowanceCode(allowanceCode).orElseThrow(() -> new RuntimeException("Mã phụ cấp không tồn tại trong hệ thông !"));
         allowance.setStatus(ObjectStatus.INACTIVE.getCode());
         allowanceRepository.save(allowance);
     }
@@ -171,14 +171,29 @@ public class AllowanceServiceImpl implements AllowanceService {
     @Override
     @Transactional
     public void unlock(String allowanceCode) {
-        Allowance allowance = allowanceRepository.findByAllowanceCode(allowanceCode).orElseThrow(()-> new RuntimeException("Mã phụ cấp không tồn tại trong hệ thông !"));
+        Allowance allowance = allowanceRepository.findByAllowanceCode(allowanceCode).orElseThrow(() -> new RuntimeException("Mã phụ cấp không tồn tại trong hệ thông !"));
         allowance.setStatus(ObjectStatus.ACTIVE.getCode());
         allowanceRepository.save(allowance);
     }
 
     @Override
     @Transactional
-    public void deleteForEmployeeByIds(Long id) {
+    public void deleteForEmployeeByIds(String employeeCode, String allowanceCode) {
+// Tìm Employee theo code
+        Employee employee = employeeRepository.findByCode(employeeCode)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        // Tìm Allowance theo code
+        Allowance allowance = allowanceRepository.findByAllowanceCode(allowanceCode)
+                .orElseThrow(() -> new RuntimeException("Allowance not found"));
+
+        // Xóa khỏi set
+        boolean removed = employee.getAllowances().remove(allowance);
+        if (removed) {
+            employeeRepository.save(employee); // cập nhật lại bản ghi
+        } else {
+            throw new RuntimeException("Allowance not assigned to employee");
+        }
     }
 
     @Override

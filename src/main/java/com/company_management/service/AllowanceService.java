@@ -31,7 +31,7 @@ public interface AllowanceService {
 
     void unlock(String allowanceCode);
 
-    void deleteForEmployeeByIds(Long id);
+    void deleteForEmployeeByIds(String employeeCode, String allowanceCode);
 
     ResponsePage<ResponseAllowanceEmployeeDetailDTO> getEmployeeWageDetails(String employeeCode, RequestPage requestPage);
 }

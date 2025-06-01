@@ -13,5 +13,6 @@ public class ResponseDepartmentDTO {
     private String departmentCode;
     private String departmentName;
     private Date createdDate;
+    private Date modifiedDate;
     private Integer status;
 }
